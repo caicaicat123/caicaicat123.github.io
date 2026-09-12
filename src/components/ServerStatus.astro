@@ -3,8 +3,8 @@ import { isPlaceholder, site } from '../data/site';
 
 interface Props {
   /**
-   * 精简模式：只显示实时状态与在线人数。
-   * 用于页面上已经单独列出连接信息的场景，避免与静态信息重复。
+   * 精简模式：不重复页面上已单独列出的连接信息（服务器地址、客户端版本），
+   * 只展示实时查询到的内容。用于 Minecraft 页面。
    */
   compact?: boolean;
 }
@@ -16,7 +16,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 ---
 
 <div
-  class="card p-4"
+  class="card flex h-full flex-col p-5"
   data-server-status
   data-ip={configured ? javaIp : ''}
   data-port={isPlaceholder(port) ? '' : port}
@@ -29,7 +29,14 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     </span>
   </div>
 
-  <dl class="mt-4 space-y-1.5 text-xs text-muted">
+  <div class="mt-5 flex items-end gap-2">
+    <span class="font-pixel text-3xl leading-none text-ink" data-online>—</span>
+    <span class="pb-0.5 text-xs text-muted">
+      / <span data-max>—</span> 人在线
+    </span>
+  </div>
+
+  <dl class="mt-5 space-y-1.5 text-xs text-muted">
     {
       !compact && (
         <div class="flex justify-between gap-3">
@@ -38,10 +45,6 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
         </div>
       )
     }
-    <div class="flex justify-between gap-3">
-      <dt>在线人数</dt>
-      <dd class="text-right font-mono" data-players>— / —</dd>
-    </div>
     {
       !compact && (
         <div class="flex justify-between gap-3">
@@ -52,42 +55,96 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
         </div>
       )
     }
+    <div class="flex justify-between gap-3">
+      <dt>服务端核心</dt>
+      <dd class="text-right font-mono" data-software>—</dd>
+    </div>
+    <div class="flex justify-between gap-3">
+      <dt>查询耗时</dt>
+      <dd class="text-right font-mono" data-latency>—</dd>
+    </div>
+    <div class="flex justify-between gap-3">
+      <dt>最后检查</dt>
+      <dd class="text-right font-mono" data-checked>—</dd>
+    </div>
   </dl>
+
+  <p class="mt-3 hidden text-[11px] leading-relaxed text-muted" data-note>
+    查询服务（境外节点）无法连接这台服务器。可能是服务器不在线，也可能是它只对国内网络开放。
+  </p>
+
+  <button
+    type="button"
+    data-refresh
+    class="mt-5 w-full rounded-md border border-line px-3 py-1.5 text-xs text-muted transition-colors hover:border-primary/40 hover:text-primary"
+  >
+    刷新状态
+  </button>
 </div>
 
 <script>
-  const nodes = document.querySelectorAll('[data-server-status]');
-  nodes.forEach(async (node) => {
-    const ip = node.getAttribute('data-ip');
+  function setText(root: Element, selector: string, value: string) {
+    const el = root.querySelector(selector);
+    if (el) el.textContent = value;
+  }
+
+  async function queryStatus(root: Element) {
+    const ip = root.getAttribute('data-ip');
     if (!ip) return;
 
-    const port = node.getAttribute('data-port') || '';
-    const dot = node.querySelector('[data-dot]');
-    const statusText = node.querySelector('[data-status-text]');
-    const players = node.querySelector('[data-players]');
-    const version = node.querySelector('[data-version]');
+    const port = root.getAttribute('data-port') || '';
+    const dot = root.querySelector('[data-dot]');
+    const button = root.querySelector('[data-refresh]');
 
+    setText(root, '[data-status-text]', '查询中…');
+    if (button instanceof HTMLButtonElement) button.disabled = true;
+
+    const started = performance.now();
     try {
       const res = await fetch(
         `https://api.mcsrvstat.us/3/${encodeURIComponent(ip)}${port ? ':' + port : ''}`,
+        { cache: 'no-store' },
       );
       if (!res.ok) throw new Error(String(res.status));
       const data = await res.json();
 
+      setText(root, '[data-latency]', `${Math.round(performance.now() - started)} ms`);
+      setText(
+        root,
+        '[data-checked]',
+        new Date().toLocaleTimeString('zh-CN', { hour12: false }),
+      );
+      if (data && data.software) setText(root, '[data-software]', String(data.software));
+
       if (data && data.online) {
-        if (dot) dot.classList.add('status-online');
-        if (statusText) statusText.textContent = '在线';
-        if (players && data.players) {
-          players.textContent = `${data.players.online ?? 0} / ${data.players.max ?? 0}`;
-        }
-        if (version && data.version) version.textContent = String(data.version);
+        dot?.classList.remove('status-offline');
+        dot?.classList.add('status-online');
+        setText(root, '[data-status-text]', '在线');
+        setText(root, '[data-online]', String(data.players?.online ?? 0));
+        setText(root, '[data-max]', String(data.players?.max ?? '—'));
+        if (data.version) setText(root, '[data-version]', String(data.version));
       } else {
-        if (dot) dot.classList.add('status-offline');
-        if (statusText) statusText.textContent = '离线';
+        dot?.classList.remove('status-online');
+        dot?.classList.add('status-offline');
+        setText(root, '[data-status-text]', '未响应');
+        setText(root, '[data-online]', '—');
+        setText(root, '[data-max]', '—');
+        root.querySelector('[data-note]')?.classList.remove('hidden');
       }
     } catch {
-      if (dot) dot.classList.add('status-offline');
-      if (statusText) statusText.textContent = '暂时无法查询';
+      dot?.classList.remove('status-online');
+      dot?.classList.add('status-offline');
+      setText(root, '[data-status-text]', '暂时无法查询');
+      setText(root, '[data-online]', '—');
+      setText(root, '[data-max]', '—');
+      root.querySelector('[data-note]')?.classList.remove('hidden');
+    } finally {
+      if (button instanceof HTMLButtonElement) button.disabled = false;
     }
+  }
+
+  document.querySelectorAll('[data-server-status]').forEach((node) => {
+    queryStatus(node);
+    node.querySelector('[data-refresh]')?.addEventListener('click', () => queryStatus(node));
   });
 </script>
