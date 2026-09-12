@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { compact = false } = Astro.props;
-const { javaIp, port, version } = site.minecraft;
+const { javaIp, port } = site.minecraft;
 const configured = !isPlaceholder(javaIp);
 const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 ---
@@ -45,19 +45,13 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
         </div>
       )
     }
-    {
-      !compact && (
-        <div class="flex justify-between gap-3">
-          <dt>服务端版本</dt>
-          <dd class="text-right font-mono" data-version>
-            {isPlaceholder(version) ? '—' : version}
-          </dd>
-        </div>
-      )
-    }
     <div class="flex justify-between gap-3">
-      <dt>服务端核心</dt>
-      <dd class="text-right font-mono" data-software>—</dd>
+      <dt>服务端</dt>
+      <dd class="text-right font-mono" data-server-name>—</dd>
+    </div>
+    <div class="flex justify-between gap-3">
+      <dt>已运行</dt>
+      <dd class="text-right font-mono" data-uptime>—</dd>
     </div>
     <div class="flex justify-between gap-3">
       <dt>查询耗时</dt>
@@ -69,9 +63,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     </div>
   </dl>
 
-  <p class="mt-3 hidden text-[11px] leading-relaxed text-muted" data-note>
-    查询服务（境外节点）无法连接这台服务器。可能是服务器不在线，也可能是它只对国内网络开放。
-  </p>
+  <p class="mt-3 hidden text-[11px] leading-relaxed text-muted" data-note></p>
 
   <button
     type="button"
@@ -83,9 +75,100 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 </div>
 
 <script>
+  type Status = {
+    online: boolean;
+    now: number | null;
+    max: number | null;
+    serverName: string | null;
+    uptimeMs: number | null;
+  };
+
+  /** 接口字段类型不统一（duration 返回的是字符串），统一转成数字。 */
+  function toNumber(value: unknown): number | null {
+    if (value === null || value === undefined || value === '') return null;
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  /**
+   * 查询源列表，按顺序尝试。
+   * 说明：api.mcsrvstat.us 的境外节点连不上部分国内服务器（实测 ping 超时），
+   * 因此以 mcapi.us 为主、mcsrvstat 为备用。
+   */
+  const SOURCES: {
+    name: string;
+    url: (ip: string, port: string) => string;
+    parse: (data: any) => Status;
+  }[] = [
+    {
+      name: 'mcapi.us',
+      url: (ip, port) =>
+        `https://mcapi.us/server/status?ip=${encodeURIComponent(ip)}${port ? `&port=${port}` : ''}`,
+      parse: (data) => ({
+        online: Boolean(data.online),
+        now: toNumber(data.players?.now),
+        max: toNumber(data.players?.max),
+        serverName: data.server?.name ?? null,
+        uptimeMs: toNumber(data.duration),
+      }),
+    },
+    {
+      name: 'mcsrvstat',
+      url: (ip, port) =>
+        `https://api.mcsrvstat.us/3/${encodeURIComponent(ip)}${port ? ':' + port : ''}`,
+      parse: (data) => ({
+        online: Boolean(data.online),
+        now: toNumber(data.players?.online),
+        max: toNumber(data.players?.max),
+        serverName:
+          [data.software, data.version].filter((v: unknown) => Boolean(v)).join(' ') || null,
+        uptimeMs: null,
+      }),
+    },
+  ];
+
   function setText(root: Element, selector: string, value: string) {
     const el = root.querySelector(selector);
     if (el) el.textContent = value;
+  }
+
+  function formatUptime(ms: number | null): string | null {
+    if (!ms || ms <= 0) return null;
+    const days = Math.floor(ms / 86_400_000);
+    const hours = Math.floor((ms % 86_400_000) / 3_600_000);
+    const minutes = Math.floor((ms % 3_600_000) / 60_000);
+    if (days > 0) return `${days} 天 ${hours} 小时`;
+    if (hours > 0) return `${hours} 小时 ${minutes} 分`;
+    return `${minutes} 分`;
+  }
+
+  async function fetchStatus(
+    ip: string,
+    port: string,
+  ): Promise<{ status: Status; latency: number; durationMs: number }> {
+    let lastError: unknown = null;
+
+    for (const source of SOURCES) {
+      const started = performance.now();
+      try {
+        const res = await fetch(source.url(ip, port), { cache: 'no-store' });
+        if (!res.ok) throw new Error(`${source.name} ${res.status}`);
+        const data = await res.json();
+        const status = source.parse(data);
+        // 查到在线就采用；离线结果再给下一个源一次机会，避免单点误判
+        if (status.online) {
+          return { status, latency: performance.now() - started, durationMs: data.duration ?? 0 };
+        }
+        lastError = status;
+        if (source === SOURCES[SOURCES.length - 1]) {
+          return { status, latency: performance.now() - started, durationMs: data.duration ?? 0 };
+        }
+      } catch (error) {
+        lastError = error;
+      }
+    }
+
+    throw lastError ?? new Error('all sources failed');
   }
 
   async function queryStatus(root: Element) {
@@ -94,42 +177,38 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 
     const port = root.getAttribute('data-port') || '';
     const dot = root.querySelector('[data-dot]');
+    const note = root.querySelector('[data-note]');
     const button = root.querySelector('[data-refresh]');
 
     setText(root, '[data-status-text]', '查询中…');
+    note?.classList.add('hidden');
     if (button instanceof HTMLButtonElement) button.disabled = true;
 
-    const started = performance.now();
     try {
-      const res = await fetch(
-        `https://api.mcsrvstat.us/3/${encodeURIComponent(ip)}${port ? ':' + port : ''}`,
-        { cache: 'no-store' },
-      );
-      if (!res.ok) throw new Error(String(res.status));
-      const data = await res.json();
+      const { status, latency } = await fetchStatus(ip, port);
 
-      setText(root, '[data-latency]', `${Math.round(performance.now() - started)} ms`);
-      setText(
-        root,
-        '[data-checked]',
-        new Date().toLocaleTimeString('zh-CN', { hour12: false }),
-      );
-      if (data && data.software) setText(root, '[data-software]', String(data.software));
+      setText(root, '[data-latency]', `${Math.round(latency)} ms`);
+      setText(root, '[data-checked]', new Date().toLocaleTimeString('zh-CN', { hour12: false }));
+      if (status.serverName) setText(root, '[data-server-name]', status.serverName);
+      const uptime = formatUptime(status.uptimeMs);
+      if (uptime) setText(root, '[data-uptime]', uptime);
 
-      if (data && data.online) {
+      if (status.online) {
         dot?.classList.remove('status-offline');
         dot?.classList.add('status-online');
         setText(root, '[data-status-text]', '在线');
-        setText(root, '[data-online]', String(data.players?.online ?? 0));
-        setText(root, '[data-max]', String(data.players?.max ?? '—'));
-        if (data.version) setText(root, '[data-version]', String(data.version));
+        setText(root, '[data-online]', String(status.now ?? 0));
+        setText(root, '[data-max]', String(status.max ?? '—'));
       } else {
         dot?.classList.remove('status-online');
         dot?.classList.add('status-offline');
         setText(root, '[data-status-text]', '未响应');
         setText(root, '[data-online]', '—');
         setText(root, '[data-max]', '—');
-        root.querySelector('[data-note]')?.classList.remove('hidden');
+        if (note) {
+          note.textContent = '查询服务没有拿到服务器响应：可能未开服，也可能只对特定网络开放。';
+          note.classList.remove('hidden');
+        }
       }
     } catch {
       dot?.classList.remove('status-online');
@@ -137,7 +216,10 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
       setText(root, '[data-status-text]', '暂时无法查询');
       setText(root, '[data-online]', '—');
       setText(root, '[data-max]', '—');
-      root.querySelector('[data-note]')?.classList.remove('hidden');
+      if (note) {
+        note.textContent = '查询服务暂时不可用，稍后再试，或点下方按钮重试。';
+        note.classList.remove('hidden');
+      }
     } finally {
       if (button instanceof HTMLButtonElement) button.disabled = false;
     }
