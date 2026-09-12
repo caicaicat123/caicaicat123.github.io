@@ -1,26 +1,19 @@
 ---
 import { isPlaceholder, site } from '../data/site';
 
-interface Props {
-  edition: 'java' | 'bedrock';
-}
-
-const { edition } = Astro.props;
-const ip = edition === 'java' ? site.minecraft.javaIp : site.minecraft.bedrockIp;
-const port = edition === 'java' ? site.minecraft.port : '';
-const configured = !isPlaceholder(ip);
-const title = edition === 'java' ? 'Java 版服务器' : '基岩版服务器';
+const { javaIp, port, version, mode } = site.minecraft;
+const configured = !isPlaceholder(javaIp);
 ---
 
 <div
   class="card p-4"
   data-server-status
-  data-ip={configured ? ip : ''}
+  data-ip={configured ? javaIp : ''}
   data-port={isPlaceholder(port) ? '' : port}
 >
   <div class="flex items-center gap-2">
     <span class="status-dot" data-dot aria-hidden="true"></span>
-    <span class="text-sm font-medium text-ink">{title}</span>
+    <span class="text-sm font-medium text-ink">Java 版服务器</span>
     <span class="ml-auto text-xs text-muted" data-status-text>
       {configured ? '查询中…' : '地址待公布'}
     </span>
@@ -29,16 +22,12 @@ const title = edition === 'java' ? 'Java 版服务器' : '基岩版服务器';
   <dl class="mt-4 space-y-1.5 text-xs text-muted">
     <div class="flex justify-between gap-3">
       <dt>服务器地址</dt>
-      <dd class="text-right font-mono">{configured ? ip : '待填写'}</dd>
+      <dd class="text-right font-mono">{configured ? javaIp : '待填写'}</dd>
     </div>
-    {
-      edition === 'java' && (
-        <div class="flex justify-between gap-3">
-          <dt>端口</dt>
-          <dd class="text-right font-mono">{isPlaceholder(port) ? '默认 25565' : port}</dd>
-        </div>
-      )
-    }
+    <div class="flex justify-between gap-3">
+      <dt>端口</dt>
+      <dd class="text-right font-mono">{isPlaceholder(port) ? '默认 25565' : port}</dd>
+    </div>
     <div class="flex justify-between gap-3">
       <dt>在线人数</dt>
       <dd class="text-right font-mono" data-players>— / —</dd>
@@ -46,8 +35,12 @@ const title = edition === 'java' ? 'Java 版服务器' : '基岩版服务器';
     <div class="flex justify-between gap-3">
       <dt>游戏版本</dt>
       <dd class="text-right font-mono" data-version>
-        {isPlaceholder(site.minecraft.version) ? '待填写' : site.minecraft.version}
+        {isPlaceholder(version) ? '待填写' : version}
       </dd>
+    </div>
+    <div class="flex justify-between gap-3">
+      <dt>账号验证</dt>
+      <dd class="text-right">{mode}</dd>
     </div>
   </dl>
 </div>

@@ -6,75 +6,65 @@ import CopyButton from '../../components/CopyButton.astro';
 import { isPlaceholder, site } from '../../data/site';
 import { announcements, joinSteps, rules, serverFeatures } from '../../data/minecraft';
 
-const { javaIp, bedrockIp, version } = site.minecraft;
+const { javaIp, port, version, mode, openedAt } = site.minecraft;
+const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 ---
 
 <BaseLayout
   title="Minecraft 服务器"
-  description="新世界网络 Minecraft 服务器信息：地址、版本、规则、加入教程与实时状态查询。"
+  description="新世界网络 Minecraft Java 版插件生存服：地址、版本、规则、加入教程与实时状态查询。"
 >
   <section class="border-b border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
       <p class="font-pixel mb-3 text-xs tracking-wider text-primary">MINECRAFT</p>
-      <h1 class="text-2xl font-semibold text-white sm:text-3xl">服务器信息</h1>
+      <h1 class="text-2xl font-semibold text-white sm:text-3xl">Java 版插件生存服</h1>
       <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
-        这是新世界网络的核心业务载体。世界长期运营，欢迎来盖房子、写红石，或者来当 AI 实验的对照组。
+        一台持续运营的《我的世界》生存服务器，{openedAt}。在原版生存基础上加入实用插件，
+        同时也是我们做 AI 实验的真实场地。
       </p>
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <span class="badge badge-primary font-mono">{address}</span>
+        <span class="badge">Java {version}</span>
+        <span class="badge">{mode}</span>
+        <CopyButton value={address} label="复制地址" tone="ghost" />
+      </div>
     </div>
   </section>
 
-  <!-- 地址与版本 -->
+  <!-- 连接信息 -->
   <section class="mx-auto max-w-6xl px-4 py-14">
-    <SectionHeading eyebrow="CONNECT" title="服务器地址与版本" desc="地址确认后会同步更新到这里。" />
+    <SectionHeading
+      eyebrow="CONNECT"
+      title="连接信息"
+      desc="离线模式可进，进服后用登录插件注册账号即可。"
+    />
     <div class="grid gap-4 lg:grid-cols-2">
       <div class="card p-5">
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-base font-semibold text-white">Java 版</h2>
-          <CopyButton value={javaIp} label="复制地址" />
-        </div>
-        <dl class="mt-5 space-y-3 text-sm">
+        <dl class="space-y-3 text-sm">
           <div class="flex items-center justify-between gap-4">
             <dt class="text-muted">服务器地址</dt>
-            <dd class="font-mono text-ink">{isPlaceholder(javaIp) ? '待填写' : javaIp}</dd>
+            <dd class="font-mono text-ink">{javaIp}</dd>
           </div>
           <div class="flex items-center justify-between gap-4">
             <dt class="text-muted">端口</dt>
-            <dd class="font-mono text-ink">
-              {isPlaceholder(site.minecraft.port) ? '默认 25565' : site.minecraft.port}
-            </dd>
+            <dd class="font-mono text-ink">{port}</dd>
           </div>
           <div class="flex items-center justify-between gap-4">
             <dt class="text-muted">游戏版本</dt>
-            <dd class="font-mono text-ink">{isPlaceholder(version) ? '待填写' : version}</dd>
+            <dd class="font-mono text-ink">{version}</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt class="text-muted">客户端</dt>
+            <dd class="text-ink">Java 版（无基岩版）</dd>
+          </div>
+          <div class="flex items-center justify-between gap-4">
+            <dt class="text-muted">账号验证</dt>
+            <dd class="text-ink">{mode}</dd>
           </div>
         </dl>
       </div>
 
-      <div class="card p-5">
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-base font-semibold text-white">基岩版</h2>
-          <CopyButton value={bedrockIp} label="复制地址" />
-        </div>
-        <dl class="mt-5 space-y-3 text-sm">
-          <div class="flex items-center justify-between gap-4">
-            <dt class="text-muted">服务器地址</dt>
-            <dd class="font-mono text-ink">{isPlaceholder(bedrockIp) ? '待填写' : bedrockIp}</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt class="text-muted">端口</dt>
-            <dd class="font-mono text-ink">默认 19132</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt class="text-muted">游戏版本</dt>
-            <dd class="font-mono text-ink">{isPlaceholder(version) ? '待填写' : version}</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
-
-    <div class="mt-4 grid gap-4 sm:grid-cols-2">
-      <ServerStatus edition="java" />
-      <ServerStatus edition="bedrock" />
+      <ServerStatus />
     </div>
   </section>
 
@@ -152,6 +142,16 @@ const { javaIp, bedrockIp, version } = site.minecraft;
           </article>
         ))
       }
+    </div>
+
+    <div class="card mt-6 flex flex-wrap items-center gap-4 p-5">
+      <div>
+        <p class="text-sm font-medium text-ink">想加入社区？</p>
+        <p class="mt-1 text-sm text-muted">
+          QQ 群 <span class="font-mono text-ink">{site.community.qq}</span>，公告与找人组队都在群里。
+        </p>
+      </div>
+      <CopyButton value={site.community.qq} label="复制群号" tone="ghost" />
     </div>
   </section>
 </BaseLayout>

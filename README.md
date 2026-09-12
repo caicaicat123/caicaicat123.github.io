@@ -98,6 +98,6 @@ node scripts/generate-og.mjs
 ## 验收要点
 
 - `npm run build` 无错误。
-- 所有路由可访问：`/`、`/minecraft`、`/ai-lab`、`/projects`、`/blog`、`/blog/<slug>`、`/roadmap`、`/about`、`/contact`、`/404`。
+- 所有路由可访问：`/`、`/minecraft`、`/ai-lab`、`/projects`、`/blog`、`/blog/<slug>`、`/blog/category/<slug>`、`/roadmap`、`/about`、`/contact`、`/404`。
 - 移动端 375px 宽度无横向滚动。
 - `public/CNAME` 内容为 `nwbbs.cn`，`astro.config.mjs` 的 `site` 为 `https://nwbbs.cn`，`base` 为 `/`。

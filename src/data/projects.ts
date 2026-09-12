@@ -21,7 +21,7 @@ export const projects = [
     name: 'AI 智能体实验',
     tag: 'AI',
     status: '进行中' as ProjectStatus,
-    desc: '从感知基线到协作智能体的分阶段实验，过程与结论公开记录。',
+    desc: 'nAI（new AI）项目：对标 ChatGPT 3.5 的自研模型，分 M1–M4 推进，实验记录公开。',
     links: [],
   },
 ] as const;

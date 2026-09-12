@@ -16,35 +16,36 @@ export const site = {
   slogan: '在方块世界中，训练下一代智能体。',
   vision: '在方块世界中训练智能，在游戏环境中验证 AI。',
   description:
-    '新世界网络（New World Network）是一家聚焦人工智能与游戏开发的独立工作室，运营《我的世界》服务器，并围绕服务器生态、游戏开发与 AI 智能体展开长期探索。',
+    '新世界网络（New World Network）是一家聚焦人工智能与游戏开发的独立工作室，运营一台《我的世界》Java 版插件生存服务器，并正在构建对标 ChatGPT 3.5 的自研模型 nAI。',
   keywords: [
     '人工智能',
+    'nAI',
     '游戏开发',
     'Minecraft',
     '智能体',
     '开源',
     '模型',
-    '实验日志',
+    '插件生存服',
   ],
   domain: 'nwbbs.cn',
   url: 'https://nwbbs.cn',
   github: 'https://github.com/caicaicat123',
-  email: PLACEHOLDER,
-  icp: PLACEHOLDER,
+  email: 'caicaicat123@gmail.com',
+  author: '断了一只爪子的招财猫',
+  startedAt: '2024',
 
-  // Minecraft 服务器信息（等待项目方提供）
+  // Minecraft 服务器（Java 版插件生存服，离线模式 + 登录插件）
   minecraft: {
-    javaIp: PLACEHOLDER,
-    bedrockIp: PLACEHOLDER,
-    port: PLACEHOLDER,
-    version: PLACEHOLDER,
-    edition: 'Java 版 / 基岩版',
+    javaIp: 'play.simpfun.cn',
+    port: '25570',
+    version: '1.21.1',
+    mode: '离线模式 · 带登录插件',
+    openedAt: '2024 年开服，长期运营至今',
   },
 
-  // 社区入口（等待项目方提供）
+  // 社区入口
   community: {
-    qq: PLACEHOLDER,
-    discord: PLACEHOLDER,
+    qq: '884036851',
   },
 } as const;
 
@@ -53,7 +54,7 @@ export const nav = [
   { href: '/minecraft', label: 'Minecraft' },
   { href: '/ai-lab', label: 'AI 实验室' },
   { href: '/projects', label: '项目' },
-  { href: '/blog', label: '技术日志' },
+  { href: '/blog', label: '博客' },
   { href: '/roadmap', label: '路线图' },
   { href: '/about', label: '关于' },
   { href: '/contact', label: '联系' },

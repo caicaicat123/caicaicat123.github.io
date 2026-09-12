@@ -24,7 +24,7 @@ const matrix = [
   {
     tag: 'AI',
     title: 'AI 实验室',
-    desc: '围绕智能体决策、模型训练与工具调用展开实验，过程与结论公开记录。',
+    desc: '正在构建 nAI——一个对标 ChatGPT 3.5 的自研模型，训练过程与实验记录全部公开。',
     href: '/ai-lab',
     cta: '查看实验方向',
   },
@@ -89,20 +89,41 @@ const previewRoadmap = roadmap.slice(0, 3);
     <SectionHeading
       eyebrow="SERVER"
       title="服务器状态"
-      desc="服务器地址与版本仍在确认中，确认后此处会显示实时在线状态。"
+      desc="Java 版 1.21.1，离线模式可进。下面是实时状态查询。"
     />
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <ServerStatus edition="java" />
-      <ServerStatus edition="bedrock" />
+      <ServerStatus />
       <div class="card flex flex-col justify-between p-5">
         <div>
           <p class="text-sm font-medium text-ink">加入之前</p>
           <p class="mt-2 text-sm leading-relaxed text-muted">
-            请先阅读服务器规则与加入教程，避免首次进入就踩到红线。
+            服务器是离线模式，进服后要先用登录插件注册账号。规则与教程都在 Minecraft 页面。
           </p>
         </div>
         <a href="/minecraft" class="mt-4 text-sm text-primary transition-opacity hover:opacity-80">
           查看规则与教程 →
+        </a>
+      </div>
+      <div class="card flex flex-col justify-between p-5">
+        <div>
+          <p class="text-sm font-medium text-ink">社区与版本</p>
+          <dl class="mt-3 space-y-1.5 text-xs text-muted">
+            <div class="flex justify-between gap-3">
+              <dt>游戏版本</dt>
+              <dd class="font-mono text-ink">Java {site.minecraft.version}</dd>
+            </div>
+            <div class="flex justify-between gap-3">
+              <dt>开服时间</dt>
+              <dd class="text-ink">2024 年至今</dd>
+            </div>
+            <div class="flex justify-between gap-3">
+              <dt>QQ 群</dt>
+              <dd class="font-mono text-ink">{site.community.qq}</dd>
+            </div>
+          </dl>
+        </div>
+        <a href="/contact" class="mt-4 text-sm text-primary transition-opacity hover:opacity-80">
+          加入社区 →
         </a>
       </div>
     </div>
