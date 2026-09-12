@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
-import { directions, experimentLogs, labMission, modelRoadmap } from '../../data/ai';
+import { directions, experimentLogs, labMission, modelRoadmap, projectFacts } from '../../data/ai';
 
 const statusLabel: Record<string, string> = {
   planned: '规划中',
@@ -12,7 +12,7 @@ const statusLabel: Record<string, string> = {
 
 <BaseLayout
   title="AI 实验室"
-  description="新世界网络 AI 实验室：构建 nAI（new AI），对标 ChatGPT 3.5 的多轮对话与基础推理能力。"
+  description="新世界网络 AI 实验室：构建稷下（Jixia）——聚焦哲学、心理学、经济学的人文社科模型，为世界政治经济提供预测指南。"
 >
   <section class="relative overflow-hidden border-b border-line">
     <div class="pixel-grid absolute inset-0 opacity-70" aria-hidden="true"></div>
@@ -21,6 +21,15 @@ const statusLabel: Record<string, string> = {
       <p class="font-pixel mb-3 text-xs tracking-wider text-secondary">AI LAB</p>
       <h1 class="text-2xl font-semibold text-strong sm:text-3xl">{labMission.title}</h1>
       <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{labMission.body}</p>
+      <div class="mt-6 flex flex-wrap items-center gap-2">
+        <span class="badge badge-primary font-pixel">{projectFacts.version}</span>
+        <span class="badge">{projectFacts.versionNote}</span>
+        {
+          projectFacts.domains.map((domain) => (
+            <span class="badge">{domain}</span>
+          ))
+        }
+      </div>
     </div>
   </section>
 
@@ -40,6 +49,22 @@ const statusLabel: Record<string, string> = {
         ))
       }
     </div>
+  </section>
+
+  <!-- 输出原则 -->
+  <section class="mx-auto max-w-6xl px-4 pb-14">
+    <SectionHeading
+      eyebrow="PRINCIPLES"
+      title="输出原则"
+      desc="这三条比准确率更重要——它们决定了输出能不能被使用。"
+    />
+    <ul class="grid gap-5 sm:grid-cols-3">
+      {
+        projectFacts.principles.map((item) => (
+          <li class="card p-5 text-sm leading-relaxed text-muted">{item}</li>
+        ))
+      }
+    </ul>
   </section>
 
   <!-- 模型路线图 -->

@@ -18,10 +18,10 @@ export const projects = [
     links: [],
   },
   {
-    name: 'AI 智能体实验',
+    name: '稷下 Jixia',
     tag: 'AI',
     status: '进行中' as ProjectStatus,
-    desc: 'nAI（new AI）项目：对标 ChatGPT 3.5 的自研模型，分 M1–M4 推进，实验记录公开。',
+    desc: '自研人文社科模型，聚焦哲学、心理学、经济学，为世界政治经济提供预测指南。当前版本 Jixia-1.0（开发中）。',
     links: [],
   },
 ] as const;

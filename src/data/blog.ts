@@ -9,7 +9,7 @@ export const blogCategories = [
   {
     slug: 'ai-lab',
     name: 'AI 实验室',
-    desc: 'nAI 项目的进展、实验记录与阶段性结论。',
+    desc: '稷下（Jixia）项目的进展、实验记录与阶段性结论。',
   },
   {
     slug: 'humanities',
