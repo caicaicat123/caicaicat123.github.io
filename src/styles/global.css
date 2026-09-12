@@ -1,0 +1,244 @@
+@import "tailwindcss";
+@source "../";
+
+/* ── 设计令牌（对应计划书 8.1 视觉规范） ───────────────────────── */
+@theme {
+  --color-bg: #0b0f14;
+  --color-surface: #111a24;
+  --color-surface-2: #16202c;
+  --color-primary: #5eead4;
+  --color-cyan: #22d3ee;
+  --color-secondary: #a78bfa;
+  --color-accent: #facc15;
+  --color-ink: #e5e7eb;
+  --color-muted: #8fa3b8;
+  --color-line: rgba(255, 255, 255, 0.08);
+
+  /* 字体全部走系统栈：不引入 Google Fonts 等外部 CDN，保证国内首屏速度 */
+  --font-sans: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei",
+    "PingFang SC", "Hiragino Sans GB", "Source Han Sans SC", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Consolas,
+    "Liberation Mono", monospace;
+  --font-pixel: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgba(94, 234, 212, 0.3);
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-mono);
+}
+
+/* 标题用的等宽点缀，仅用于英文/数字标签 */
+.font-pixel {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.08em;
+}
+
+/* ── 通用组件类 ─────────────────────────────────────────────── */
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 0.75rem;
+  transition: transform 0.18s ease, border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(94, 234, 212, 0.35);
+  background-color: var(--color-surface-2);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  border-radius: 999px;
+  border: 1px solid var(--color-line);
+  color: var(--color-muted);
+}
+
+.badge-primary {
+  color: var(--color-primary);
+  border-color: rgba(94, 234, 212, 0.35);
+  background: rgba(94, 234, 212, 0.08);
+}
+
+/* 像素方块网格背景，用在 Hero 与区块底纹 */
+.pixel-grid {
+  background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.045) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.glow-primary {
+  background: radial-gradient(
+    closest-side,
+    rgba(94, 234, 212, 0.18),
+    rgba(94, 234, 212, 0) 70%
+  );
+}
+
+.glow-secondary {
+  background: radial-gradient(
+    closest-side,
+    rgba(167, 139, 250, 0.16),
+    rgba(167, 139, 250, 0) 70%
+  );
+}
+
+/* 状态呼吸灯 */
+.status-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 999px;
+  background: var(--color-muted);
+}
+
+.status-online {
+  background: var(--color-primary);
+  box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.6);
+  animation: pulse 2.4s infinite;
+}
+
+.status-offline {
+  background: #f87171;
+}
+
+@keyframes pulse {
+  70% {
+    box-shadow: 0 0 0 10px rgba(94, 234, 212, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(94, 234, 212, 0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .card:hover {
+    transform: none;
+  }
+  .fade-up {
+    animation: none;
+  }
+  .status-online {
+    animation: none;
+  }
+}
+
+/* 正文排版（日志详情） */
+.prose-nwn {
+  line-height: 1.85;
+  color: var(--color-ink);
+}
+
+.prose-nwn h2 {
+  margin-top: 2.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.prose-nwn h3 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.prose-nwn p,
+.prose-nwn ul,
+.prose-nwn ol {
+  margin-bottom: 1rem;
+}
+
+.prose-nwn ul,
+.prose-nwn ol {
+  padding-left: 1.4rem;
+}
+
+.prose-nwn ul {
+  list-style: disc;
+}
+
+.prose-nwn ol {
+  list-style: decimal;
+}
+
+.prose-nwn a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose-nwn pre {
+  margin: 1.25rem 0;
+  padding: 1rem 1.1rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--color-line);
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+
+.prose-nwn :not(pre) > code {
+  padding: 0.12rem 0.38rem;
+  border-radius: 0.35rem;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 0.875em;
+}
+
+.prose-nwn blockquote {
+  margin: 1.25rem 0;
+  padding-left: 1rem;
+  border-left: 3px solid rgba(94, 234, 212, 0.4);
+  color: var(--color-muted);
+}

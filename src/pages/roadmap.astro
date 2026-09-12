@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RoadmapItem from '../components/RoadmapItem.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { roadmap } from '../data/roadmap';
+---
+
+<BaseLayout
+  title="路线图"
+  description="新世界网络的发展路线图：从官网与服务器开放，到 AI 实验室的分阶段目标。"
+>
+  <section class="mx-auto max-w-4xl px-4 py-14">
+    <SectionHeading
+      eyebrow="ROADMAP"
+      title="发展路线图"
+      desc="时间点会随实际情况调整，改动会在技术日志里说明。"
+    />
+    <div class="mt-4">
+      {
+        roadmap.map((item) => (
+          <RoadmapItem
+            phase={item.phase}
+            period={item.period}
+            title={item.title}
+            status={item.status}
+            items={item.items}
+          />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

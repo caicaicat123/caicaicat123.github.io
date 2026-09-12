@@ -1,0 +1,92 @@
+---
+import { nav, site } from '../data/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href);
+---
+
+<header class="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur">
+  <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
+    <a href="/" class="flex items-center gap-2.5" aria-label={`${site.name} 首页`}>
+      <span
+        class="grid h-8 w-8 grid-cols-2 grid-rows-2 gap-[2px] rounded-md bg-white/5 p-[5px]"
+        aria-hidden="true"
+      >
+        <i class="rounded-[1px] bg-primary"></i>
+        <i class="rounded-[1px] bg-cyan/70"></i>
+        <i class="rounded-[1px] bg-secondary/70"></i>
+        <i class="rounded-[1px] bg-accent"></i>
+      </span>
+      <span class="flex flex-col leading-none">
+        <span class="text-[15px] font-semibold tracking-wide">{site.name}</span>
+        <span class="font-pixel mt-0.5 text-[10px] text-muted">{site.nameEn}</span>
+      </span>
+    </a>
+
+    <nav class="ml-auto hidden items-center gap-0.5 lg:flex" aria-label="主导航">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class:list={[
+              'rounded-md px-3 py-2 text-sm transition-colors',
+              isActive(item.href)
+                ? 'bg-white/5 text-primary'
+                : 'text-muted hover:bg-white/5 hover:text-ink',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <button
+      id="nav-toggle"
+      type="button"
+      class="ml-auto rounded-md border border-line px-3 py-1.5 text-sm text-muted transition-colors hover:text-ink lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+    >
+      菜单
+    </button>
+  </div>
+
+  <div id="mobile-nav" class="hidden border-t border-line lg:hidden">
+    <nav class="mx-auto grid max-w-6xl grid-cols-2 gap-1 px-4 py-3" aria-label="移动端导航">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+            class:list={[
+              'rounded-md px-3 py-2 text-sm',
+              isActive(item.href) ? 'bg-white/5 text-primary' : 'text-muted',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('mobile-nav');
+  if (toggle && panel) {
+    toggle.addEventListener('click', () => {
+      const open = panel.classList.toggle('hidden') === false;
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+    panel.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('a')) {
+        panel.classList.add('hidden');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+</script>

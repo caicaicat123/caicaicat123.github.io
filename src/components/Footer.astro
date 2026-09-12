@@ -1,0 +1,65 @@
+---
+import { nav, site } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-20 border-t border-line bg-surface/40">
+  <div class="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="sm:col-span-2">
+      <p class="text-sm font-semibold text-ink">{site.name}</p>
+      <p class="mt-1 font-pixel text-[11px] text-muted">{site.nameEn}</p>
+      <p class="mt-3 max-w-md text-sm leading-relaxed text-muted">{site.vision}</p>
+    </div>
+
+    <div>
+      <p class="mb-3 text-xs font-medium tracking-wider text-muted">导航</p>
+      <ul class="space-y-2 text-sm">
+        {
+          nav.slice(0, 4).map((item) => (
+            <li>
+              <a href={item.href} class="text-muted transition-colors hover:text-primary">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div>
+      <p class="mb-3 text-xs font-medium tracking-wider text-muted">相关</p>
+      <ul class="space-y-2 text-sm">
+        {
+          nav.slice(4).map((item) => (
+            <li>
+              <a href={item.href} class="text-muted transition-colors hover:text-primary">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href="/rss.xml" class="text-muted transition-colors hover:text-primary">RSS 订阅</a>
+        </li>
+        <li>
+          <a
+            href={site.github}
+            rel="noopener noreferrer"
+            target="_blank"
+            class="text-muted transition-colors hover:text-primary">GitHub</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-line">
+    <div
+      class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {year} {site.name} · {site.domain}</p>
+      <p class="font-pixel">在方块世界中，训练下一代智能体。</p>
+    </div>
+  </div>
+</footer>

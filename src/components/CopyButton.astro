@@ -1,0 +1,71 @@
+---
+import { isPlaceholder } from '../data/site';
+
+interface Props {
+  value: string;
+  label?: string;
+  tone?: 'primary' | 'ghost';
+}
+
+const { value, label = '复制', tone = 'primary' } = Astro.props;
+const configured = !isPlaceholder(value);
+
+const toneClass =
+  tone === 'primary'
+    ? 'border-primary/40 bg-primary/10 text-primary hover:bg-primary/20'
+    : 'border-line text-muted hover:text-ink';
+---
+
+{
+  configured ? (
+    <button
+      type="button"
+      class:list={[
+        'inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm transition-colors',
+        toneClass,
+      ]}
+      data-copy={value}
+      aria-label={`${label}：${value}`}
+    >
+      <span data-copy-text>{label}</span>
+    </button>
+  ) : (
+    <span class="badge">待填写</span>
+  )
+}
+
+<script>
+  document.addEventListener('click', async (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const button = target.closest('[data-copy]');
+    if (!(button instanceof HTMLElement)) return;
+
+    const text = button.getAttribute('data-copy');
+    if (!text) return;
+
+    const labelEl = button.querySelector('[data-copy-text]');
+    const original = labelEl ? labelEl.textContent : null;
+
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'absolute';
+      area.style.left = '-9999px';
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand('copy');
+      area.remove();
+    }
+
+    if (labelEl) {
+      labelEl.textContent = '已复制';
+      window.setTimeout(() => {
+        labelEl.textContent = original ?? '复制';
+      }, 1500);
+    }
+  });
+</script>

@@ -1,0 +1,36 @@
+---
+interface Props {
+  name: string;
+  tag: string;
+  status: string;
+  desc: string;
+  links: readonly { label: string; href: string }[];
+}
+
+const { name, tag, status, desc, links } = Astro.props;
+---
+
+<article class="card flex h-full flex-col p-5">
+  <div class="mb-3 flex items-center gap-2">
+    <span class="badge badge-primary font-pixel">{tag}</span>
+    <span class="badge">{status}</span>
+  </div>
+  <h3 class="text-base font-semibold text-white">{name}</h3>
+  <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{desc}</p>
+  {
+    links.length > 0 && (
+      <div class="mt-4 flex flex-wrap gap-3 text-sm">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary transition-opacity hover:opacity-80"
+          >
+            {link.label} →
+          </a>
+        ))}
+      </div>
+    )
+  }
+</article>

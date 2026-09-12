@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { projects } from '../../data/projects';
+import { site } from '../../data/site';
+---
+
+<BaseLayout
+  title="项目"
+  description="新世界网络的项目归档：官方网站、Minecraft 服务器与 AI 智能体实验。"
+>
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <SectionHeading
+      eyebrow="PROJECTS"
+      title="项目"
+      desc="我们在做的事，以及在做的状态。"
+    />
+    <div class="grid gap-5 md:grid-cols-3">
+      {
+        projects.map((project) => (
+          <ProjectCard
+            name={project.name}
+            tag={project.tag}
+            status={project.status}
+            desc={project.desc}
+            links={project.links}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="border-t border-line bg-surface/30">
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <SectionHeading eyebrow="OPEN SOURCE" title="开源计划" desc="能开源的尽量开源。" />
+      <div class="card p-6">
+        <p class="text-sm leading-relaxed text-muted">
+          实验相关的代码、数据集与评测方法会在条件成熟后陆续公开，仓库入口统一放在 GitHub。
+          目前公开发布的仓库可以直接在 GitHub 上查看。
+        </p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a
+            href={site.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded-md border border-primary/40 bg-primary/10 px-4 py-2 text-sm text-primary transition-colors hover:bg-primary/20"
+          >
+            访问 GitHub
+          </a>
+          <a
+            href="/blog"
+            class="rounded-md border border-line px-4 py-2 text-sm text-ink transition-colors hover:border-secondary/50"
+          >
+            阅读技术日志
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

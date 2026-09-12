@@ -1,0 +1,90 @@
+---
+import { isPlaceholder, site } from '../data/site';
+
+interface Props {
+  edition: 'java' | 'bedrock';
+}
+
+const { edition } = Astro.props;
+const ip = edition === 'java' ? site.minecraft.javaIp : site.minecraft.bedrockIp;
+const port = edition === 'java' ? site.minecraft.port : '';
+const configured = !isPlaceholder(ip);
+const title = edition === 'java' ? 'Java 版服务器' : '基岩版服务器';
+---
+
+<div
+  class="card p-4"
+  data-server-status
+  data-ip={configured ? ip : ''}
+  data-port={isPlaceholder(port) ? '' : port}
+>
+  <div class="flex items-center gap-2">
+    <span class="status-dot" data-dot aria-hidden="true"></span>
+    <span class="text-sm font-medium text-ink">{title}</span>
+    <span class="ml-auto text-xs text-muted" data-status-text>
+      {configured ? '查询中…' : '地址待公布'}
+    </span>
+  </div>
+
+  <dl class="mt-4 space-y-1.5 text-xs text-muted">
+    <div class="flex justify-between gap-3">
+      <dt>服务器地址</dt>
+      <dd class="text-right font-mono">{configured ? ip : '待填写'}</dd>
+    </div>
+    {
+      edition === 'java' && (
+        <div class="flex justify-between gap-3">
+          <dt>端口</dt>
+          <dd class="text-right font-mono">{isPlaceholder(port) ? '默认 25565' : port}</dd>
+        </div>
+      )
+    }
+    <div class="flex justify-between gap-3">
+      <dt>在线人数</dt>
+      <dd class="text-right font-mono" data-players>— / —</dd>
+    </div>
+    <div class="flex justify-between gap-3">
+      <dt>游戏版本</dt>
+      <dd class="text-right font-mono" data-version>
+        {isPlaceholder(site.minecraft.version) ? '待填写' : site.minecraft.version}
+      </dd>
+    </div>
+  </dl>
+</div>
+
+<script>
+  const nodes = document.querySelectorAll('[data-server-status]');
+  nodes.forEach(async (node) => {
+    const ip = node.getAttribute('data-ip');
+    if (!ip) return;
+
+    const port = node.getAttribute('data-port') || '';
+    const dot = node.querySelector('[data-dot]');
+    const statusText = node.querySelector('[data-status-text]');
+    const players = node.querySelector('[data-players]');
+    const version = node.querySelector('[data-version]');
+
+    try {
+      const res = await fetch(
+        `https://api.mcsrvstat.us/3/${encodeURIComponent(ip)}${port ? ':' + port : ''}`,
+      );
+      if (!res.ok) throw new Error(String(res.status));
+      const data = await res.json();
+
+      if (data && data.online) {
+        if (dot) dot.classList.add('status-online');
+        if (statusText) statusText.textContent = '在线';
+        if (players && data.players) {
+          players.textContent = `${data.players.online ?? 0} / ${data.players.max ?? 0}`;
+        }
+        if (version && data.version) version.textContent = String(data.version);
+      } else {
+        if (dot) dot.classList.add('status-offline');
+        if (statusText) statusText.textContent = '离线';
+      }
+    } catch {
+      if (dot) dot.classList.add('status-offline');
+      if (statusText) statusText.textContent = '暂时无法查询';
+    }
+  });
+</script>

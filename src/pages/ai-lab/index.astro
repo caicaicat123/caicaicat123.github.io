@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { directions, experimentLogs, labMission, modelRoadmap } from '../../data/ai';
+
+const statusLabel: Record<string, string> = {
+  planned: '规划中',
+  'in-progress': '进行中',
+  done: '已完成',
+};
+---
+
+<BaseLayout
+  title="AI 实验室"
+  description="新世界网络 AI 实验室：实验方向、M1–M4 模型路线图与实验日志。"
+>
+  <section class="relative overflow-hidden border-b border-line">
+    <div class="pixel-grid absolute inset-0 opacity-70" aria-hidden="true"></div>
+    <div class="glow-secondary absolute -right-20 -top-20 h-72 w-72" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-6xl px-4 py-14">
+      <p class="font-pixel mb-3 text-xs tracking-wider text-secondary">AI LAB</p>
+      <h1 class="text-2xl font-semibold text-white sm:text-3xl">{labMission.title}</h1>
+      <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{labMission.body}</p>
+    </div>
+  </section>
+
+  <!-- 实验方向 -->
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <SectionHeading eyebrow="DIRECTIONS" title="实验方向" desc="四个方向，先做扎实的，再做花哨的。" />
+    <div class="grid gap-5 sm:grid-cols-2">
+      {
+        directions.map((item) => (
+          <div class="card p-5">
+            <span class="text-lg text-primary" aria-hidden="true">
+              {item.icon}
+            </span>
+            <h3 class="mt-3 text-sm font-semibold text-white">{item.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{item.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- 模型路线图 -->
+  <section class="border-y border-line bg-surface/30">
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <SectionHeading
+        eyebrow="MODEL ROADMAP"
+        title="M1 – M4 模型路线图"
+        desc="分阶段推进，每一阶段都要留下可复现的产物。"
+      />
+      <div class="grid gap-5 md:grid-cols-2">
+        {
+          modelRoadmap.map((model) => (
+            <article class="card p-5">
+              <div class="flex items-center gap-3">
+                <span class="font-pixel rounded-md border border-primary/40 bg-primary/10 px-2.5 py-1 text-sm text-primary">
+                  {model.code}
+                </span>
+                <h3 class="text-base font-semibold text-white">{model.name}</h3>
+                <span class="badge ml-auto">{statusLabel[model.status] ?? '规划中'}</span>
+              </div>
+              <p class="mt-3 text-sm leading-relaxed text-muted">{model.goal}</p>
+              <ul class="mt-4 space-y-1.5 text-xs text-muted">
+                {model.deliverables.map((item) => (
+                  <li class="flex gap-2">
+                    <span class="text-primary" aria-hidden="true">▸</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 实验日志 -->
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <SectionHeading eyebrow="EXPERIMENTS" title="实验日志" />
+      <a href="/blog" class="mb-8 text-sm text-primary transition-opacity hover:opacity-80">
+        阅读完整日志 →
+      </a>
+    </div>
+    <div class="space-y-4">
+      {
+        experimentLogs.map((log) => (
+          <article class="card p-5">
+            <div class="flex flex-wrap items-center gap-2 text-xs text-muted">
+              <span class="font-pixel text-primary">{log.code}</span>
+              <span>{log.date}</span>
+              <span class="badge ml-auto">{log.status}</span>
+            </div>
+            <h3 class="mt-3 text-sm font-semibold text-white">{log.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{log.summary}</p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

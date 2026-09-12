@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { formatDate } from '../../utils/format';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const categories = [...new Set(posts.map((post) => post.data.category))];
+---
+
+<BaseLayout
+  title="技术日志"
+  description="新世界网络的技术日志：搭建过程、选型取舍、实验记录与踩坑经验。"
+>
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <SectionHeading
+      eyebrow="LOG"
+      title="技术日志"
+      desc="我们尽量把过程写下来，而不只是结论。目前共 {posts.length} 篇。"
+    />
+
+    {
+      categories.length > 0 && (
+        <div class="mb-8 flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <span class="badge">{category}</span>
+          ))}
+          <a href="/rss.xml" class="badge badge-primary">
+            RSS 订阅
+          </a>
+        </div>
+      )
+    }
+
+    <div class="grid gap-5 md:grid-cols-2">
+      {
+        posts.map((post) => (
+          <BlogCard
+            title={post.data.title}
+            description={post.data.description}
+            href={`/blog/${post.id}/`}
+            date={formatDate(post.data.pubDate)}
+            category={post.data.category}
+            tags={post.data.tags}
+          />
+        ))
+      }
+    </div>
+
+    {
+      posts.length === 0 && (
+        <p class="card p-6 text-sm text-muted">还没有日志，第一篇正在写。</p>
+      )
+    }
+  </section>
+</BaseLayout>

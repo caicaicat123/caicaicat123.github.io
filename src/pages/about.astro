@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { site } from '../data/site';
+
+const values = [
+  {
+    title: '先做出来，再做好',
+    desc: '不追求一次到位，先把闭环跑通，再逐步打磨细节。',
+  },
+  {
+    title: '过程公开',
+    desc: '选型理由、失败尝试和踩坑记录尽量留下，方便别人少走弯路。',
+  },
+  {
+    title: '可持续优先',
+    desc: '服务器长期运营，项目节奏不靠透支热情，靠能持续的机制。',
+  },
+];
+---
+
+<BaseLayout
+  title="关于"
+  description="新世界网络（New World Network）工作室介绍、愿景与做事方式。"
+>
+  <section class="mx-auto max-w-4xl px-4 py-14">
+    <p class="font-pixel mb-3 text-xs tracking-wider text-primary">ABOUT</p>
+    <h1 class="text-2xl font-semibold text-white sm:text-3xl">关于 {site.name}</h1>
+    <p class="mt-5 text-sm leading-relaxed text-muted sm:text-base">
+      {site.description}
+    </p>
+
+    <div class="card mt-8 border-l-2 border-l-primary p-6">
+      <p class="font-pixel mb-2 text-xs text-primary">VISION</p>
+      <p class="text-base leading-relaxed text-ink">{site.vision}</p>
+      <p class="mt-4 text-sm text-muted">
+        Slogan：{site.slogan}
+      </p>
+    </div>
+
+    <div class="mt-12">
+      <SectionHeading eyebrow="HOW WE WORK" title="做事方式" />
+      <div class="grid gap-5 sm:grid-cols-3">
+        {
+          values.map((value) => (
+            <div class="card p-5">
+              <h3 class="text-sm font-semibold text-white">{value.title}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-muted">{value.desc}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <SectionHeading eyebrow="MEMBERS" title="成员" desc="成员信息公开与否由本人决定。" />
+      <div class="card p-6">
+        <p class="text-sm leading-relaxed text-muted">
+          目前由核心成员负责服务器运维、网站与 AI 实验，成员名单与分工待项目方确认后在此公布。
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <SectionHeading eyebrow="CONTACT" title="找到我们" />
+      <div class="flex flex-wrap gap-3">
+        <a
+          href="/contact"
+          class="rounded-md border border-primary/40 bg-primary/10 px-4 py-2 text-sm text-primary transition-colors hover:bg-primary/20"
+        >
+          联系方式
+        </a>
+        <a
+          href={site.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="rounded-md border border-line px-4 py-2 text-sm text-ink transition-colors hover:border-secondary/50"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,22 @@
+{
+  "name": "nwn-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "新世界网络（New World Network）官方网站 — nwbbs.cn",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.2.0",
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/sitemap": "^3.2.1",
+    "@tailwindcss/vite": "^4.0.0",
+    "astro": "^5.2.0",
+    "tailwindcss": "^4.0.0"
+  }
+}

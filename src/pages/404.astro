@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { nav } from '../data/site';
+---
+
+<BaseLayout title="页面未找到" description="你访问的页面不存在，或者已经被移动到别处。">
+  <section class="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center">
+    <div class="pixel-grid card mb-8 grid h-24 w-24 grid-cols-2 grid-rows-2 gap-2 p-4">
+      <i class="rounded bg-primary/80"></i>
+      <i class="rounded bg-cyan/50"></i>
+      <i class="rounded bg-secondary/50"></i>
+      <i class="rounded bg-accent/70"></i>
+    </div>
+
+    <p class="font-pixel text-xs tracking-wider text-primary">ERROR 404</p>
+    <h1 class="mt-3 text-2xl font-semibold text-white">这个区块还没被生成</h1>
+    <p class="mt-4 text-sm leading-relaxed text-muted">
+      你访问的页面不存在，或者已经被移动到别处。可以试试下面的入口。
+    </p>
+
+    <div class="mt-8 flex flex-wrap justify-center gap-2">
+      <a
+        href="/"
+        class="rounded-md border border-primary/40 bg-primary/10 px-4 py-2 text-sm text-primary transition-colors hover:bg-primary/20"
+      >
+        返回首页
+      </a>
+      {
+        nav.slice(1, 5).map((item) => (
+          <a
+            href={item.href}
+            class="rounded-md border border-line px-4 py-2 text-sm text-muted transition-colors hover:text-ink"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
