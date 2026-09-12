@@ -10,14 +10,11 @@ const isActive = (href: string) =>
 <header class="sticky top-0 z-50 border-b border-line bg-bg/85 backdrop-blur">
   <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
     <a href="/" class="flex items-center gap-2.5" aria-label={`${site.name} 首页`}>
-      <span
-        class="grid h-8 w-8 grid-cols-2 grid-rows-2 gap-[2px] rounded-md bg-soft p-[5px]"
-        aria-hidden="true"
-      >
-        <i class="rounded-[1px] bg-primary"></i>
-        <i class="rounded-[1px] bg-cyan/70"></i>
-        <i class="rounded-[1px] bg-secondary/70"></i>
-        <i class="rounded-[1px] bg-accent"></i>
+      <span class="grid h-10 w-10 shrink-0 grid-cols-2 grid-rows-2 gap-[3px]" aria-hidden="true">
+        <i class="rounded-[3px] bg-primary"></i>
+        <i class="rounded-[3px] bg-cyan"></i>
+        <i class="rounded-[3px] bg-secondary"></i>
+        <i class="rounded-[3px] bg-accent"></i>
       </span>
       <span class="flex flex-col leading-none">
         <span class="text-[15px] font-semibold tracking-wide">{site.name}</span>
