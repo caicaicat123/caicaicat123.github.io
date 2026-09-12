@@ -13,8 +13,8 @@ export const site = {
   name: '新世界网络',
   nameEn: 'New World Network',
   shortName: 'NWN',
-  slogan: '在方块世界中，训练下一代智能体。',
-  vision: '在方块世界中训练智能，在游戏环境中验证 AI。',
+  slogan: '在百家争鸣中，推演世界的走向。',
+  vision: '以哲学的追问、心理学的洞察、经济学的推演，理解世界政治经济的走向。',
   description:
     '新世界网络（New World Network）是一家聚焦人工智能与游戏开发的独立工作室，运营一台《我的世界》Java 版插件生存服务器，并正在构建自研人文社科模型稷下（Jixia）——聚焦哲学、心理学、经济学，为世界政治经济提供预测指南。',
   keywords: [
