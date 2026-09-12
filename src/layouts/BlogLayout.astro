@@ -10,14 +10,16 @@ interface Props {
   updatedDate?: Date;
   category: string;
   tags: readonly string[];
+  prev?: { title: string; href: string } | null;
+  next?: { title: string; href: string } | null;
 }
 
-const { title, description, pubDate, updatedDate, category, tags } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags, prev, next } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} ogType="article">
   <article class="mx-auto max-w-3xl px-4 py-12">
-    <a href="/blog" class="text-sm text-muted transition-colors hover:text-primary">← 返回技术日志</a>
+    <a href="/blog" class="text-sm text-muted transition-colors hover:text-primary">← 返回博客</a>
 
     <header class="mt-6 border-b border-line pb-6">
       <div class="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted">
@@ -52,5 +54,26 @@ const { title, description, pubDate, updatedDate, category, tags } = Astro.props
         <a href="/rss.xml" class="text-primary hover:opacity-80">RSS 订阅</a>
       </p>
     </footer>
+
+    <nav class="mt-8 grid gap-4 sm:grid-cols-2" aria-label="文章导航">
+      {
+        prev ? (
+          <a href={prev.href} class="card flex flex-col p-4">
+            <span class="text-xs text-muted">← 上一篇</span>
+            <span class="mt-1 text-sm font-medium text-ink">{prev.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next ? (
+          <a href={next.href} class="card flex flex-col p-4 sm:text-right">
+            <span class="text-xs text-muted">下一篇 →</span>
+            <span class="mt-1 text-sm font-medium text-ink">{next.title}</span>
+          </a>
+        ) : null
+      }
+    </nav>
   </article>
 </BaseLayout>
