@@ -17,7 +17,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
   <section class="border-b border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
       <p class="font-pixel mb-3 text-xs tracking-wider text-primary">MINECRAFT</p>
-      <h1 class="text-2xl font-semibold text-white sm:text-3xl">Java 版插件生存服</h1>
+      <h1 class="text-2xl font-semibold text-strong sm:text-3xl">Java 版插件生存服</h1>
       <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
         一台持续运营的《我的世界》生存服务器，{openedAt}。在原版生存基础上加入实用插件，
         同时也是我们做 AI 实验的真实场地。
@@ -95,7 +95,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
             <span class="font-pixel text-xs text-primary">
               STEP {String(index + 1).padStart(2, '0')}
             </span>
-            <h3 class="mt-3 text-sm font-semibold text-white">{step.title}</h3>
+            <h3 class="mt-3 text-sm font-semibold text-strong">{step.title}</h3>
             <p class="mt-2 text-sm leading-relaxed text-muted">{step.desc}</p>
           </li>
         ))
@@ -137,7 +137,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
               <span class="badge badge-primary">公告</span>
               <span>{item.date}</span>
             </div>
-            <h3 class="mt-3 text-sm font-semibold text-white">{item.title}</h3>
+            <h3 class="mt-3 text-sm font-semibold text-strong">{item.title}</h3>
             <p class="mt-2 text-sm leading-relaxed text-muted">{item.body}</p>
           </article>
         ))

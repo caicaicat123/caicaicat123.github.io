@@ -19,7 +19,7 @@ const statusLabel: Record<string, string> = {
     <div class="glow-secondary absolute -right-20 -top-20 h-72 w-72" aria-hidden="true"></div>
     <div class="relative mx-auto max-w-6xl px-4 py-14">
       <p class="font-pixel mb-3 text-xs tracking-wider text-secondary">AI LAB</p>
-      <h1 class="text-2xl font-semibold text-white sm:text-3xl">{labMission.title}</h1>
+      <h1 class="text-2xl font-semibold text-strong sm:text-3xl">{labMission.title}</h1>
       <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{labMission.body}</p>
     </div>
   </section>
@@ -34,7 +34,7 @@ const statusLabel: Record<string, string> = {
             <span class="text-lg text-primary" aria-hidden="true">
               {item.icon}
             </span>
-            <h3 class="mt-3 text-sm font-semibold text-white">{item.title}</h3>
+            <h3 class="mt-3 text-sm font-semibold text-strong">{item.title}</h3>
             <p class="mt-2 text-sm leading-relaxed text-muted">{item.desc}</p>
           </div>
         ))
@@ -58,7 +58,7 @@ const statusLabel: Record<string, string> = {
                 <span class="font-pixel rounded-md border border-primary/40 bg-primary/10 px-2.5 py-1 text-sm text-primary">
                   {model.code}
                 </span>
-                <h3 class="text-base font-semibold text-white">{model.name}</h3>
+                <h3 class="text-base font-semibold text-strong">{model.name}</h3>
                 <span class="badge ml-auto">{statusLabel[model.status] ?? '规划中'}</span>
               </div>
               <p class="mt-3 text-sm leading-relaxed text-muted">{model.goal}</p>
@@ -94,7 +94,7 @@ const statusLabel: Record<string, string> = {
               <span>{log.date}</span>
               <span class="badge ml-auto">{log.status}</span>
             </div>
-            <h3 class="mt-3 text-sm font-semibold text-white">{log.title}</h3>
+            <h3 class="mt-3 text-sm font-semibold text-strong">{log.title}</h3>
             <p class="mt-2 text-sm leading-relaxed text-muted">{log.summary}</p>
           </article>
         ))

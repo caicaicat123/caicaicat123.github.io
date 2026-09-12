@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @source "../";
 
+/*
+ * 主题：深色为默认，浅色通过 <html data-theme="light"> 切换。
+ *
+ * 注意：Tailwind 对带透明度的类（如 bg-surface/30）会在构建期把颜色写死，
+ * 不会跟随 CSS 变量变化。这类例外统一放在文件末尾的「浅色模式补偿」里覆盖。
+ */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
 /* ── 设计令牌（对应计划书 8.1 视觉规范） ───────────────────────── */
 @theme {
   --color-bg: #0b0f14;
@@ -12,6 +20,8 @@
   --color-accent: #facc15;
   --color-ink: #e5e7eb;
   --color-muted: #8fa3b8;
+  --color-strong: #ffffff;
+  --color-soft: rgba(255, 255, 255, 0.06);
   --color-line: rgba(255, 255, 255, 0.08);
 
   /* 字体全部走系统栈：不引入 Google Fonts 等外部 CDN，保证国内首屏速度 */
@@ -20,6 +30,35 @@
   --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Consolas,
     "Liberation Mono", monospace;
   --font-pixel: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+:root {
+  --grid-line: rgba(255, 255, 255, 0.045);
+  --glow-1: rgba(94, 234, 212, 0.18);
+  --glow-2: rgba(167, 139, 250, 0.16);
+  --card-shadow: none;
+  color-scheme: dark;
+}
+
+/* ── 浅色主题 ─────────────────────────────────────────────── */
+:root[data-theme='light'] {
+  --color-bg: #f6f8fa;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef2f6;
+  --color-primary: #0f766e;
+  --color-cyan: #0e7490;
+  --color-secondary: #6d28d9;
+  --color-accent: #a16207;
+  --color-ink: #1f2937;
+  --color-muted: #5b6b7c;
+  --color-strong: #0b0f14;
+  --color-soft: rgba(15, 23, 42, 0.05);
+  --color-line: rgba(15, 23, 42, 0.1);
+  --grid-line: rgba(15, 23, 42, 0.055);
+  --glow-1: rgba(15, 118, 110, 0.1);
+  --glow-2: rgba(109, 40, 217, 0.08);
+  --card-shadow: 0 1px 3px rgba(15, 23, 42, 0.07);
+  color-scheme: light;
 }
 
 html {
@@ -31,11 +70,12 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 ::selection {
-  background: rgba(94, 234, 212, 0.3);
-  color: #ffffff;
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  color: var(--color-strong);
 }
 
 :focus-visible {
@@ -61,13 +101,14 @@ kbd {
   background-color: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: 0.75rem;
+  box-shadow: var(--card-shadow);
   transition: transform 0.18s ease, border-color 0.18s ease,
     background-color 0.18s ease;
 }
 
 .card:hover {
   transform: translateY(-3px);
-  border-color: rgba(94, 234, 212, 0.35);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
   background-color: var(--color-surface-2);
 }
 
@@ -85,35 +126,23 @@ kbd {
 
 .badge-primary {
   color: var(--color-primary);
-  border-color: rgba(94, 234, 212, 0.35);
-  background: rgba(94, 234, 212, 0.08);
+  border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
 }
 
 /* 像素方块网格背景，用在 Hero 与区块底纹 */
 .pixel-grid {
-  background-image: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0.045) 1px,
-      transparent 1px
-    ),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 .glow-primary {
-  background: radial-gradient(
-    closest-side,
-    rgba(94, 234, 212, 0.18),
-    rgba(94, 234, 212, 0) 70%
-  );
+  background: radial-gradient(closest-side, var(--glow-1), transparent 70%);
 }
 
 .glow-secondary {
-  background: radial-gradient(
-    closest-side,
-    rgba(167, 139, 250, 0.16),
-    rgba(167, 139, 250, 0) 70%
-  );
+  background: radial-gradient(closest-side, var(--glow-2), transparent 70%);
 }
 
 /* 状态呼吸灯 */
@@ -126,20 +155,20 @@ kbd {
 
 .status-online {
   background: var(--color-primary);
-  box-shadow: 0 0 0 0 rgba(94, 234, 212, 0.6);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 60%, transparent);
   animation: pulse 2.4s infinite;
 }
 
 .status-offline {
-  background: #f87171;
+  background: #ef4444;
 }
 
 @keyframes pulse {
   70% {
-    box-shadow: 0 0 0 10px rgba(94, 234, 212, 0);
+    box-shadow: 0 0 0 10px transparent;
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(94, 234, 212, 0);
+    box-shadow: 0 0 0 0 transparent;
   }
 }
 
@@ -158,19 +187,21 @@ kbd {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .card:hover {
-    transform: none;
-  }
-  .fade-up {
-    animation: none;
-  }
-  .status-online {
-    animation: none;
-  }
+/* ── 主题切换按钮图标 ────────────────────────────────────────── */
+.icon-sun {
+  display: block;
+}
+
+.icon-moon {
+  display: none;
+}
+
+:root[data-theme='light'] .icon-sun {
+  display: none;
+}
+
+:root[data-theme='light'] .icon-moon {
+  display: block;
 }
 
 /* 正文排版（日志详情） */
@@ -184,7 +215,7 @@ kbd {
   margin-bottom: 0.75rem;
   font-size: 1.4rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-strong);
 }
 
 .prose-nwn h3 {
@@ -192,7 +223,7 @@ kbd {
   margin-bottom: 0.6rem;
   font-size: 1.15rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--color-strong);
 }
 
 .prose-nwn p,
@@ -232,13 +263,64 @@ kbd {
 .prose-nwn :not(pre) > code {
   padding: 0.12rem 0.38rem;
   border-radius: 0.35rem;
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--color-soft);
   font-size: 0.875em;
 }
 
 .prose-nwn blockquote {
   margin: 1.25rem 0;
   padding-left: 1rem;
-  border-left: 3px solid rgba(94, 234, 212, 0.4);
+  border-left: 3px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
   color: var(--color-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  body {
+    transition: none;
+  }
+  .card:hover {
+    transform: none;
+  }
+  .fade-up {
+    animation: none;
+  }
+  .status-online {
+    animation: none;
+  }
+}
+
+/* ── 浅色模式补偿 ────────────────────────────────────────────
+ * Tailwind 会把 bg-surface/30 这类带透明度的类编译成固定色值，
+ * 这里按主题重新计算，避免浅色下出现深色色块。
+ * 装饰性色块（bg-cyan/70、bg-accent/70 等）保持原样，浅色下依然成立。
+ */
+:root[data-theme='light'] .bg-surface\/30 {
+  background-color: color-mix(in srgb, var(--color-surface-2) 65%, transparent);
+}
+
+:root[data-theme='light'] .bg-surface\/40 {
+  background-color: color-mix(in srgb, var(--color-surface-2) 80%, transparent);
+}
+
+:root[data-theme='light'] .bg-bg\/85 {
+  background-color: color-mix(in srgb, var(--color-bg) 88%, transparent);
+}
+
+:root[data-theme='light'] .bg-primary\/10 {
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+}
+
+:root[data-theme='light'] .bg-primary\/20 {
+  background-color: color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
+:root[data-theme='light'] .border-primary\/40 {
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+}
+
+:root[data-theme='light'] .border-secondary\/50 {
+  border-color: color-mix(in srgb, var(--color-secondary) 45%, transparent);
 }

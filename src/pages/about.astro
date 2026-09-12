@@ -25,7 +25,7 @@ const values = [
 >
   <section class="mx-auto max-w-4xl px-4 py-14">
     <p class="font-pixel mb-3 text-xs tracking-wider text-primary">ABOUT</p>
-    <h1 class="text-2xl font-semibold text-white sm:text-3xl">关于 {site.name}</h1>
+    <h1 class="text-2xl font-semibold text-strong sm:text-3xl">关于 {site.name}</h1>
     <p class="mt-5 text-sm leading-relaxed text-muted sm:text-base">
       {site.description}
     </p>
@@ -44,7 +44,7 @@ const values = [
         {
           values.map((value) => (
             <div class="card p-5">
-              <h3 class="text-sm font-semibold text-white">{value.title}</h3>
+              <h3 class="text-sm font-semibold text-strong">{value.title}</h3>
               <p class="mt-2 text-sm leading-relaxed text-muted">{value.desc}</p>
             </div>
           ))
@@ -55,7 +55,7 @@ const values = [
     <div class="mt-12">
       <SectionHeading eyebrow="MEMBERS" title="成员" desc="工作室目前由一个人运营。" />
       <div class="card p-6">
-        <p class="text-sm font-semibold text-white">断了一只爪子的招财猫</p>
+        <p class="text-sm font-semibold text-strong">断了一只爪子的招财猫</p>
         <p class="font-pixel mt-1 text-xs text-muted">创始人 / 唯一成员</p>
         <p class="text-sm leading-relaxed text-muted">
           服务器运维、网站开发、nAI 模型训练与实验记录，目前都由我一个人在做。
