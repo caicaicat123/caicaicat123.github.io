@@ -40,7 +40,8 @@ export const site = {
   minecraft: {
     javaIp: 'play.simpfun.cn',
     port: '25570',
-    version: '1.21.1',
+    version: '26.1.2',
+    clients: '1.7 至 26.1 均可进入',
     mode: '离线模式 · 带登录插件',
     openedAt: '2024 年开服，长期运营至今',
   },
