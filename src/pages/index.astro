@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroCarousel from '../components/HeroCarousel.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ServerStatus from '../components/ServerStatus.astro';
 import BlogCard from '../components/BlogCard.astro';
@@ -41,51 +42,11 @@ const previewRoadmap = roadmap.slice(0, 3);
 ---
 
 <BaseLayout title={site.name}>
-  <!-- Hero -->
-  <section class="relative overflow-hidden border-b border-line">
-    <div class="pixel-grid absolute inset-0 opacity-70" aria-hidden="true"></div>
-    <div class="glow-primary absolute -right-16 -top-24 h-80 w-80" aria-hidden="true"></div>
-    <div class="glow-secondary absolute -bottom-32 left-0 h-80 w-80" aria-hidden="true"></div>
-
-    <div class="relative mx-auto max-w-6xl px-4 py-20 sm:py-28">
-      <div class="fade-up max-w-3xl">
-        <div class="mb-5 flex flex-wrap items-center gap-2">
-          <span class="badge badge-primary font-pixel">{site.nameEn}</span>
-          <span class="badge">人工智能 × 游戏开发</span>
-        </div>
-
-        <h1 class="text-3xl font-semibold leading-tight tracking-tight text-strong sm:text-5xl">
-          在百家争鸣中，<br class="hidden sm:block" />推演世界的走向。
-        </h1>
-
-        <p class="mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
-          {site.description}
-        </p>
-
-        <div class="mt-8 flex flex-wrap items-center gap-3">
-          <a
-            href="/minecraft"
-            class="rounded-md border border-primary/40 bg-primary/10 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
-          >
-            进入服务器
-          </a>
-          <a
-            href="/ai-lab"
-            class="rounded-md border border-line px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-secondary/50 hover:text-secondary"
-          >
-            了解 AI 实验室
-          </a>
-        </div>
-
-        <p class="mt-8 font-pixel text-xs text-muted">
-          {site.vision}
-        </p>
-      </div>
-    </div>
-  </section>
+  <!-- Hero：两个方向做成可横向滚动的页面 -->
+  <HeroCarousel />
 
   <!-- 服务器状态 -->
-  <section class="mx-auto max-w-6xl px-4 py-16">
+  <section id="server-status" class="mx-auto max-w-6xl px-4 py-16">
     <SectionHeading
       eyebrow="SERVER"
       title="服务器状态"

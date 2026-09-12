@@ -1,0 +1,412 @@
+---
+import { site } from '../data/site';
+
+const slides = [
+  {
+    key: 'minecraft',
+    tag: 'GAME',
+    eyebrow: 'Minecraft 服务器',
+    title: ['一台开了两年、', '没换过周目的生存服。'],
+    desc: '当前版本 26.1.2，1.7 到 26.1 的任何客户端都能直接进。离线模式也能玩，领地保护和方块回滚守着你的家，被拆的东西能查、能还原。',
+    primary: { label: '进入服务器', href: '/minecraft' },
+    secondary: { label: '查看实时状态', href: '#server-status' },
+    stats: [
+      { k: '开服', v: '2024 年' },
+      { k: '版本', v: '26.1.2' },
+      { k: '在线上限', v: '30 人' },
+      { k: '客户端', v: '1.7 – 26.1' },
+    ],
+    theme: 'mc',
+  },
+  {
+    key: 'ai',
+    tag: 'AI',
+    eyebrow: '稷下 Jixia',
+    title: ['一个不急着下结论的', '人文社科模型。'],
+    desc: '聚焦哲学、心理学、经济学，为世界政治经济提供预测指南。它给依据、给情景、标注不确定性，而不是抛一句结论。服务器里那只叫「幽灵」的 AI，就是它第一个跑到现实里的实验品。',
+    primary: { label: '了解 AI 实验室', href: '/ai-lab' },
+    secondary: { label: '读实验日志', href: '/blog/category/ai-lab' },
+    stats: [
+      { k: '版本', v: 'Jixia-1.0' },
+      { k: '状态', v: '开发中' },
+      { k: '领域', v: '哲学 · 心理 · 经济' },
+      { k: '原则', v: '给依据、给情景' },
+    ],
+    theme: 'ai',
+  },
+];
+---
+
+<section class="hero relative overflow-hidden border-b border-line" aria-roledescription="轮播" aria-label="站点两个方向">
+  <div class="pixel-grid pointer-events-none absolute inset-0 opacity-70" aria-hidden="true"></div>
+
+  <div class="relative mx-auto max-w-6xl px-4 pt-10 sm:pt-12">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="badge badge-primary font-pixel">{site.nameEn}</span>
+        <span class="badge">人工智能 × 游戏开发</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="font-pixel text-xs text-muted" data-hero-counter>01 / 02</span>
+        <div class="flex gap-1.5">
+          <button class="hero-arrow" type="button" data-hero-prev aria-label="上一页">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+          </button>
+          <button class="hero-arrow" type="button" data-hero-next aria-label="下一页">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-track" data-hero-track tabindex="0" role="group" aria-label="可横向滚动的页面">
+    {
+      slides.map((slide, index) => (
+        <article
+          class={`hero-slide hero-slide--${slide.theme}`}
+          data-hero-slide
+          data-index={index}
+          role="group"
+          aria-roledescription="页面"
+          aria-label={`${index + 1} / ${slides.length}：${slide.eyebrow}`}
+        >
+          <div class="relative mx-auto max-w-6xl px-4 py-14 sm:py-16">
+            <div class={`hero-glow hero-glow--${slide.theme}`} aria-hidden="true"></div>
+
+            <div class="relative max-w-3xl">
+              <p class="hero-item font-pixel text-xs tracking-wider text-primary" style="--i:0">
+                {slide.tag} · {slide.eyebrow}
+              </p>
+
+              <h1 class="hero-item mt-4 text-3xl font-semibold leading-tight tracking-tight text-strong sm:text-5xl" style="--i:1">
+                {slide.title[0]}
+                <br class="hidden sm:block" />
+                {slide.title[1]}
+              </h1>
+
+              <p class="hero-item mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg" style="--i:2">
+                {slide.desc}
+              </p>
+
+              <div class="hero-item mt-8 flex flex-wrap items-center gap-3" style="--i:3">
+                <a
+                  href={slide.primary.href}
+                  class={`rounded-md border px-5 py-2.5 text-sm font-medium transition-colors ${
+                    slide.theme === 'ai'
+                      ? 'border-secondary/50 bg-secondary/10 text-secondary hover:bg-secondary/20'
+                      : 'border-primary/40 bg-primary/10 text-primary hover:bg-primary/20'
+                  }`}
+                >
+                  {slide.primary.label}
+                </a>
+                <a
+                  href={slide.secondary.href}
+                  class="rounded-md border border-line px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-primary/50 hover:text-primary"
+                >
+                  {slide.secondary.label}
+                </a>
+              </div>
+
+              <dl class="hero-item mt-10 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4" style="--i:4">
+                {slide.stats.map((stat) => (
+                  <div>
+                    <dt class="text-xs text-muted">{stat.k}</dt>
+                    <dd class="mt-0.5 font-mono text-sm text-ink">{stat.v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="relative mx-auto max-w-6xl px-4 pb-10">
+    <div class="flex items-center gap-3">
+      {
+        slides.map((slide, index) => (
+          <button
+            class="hero-dot"
+            type="button"
+            data-hero-dot
+            data-index={index}
+            aria-label={`跳到第 ${index + 1} 页：${slide.eyebrow}`}
+            aria-current={index === 0 ? 'true' : 'false'}
+          >
+            <span class="hero-dot__label">{slide.eyebrow}</span>
+          </button>
+        ))
+      }
+      <div class="hero-progress ml-auto hidden h-0.5 w-28 overflow-hidden rounded-full bg-soft sm:block">
+        <span class="hero-progress__bar block h-full w-0 bg-primary"></span>
+      </div>
+    </div>
+    <p class="mt-4 font-pixel text-xs text-muted">{site.vision}</p>
+  </div>
+</section>
+
+<style>
+  .hero-track {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior-x: contain;
+  }
+
+  .hero-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hero-track:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  .hero-slide {
+    position: relative;
+    flex: 0 0 100%;
+    width: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  /* 每页自己的光晕，避免两页看起来一样 */
+  .hero-glow {
+    position: absolute;
+    z-index: 0;
+    width: 22rem;
+    height: 22rem;
+    border-radius: 999px;
+    pointer-events: none;
+    opacity: 0.9;
+  }
+
+  .hero-glow--mc {
+    top: -6rem;
+    right: -4rem;
+    background: radial-gradient(closest-side, var(--glow-1), transparent 70%);
+  }
+
+  .hero-glow--ai {
+    top: -6rem;
+    right: -4rem;
+    background: radial-gradient(closest-side, var(--glow-2), transparent 70%);
+  }
+
+  /* 进场：只有当前页播放，逐条错开 */
+  .hero-item {
+    opacity: 1;
+  }
+
+  .hero-slide.is-active .hero-item {
+    animation: heroIn 0.62s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 90ms);
+  }
+
+  .hero-slide.is-active .hero-glow {
+    animation: heroGlow 0.9s ease both, heroFloat 9s ease-in-out 1s infinite;
+  }
+
+  @keyframes heroIn {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes heroGlow {
+    from {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+    to {
+      opacity: 0.9;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes heroFloat {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(12px) scale(1.04);
+    }
+  }
+
+  .hero-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-line);
+    color: var(--color-muted);
+    background: transparent;
+    transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+  }
+
+  .hero-arrow:hover {
+    color: var(--color-primary);
+    border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  }
+
+  .hero-dot {
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    transition: color 0.2s ease;
+  }
+
+  .hero-dot__label {
+    position: relative;
+    padding-bottom: 0.35rem;
+  }
+
+  .hero-dot__label::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0;
+    border-radius: 999px;
+    background: var(--color-primary);
+    transition: width 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .hero-dot[aria-current='true'] {
+    color: var(--color-strong);
+  }
+
+  .hero-dot[aria-current='true'] .hero-dot__label::after {
+    width: 100%;
+  }
+
+  .hero-dot:hover {
+    color: var(--color-ink);
+  }
+
+  .hero-progress__bar {
+    transition: width 0.35s linear;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-track {
+      scroll-behavior: auto;
+    }
+    .hero-slide.is-active .hero-item,
+    .hero-slide.is-active .hero-glow {
+      animation: none;
+    }
+    .hero-progress__bar {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const AUTOPLAY_MS = 7000;
+
+  document.querySelectorAll<HTMLElement>('.hero').forEach((hero) => {
+    const track = hero.querySelector<HTMLElement>('[data-hero-track]');
+    const slides = Array.from(hero.querySelectorAll<HTMLElement>('[data-hero-slide]'));
+    const dots = Array.from(hero.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
+    const counter = hero.querySelector<HTMLElement>('[data-hero-counter]');
+    const progress = hero.querySelector<HTMLElement>('.hero-progress__bar');
+    if (!track || slides.length < 2) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer: number | undefined;
+    let paused = false;
+
+    const setActive = (index: number) => {
+      current = index;
+      slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
+      dots.forEach((dot, i) => dot.setAttribute('aria-current', i === index ? 'true' : 'false'));
+      if (counter) counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+      if (progress) progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+    };
+
+    const goTo = (index: number) => {
+      const target = (index + slides.length) % slides.length;
+      track.scrollTo({ left: target * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+      setActive(target);
+    };
+
+    const startAutoplay = () => {
+      if (reduceMotion) return;
+      stopAutoplay();
+      timer = window.setInterval(() => {
+        if (!paused && !document.hidden) goTo(current + 1);
+      }, AUTOPLAY_MS);
+    };
+    const stopAutoplay = () => {
+      if (timer) window.clearInterval(timer);
+      timer = undefined;
+    };
+
+    hero.querySelector('[data-hero-prev]')?.addEventListener('click', () => {
+      goTo(current - 1);
+      startAutoplay();
+    });
+    hero.querySelector('[data-hero-next]')?.addEventListener('click', () => {
+      goTo(current + 1);
+      startAutoplay();
+    });
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        goTo(Number(dot.dataset.index ?? 0));
+        startAutoplay();
+      });
+    });
+
+    // 手动滑动后同步状态，并重新计时
+    let scrollTimer: number | undefined;
+    track.addEventListener('scroll', () => {
+      if (scrollTimer) window.clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(() => {
+        const index = Math.round(track.scrollLeft / track.clientWidth);
+        if (index !== current && index >= 0 && index < slides.length) setActive(index);
+      }, 90);
+    });
+
+    track.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        goTo(current + 1);
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        goTo(current - 1);
+      }
+    });
+
+    ['pointerenter', 'focusin'].forEach((type) => hero.addEventListener(type, () => (paused = true)));
+    ['pointerleave', 'focusout'].forEach((type) => hero.addEventListener(type, () => (paused = false)));
+
+    window.addEventListener('resize', () => track.scrollTo({ left: current * track.clientWidth, behavior: 'auto' }));
+
+    setActive(0);
+    startAutoplay();
+  });
+</script>
