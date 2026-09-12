@@ -22,12 +22,6 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
         一台持续运营的《我的世界》生存服务器，{openedAt}。在原版生存基础上加入实用插件，
         同时也是我们做 AI 实验的真实场地。
       </p>
-      <div class="mt-6 flex flex-wrap items-center gap-3">
-        <span class="badge badge-primary font-mono">{address}</span>
-        <span class="badge">Java {version}</span>
-        <span class="badge">{mode}</span>
-        <CopyButton value={address} label="复制地址" tone="ghost" />
-      </div>
     </div>
   </section>
 
@@ -40,14 +34,14 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     />
     <div class="grid gap-4 lg:grid-cols-2">
       <div class="card p-5">
-        <dl class="space-y-3 text-sm">
+        <div class="flex items-center justify-between gap-3">
+          <h2 class="text-sm font-semibold text-ink">连接方式</h2>
+          <CopyButton value={address} label="复制地址" tone="ghost" />
+        </div>
+        <dl class="mt-4 space-y-3 text-sm">
           <div class="flex items-center justify-between gap-4">
             <dt class="text-muted">服务器地址</dt>
-            <dd class="font-mono text-ink">{javaIp}</dd>
-          </div>
-          <div class="flex items-center justify-between gap-4">
-            <dt class="text-muted">端口</dt>
-            <dd class="font-mono text-ink">{port}</dd>
+            <dd class="font-mono text-ink">{address}</dd>
           </div>
           <div class="flex items-center justify-between gap-4">
             <dt class="text-muted">游戏版本</dt>
@@ -64,7 +58,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
         </dl>
       </div>
 
-      <ServerStatus />
+      <ServerStatus compact />
     </div>
   </section>
 

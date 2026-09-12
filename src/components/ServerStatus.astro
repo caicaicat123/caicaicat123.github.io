@@ -1,8 +1,18 @@
 ---
 import { isPlaceholder, site } from '../data/site';
 
-const { javaIp, port, version, mode } = site.minecraft;
+interface Props {
+  /**
+   * 精简模式：只显示实时状态与在线人数。
+   * 用于页面上已经单独列出连接信息的场景，避免与静态信息重复。
+   */
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+const { javaIp, port, version } = site.minecraft;
 const configured = !isPlaceholder(javaIp);
+const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 ---
 
 <div
@@ -20,28 +30,28 @@ const configured = !isPlaceholder(javaIp);
   </div>
 
   <dl class="mt-4 space-y-1.5 text-xs text-muted">
-    <div class="flex justify-between gap-3">
-      <dt>服务器地址</dt>
-      <dd class="text-right font-mono">{configured ? javaIp : '待填写'}</dd>
-    </div>
-    <div class="flex justify-between gap-3">
-      <dt>端口</dt>
-      <dd class="text-right font-mono">{isPlaceholder(port) ? '默认 25565' : port}</dd>
-    </div>
+    {
+      !compact && (
+        <div class="flex justify-between gap-3">
+          <dt>服务器地址</dt>
+          <dd class="text-right font-mono">{configured ? address : '待填写'}</dd>
+        </div>
+      )
+    }
     <div class="flex justify-between gap-3">
       <dt>在线人数</dt>
       <dd class="text-right font-mono" data-players>— / —</dd>
     </div>
-    <div class="flex justify-between gap-3">
-      <dt>游戏版本</dt>
-      <dd class="text-right font-mono" data-version>
-        {isPlaceholder(version) ? '待填写' : version}
-      </dd>
-    </div>
-    <div class="flex justify-between gap-3">
-      <dt>账号验证</dt>
-      <dd class="text-right">{mode}</dd>
-    </div>
+    {
+      !compact && (
+        <div class="flex justify-between gap-3">
+          <dt>服务端版本</dt>
+          <dd class="text-right font-mono" data-version>
+            {isPlaceholder(version) ? '—' : version}
+          </dd>
+        </div>
+      )
+    }
   </dl>
 </div>
 
