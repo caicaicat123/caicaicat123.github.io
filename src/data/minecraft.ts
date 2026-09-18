@@ -3,7 +3,7 @@
 export const serverFeatures = [
   {
     title: '2024 年开服至今',
-    desc: '世界长期运营、不轻易换周目，你的建筑和进度会被保留。',
+    desc: '世界长期运营，你的建筑和进度一直都保留着。',
   },
   {
     title: '全版本兼容',

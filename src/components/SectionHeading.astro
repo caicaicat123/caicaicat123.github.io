@@ -3,9 +3,12 @@ interface Props {
   eyebrow?: string;
   title: string;
   desc?: string;
+  /** 标题标签：页面主标题传 h1，区块标题保持默认 h2 */
+  as?: 'h1' | 'h2';
 }
 
-const { eyebrow, title, desc } = Astro.props;
+const { eyebrow, title, desc, as = 'h2' } = Astro.props;
+const Heading = as;
 ---
 
 <div class="mb-8">
@@ -14,6 +17,6 @@ const { eyebrow, title, desc } = Astro.props;
       <p class="font-pixel mb-2 text-xs tracking-wider text-primary">{eyebrow}</p>
     )
   }
-  <h2 class="text-xl font-semibold text-strong sm:text-2xl">{title}</h2>
+  <Heading class="text-xl font-semibold text-strong sm:text-2xl">{title}</Heading>
   {desc && <p class="mt-2 max-w-2xl text-sm leading-relaxed text-muted">{desc}</p>}
 </div>

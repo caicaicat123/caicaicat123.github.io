@@ -6,7 +6,7 @@ const slides = [
     key: 'minecraft',
     tag: 'GAME',
     eyebrow: '新世界服务器 · NWM',
-    title: ['一台开了两年、', '没换过周目的生存服。'],
+    title: ['2024 年开服，', '世界一直没重置过。'],
     desc: '当前版本 26.1.2，1.7 到 26.1 的任何客户端都能直接进。离线模式也能玩，领地保护和方块回滚守着你的家，被拆的东西能查、能还原。',
     primary: { label: '进入服务器', href: '/minecraft' },
     secondary: { label: '查看实时状态', href: '#server-status' },
@@ -42,10 +42,10 @@ const slides = [
 
   <div class="relative mx-auto max-w-6xl px-4 pt-10 sm:pt-12">
     <div class="flex flex-wrap items-center justify-between gap-3">
-      <div class="flex flex-wrap items-center gap-2">
+      <h1 class="flex flex-wrap items-center gap-2">
         <span class="badge badge-primary font-pixel">{site.nameEn}</span>
-        <span class="badge">游戏服务器 × Mod 开发</span>
-      </div>
+        <span class="text-sm font-medium text-ink sm:text-base">{site.name} · {site.slogan}</span>
+      </h1>
       <div class="flex items-center gap-3">
         <span class="font-pixel text-xs text-muted" data-hero-counter>01 / 02</span>
         <div class="flex gap-1.5">
@@ -81,11 +81,11 @@ const slides = [
                 {slide.tag} · {slide.eyebrow}
               </p>
 
-              <h1 class="hero-item mt-4 text-3xl font-semibold leading-tight tracking-tight text-strong sm:text-5xl" style="--i:1">
+              <h2 class="hero-item mt-4 text-4xl font-semibold leading-tight tracking-tight text-strong sm:text-5xl" style="--i:1">
                 {slide.title[0]}
                 <br class="hidden sm:block" />
                 {slide.title[1]}
-              </h1>
+              </h2>
 
               <p class="hero-item mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg" style="--i:2">
                 {slide.desc}
