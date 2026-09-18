@@ -13,7 +13,7 @@ export const site = {
   name: '新世界网络',
   nameEn: 'New World Network',
   shortName: 'NWN',
-  slogan: '把游戏，当成可以亲手改写的世界。',
+  slogan: '女士，我是亚当。',
   vision: '一边运营《我的世界》服务器，一边开发《钢铁雄心 4》Mod。',
   description:
     '新世界网络（New World Network，简称 NWN）是一家独立工作室：运营一台 2024 年开服的《我的世界》插件生存服「新世界服务器」（NewWorldMC，简称 NWM），同时正在筹备《钢铁雄心 4》Mod 开发。',
