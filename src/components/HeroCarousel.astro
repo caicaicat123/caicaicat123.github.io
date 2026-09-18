@@ -6,20 +6,22 @@ const slides = [
     key: 'minecraft',
     tag: 'GAME',
     eyebrow: '新世界服务器 · NWM',
-    title: ['2024 年开服，', '世界一直没重置过。'],
-    desc: '当前版本 26.1.2，1.7 到 26.1 的任何客户端都能直接进。离线模式也能玩，领地保护和方块回滚守着你的家，被拆的东西能查、能还原。',
+    title: ['新的世界，', '梦开始的地方'],
+    desc: '新增 26.1.2 版本支持，服务器幽灵已上线',
     primary: { label: '进入服务器', href: '/minecraft' },
     secondary: { label: '查看实时状态', href: '#server-status' },
+    art: 'grass',
     theme: 'mc',
   },
   {
     key: 'mod',
     tag: 'MOD',
     eyebrow: 'The Fire Rises · Add-on',
-    title: ['钢铁雄心 4 的', 'The Fire Rises 附加内容。'],
-    desc: '正在为 The Fire Rises 制作附加内容（Add-on），当前做的是重庆模式的债务相关国策与决议。',
+    title: ['2026，', '燃起柴薪'],
+    desc: '正在为 The Fire Rises 制作附加内容（Add-on），更新重庆模式的债务相关国策与决议。',
     primary: { label: '了解内容', href: '/mod' },
     secondary: { label: '看看项目', href: '/projects' },
+    art: 'flag',
     theme: 'mod',
   },
 ];
@@ -95,12 +97,52 @@ const slides = [
 
             </div>
 
-            <!-- 印章 + 竖排题跋 -->
-            <div class="hero-item hidden shrink-0 items-start gap-7 lg:flex" style="--i:5">
-              <div class="seal">
-                <span>新</span>
-              </div>
-              <p class="vertical pt-2 text-[13px]">以游戏为纸，以代码为墨</p>
+            <!-- 右侧图示：Minecraft 用草方块，钢铁雄心 4 用方形国旗 -->
+            <div class="hero-item hidden shrink-0 lg:block" style="--i:5">
+              {slide.art === 'grass' ? (
+                <svg
+                  class="h-[124px] w-[124px] drop-shadow-[0_10px_24px_rgba(31,29,26,0.18)]"
+                  viewBox="0 0 16 16"
+                  shape-rendering="crispEdges"
+                  role="img"
+                  aria-label="草方块"
+                >
+                  <rect x="0" y="4" width="16" height="12" fill="#8D6E63" />
+                  <rect x="0" y="0" width="16" height="4" fill="#7CB342" />
+                  <rect x="0" y="0" width="16" height="1" fill="#8BC34A" />
+                  <rect x="0" y="3" width="16" height="1" fill="#689F38" />
+                  <rect x="0" y="4" width="2" height="1" fill="#689F38" />
+                  <rect x="4" y="4" width="2" height="1" fill="#689F38" />
+                  <rect x="8" y="4" width="2" height="1" fill="#689F38" />
+                  <rect x="12" y="4" width="2" height="1" fill="#689F38" />
+                  <rect x="2" y="6" width="1" height="1" fill="#795548" />
+                  <rect x="6" y="8" width="1" height="1" fill="#A1887F" />
+                  <rect x="10" y="6" width="1" height="1" fill="#795548" />
+                  <rect x="3" y="11" width="1" height="1" fill="#6D4C41" />
+                  <rect x="8" y="12" width="1" height="1" fill="#A1887F" />
+                  <rect x="13" y="9" width="1" height="1" fill="#795548" />
+                  <rect x="5" y="14" width="1" height="1" fill="#6D4C41" />
+                  <rect x="11" y="14" width="1" height="1" fill="#A1887F" />
+                  <rect x="0" y="4" width="1" height="12" fill="#ffffff" opacity="0.14" />
+                  <rect x="15" y="4" width="1" height="12" fill="#000000" opacity="0.14" />
+                </svg>
+              ) : (
+                <svg
+                  class="h-[124px] w-[124px] rounded-[2px] drop-shadow-[0_10px_24px_rgba(31,29,26,0.24)]"
+                  viewBox="0 0 30 30"
+                  role="img"
+                  aria-label="方形国旗"
+                >
+                  <rect width="30" height="30" fill="#DE2910" />
+                  <g fill="#FFDE00">
+                    <polygon points="6.5,4.8 7.44,7.71 10.49,7.7 8.02,9.49 8.97,12.4 6.5,10.6 4.03,12.4 4.98,9.49 2.51,7.7 5.56,7.71" />
+                    <polygon points="0,-1.5 0.32,-0.45 1.42,-0.45 0.53,0.2 0.86,1.25 0,0.6 -0.86,1.25 -0.53,0.2 -1.42,-0.45 -0.32,-0.45" transform="translate(12.5 4.8) rotate(-125)" />
+                    <polygon points="0,-1.5 0.32,-0.45 1.42,-0.45 0.53,0.2 0.86,1.25 0,0.6 -0.86,1.25 -0.53,0.2 -1.42,-0.45 -0.32,-0.45" transform="translate(15.5 7.8) rotate(-98)" />
+                    <polygon points="0,-1.5 0.32,-0.45 1.42,-0.45 0.53,0.2 0.86,1.25 0,0.6 -0.86,1.25 -0.53,0.2 -1.42,-0.45 -0.32,-0.45" transform="translate(15.5 12.2) rotate(-70)" />
+                    <polygon points="0,-1.5 0.32,-0.45 1.42,-0.45 0.53,0.2 0.86,1.25 0,0.6 -0.86,1.25 -0.53,0.2 -1.42,-0.45 -0.32,-0.45" transform="translate(12.5 15.2) rotate(-44)" />
+                  </g>
+                </svg>
+              )}
             </div>
           </div>
         </article>

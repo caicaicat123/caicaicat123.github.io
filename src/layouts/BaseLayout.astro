@@ -26,7 +26,8 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
     <meta name="keywords" content={site.keywords.join(',')} />
     <meta name="author" content={site.name} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#F7F4ED" />
 

@@ -41,4 +41,4 @@ draft: false
 
 插件代码已经公开，欢迎自取或者提建议：
 
-https://github.com/caicaicat123/mcbot
+https://github.com/caicaicat123/theghost
