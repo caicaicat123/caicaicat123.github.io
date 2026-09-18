@@ -4,7 +4,7 @@ import SectionHeading from '../../components/SectionHeading.astro';
 import ServerStatus from '../../components/ServerStatus.astro';
 import CopyButton from '../../components/CopyButton.astro';
 import { isPlaceholder, site } from '../../data/site';
-import { announcements, joinSteps, rules, serverFeatures } from '../../data/minecraft';
+import { joinSteps, rules } from '../../data/minecraft';
 
 const { javaIp, port, version, clients, mode, openedAt } = site.minecraft;
 const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
@@ -65,23 +65,6 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     </div>
   </section>
 
-  <!-- 特色 -->
-  <section class="band border-y border-line">
-    <div class="mx-auto max-w-6xl px-4 py-14">
-      <SectionHeading eyebrow="FEATURES" title="服务器特点" />
-      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          serverFeatures.map((feature) => (
-            <div class="card p-5">
-              <h3 class="text-sm font-semibold text-strong">{feature.title}</h3>
-              <p class="mt-2 text-base leading-relaxed text-muted">{feature.desc}</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
   <!-- 加入教程 -->
   <section class="mx-auto max-w-6xl px-4 py-14">
     <SectionHeading eyebrow="HOW TO JOIN" title="加入教程" desc="四步进服，第一次来照做就行。" />
@@ -123,32 +106,4 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     </div>
   </section>
 
-  <!-- 公告 -->
-  <section class="mx-auto max-w-6xl px-4 py-14">
-    <SectionHeading eyebrow="NOTICE" title="服务器公告" />
-    <div class="space-y-4">
-      {
-        announcements.map((item) => (
-          <article class="card p-5">
-            <div class="flex flex-wrap items-center gap-2 text-xs text-muted">
-              <span class="badge badge-primary">公告</span>
-              <span>{item.date}</span>
-            </div>
-            <h3 class="mt-3 text-sm font-semibold text-strong">{item.title}</h3>
-            <p class="mt-2 text-base leading-relaxed text-muted">{item.body}</p>
-          </article>
-        ))
-      }
-    </div>
-
-    <div class="card mt-6 flex flex-wrap items-center gap-4 p-5">
-      <div>
-        <p class="text-sm font-medium text-ink">想加入社区？</p>
-        <p class="mt-1 text-sm text-muted">
-          QQ 群 <span class="font-mono text-ink">{site.community.qq}</span>，公告与找人组队都在群里。
-        </p>
-      </div>
-      <CopyButton value={site.community.qq} label="复制群号" tone="ghost" />
-    </div>
-  </section>
 </BaseLayout>

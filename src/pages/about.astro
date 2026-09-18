@@ -68,37 +68,7 @@ const values = [
     </div>
 
     <div class="mt-12">
-      <SectionHeading
-        eyebrow="CONTACT"
-        title="找到我们"
-        desc="合作、反馈、进服申请都走这几个入口。"
-      />
-      <div class="grid gap-4 sm:grid-cols-2">
-        <div class="card p-5">
-          <p class="text-xs text-muted">电子邮箱</p>
-          <p class="mt-1 break-all font-mono text-sm text-ink">{site.email}</p>
-        </div>
-        <div class="card p-5">
-          <p class="text-xs text-muted">QQ 群</p>
-          <p class="mt-1 font-mono text-sm text-ink">{site.community.qq}</p>
-        </div>
-      </div>
-      <div class="flex flex-wrap gap-3">
-        <a
-          href="/contact"
-          class="btn btn-accent"
-        >
-          全部联系方式
-        </a>
-        <a
-          href={site.github}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn-standard"
-        >
-          GitHub
-        </a>
-      </div>
+      <a href="/contact" class="btn btn-accent">联系方式</a>
     </div>
   </section>
 </BaseLayout>
