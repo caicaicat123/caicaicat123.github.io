@@ -30,36 +30,25 @@ const slides = [
   aria-roledescription="轮播"
   aria-label="站点两个方向"
 >
-  <div class="relative mx-auto max-w-6xl px-4 pt-9">
-    <div class="flex flex-wrap items-start justify-between gap-4">
-      <div class="flex flex-col gap-3">
-        <p class="hero-badge">
-          <span class="pip" aria-hidden="true"></span>
-          Minecraft 服务器 · 钢铁雄心 4 Mod
-        </p>
-        <h1 class="text-[13px] font-medium tracking-[0.04em] text-muted sm:text-sm">
-          <span class="font-bold tracking-[0.12em] text-strong">{site.name}</span>
-          <span class="mx-2 text-muted">·</span>
-          {site.slogan}
-        </h1>
-      </div>
+  <!-- 站点主标题：只给搜索引擎与读屏用，不在页面上显示 -->
+  <h1 class="sr-only">{site.name} · {site.slogan}</h1>
 
-      <div class="flex items-center gap-3">
-        <span class="font-pixel text-xs text-muted" data-hero-counter>01 / 02</span>
-        <div class="flex gap-1.5">
-          <button class="hero-arrow" type="button" data-hero-prev aria-label="上一页">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M15 18l-6-6 6-6"></path>
-            </svg>
-          </button>
-          <button class="hero-arrow" type="button" data-hero-next aria-label="下一页">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M9 6l6 6-6 6"></path>
-            </svg>
-          </button>
-        </div>
+  <div class="relative mx-auto max-w-6xl px-4 pt-7">
+    <div class="flex items-center justify-end gap-3">
+      <span class="font-pixel text-xs text-muted" data-hero-counter>01 / 02</span>
+      <div class="flex gap-1.5">
+        <button class="hero-arrow" type="button" data-hero-prev aria-label="上一页">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"></path>
+          </svg>
+        </button>
+        <button class="hero-arrow" type="button" data-hero-next aria-label="下一页">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 6l6 6-6 6"></path>
+          </svg>
+        </button>
       </div>
     </div>
   </div>
@@ -119,58 +108,15 @@ const slides = [
     }
   </div>
 
-  <div class="relative mx-auto max-w-6xl px-4 pb-9">
-    <div class="flex items-center gap-4">
-      {
-        slides.map((slide, index) => (
-          <button
-            class="hero-dot"
-            type="button"
-            data-hero-dot
-            data-index={index}
-            aria-label={`跳到第 ${index + 1} 页：${slide.eyebrow}`}
-            aria-current={index === 0 ? 'true' : 'false'}
-          >
-            <span class="hero-dot__label">{slide.eyebrow}</span>
-          </button>
-        ))
-      }
-      <div class="hero-progress ml-auto hidden h-px w-28 overflow-hidden bg-line sm:block">
-        <span class="hero-progress__bar block h-full w-0 bg-primary"></span>
-      </div>
+  <!-- 进度条：左下角一条简单色条 -->
+  <div class="relative mx-auto max-w-6xl px-4 pb-10">
+    <div class="h-[3px] w-full max-w-[420px] overflow-hidden rounded-full bg-line">
+      <span class="hero-progress__bar block h-full w-0 rounded-full bg-primary"></span>
     </div>
-    <p class="mt-5 font-pixel text-[11px] text-muted">{site.vision}</p>
   </div>
 </section>
 
 <style>
-  /* 徽标胶囊：左侧一枚呼吸的红点 */
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 6px 14px 6px 12px;
-    border: 1px solid var(--color-line-2);
-    border-radius: 999px;
-    background: var(--color-soft);
-    color: var(--color-muted);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    align-self: flex-start;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-
-  .hero-badge .pip {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    box-shadow: 0 0 12px var(--color-primary);
-    animation: pulse 2.4s ease-in-out infinite;
-  }
-
   .hero-track {
     display: flex;
     overflow-x: auto;
@@ -240,57 +186,15 @@ const slides = [
     background: var(--color-soft);
   }
 
-  .hero-dot {
-    display: inline-flex;
-    align-items: center;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--color-muted);
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    transition: color 0.2s var(--ease);
-  }
-
-  .hero-dot__label {
-    position: relative;
-    padding-bottom: 0.35rem;
-  }
-
-  .hero-dot__label::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 2px;
-    width: 0;
-    border-radius: 999px;
-    background: var(--color-primary);
-    transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .hero-dot[aria-current='true'] {
-    color: var(--color-strong);
-  }
-
-  .hero-dot[aria-current='true'] .hero-dot__label::after {
-    width: 100%;
-  }
-
-  .hero-dot:hover {
-    color: var(--color-ink);
-  }
-
   .hero-progress__bar {
-    transition: width 0.35s linear;
+    transition: width 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hero-track {
       scroll-behavior: auto;
     }
-    .hero-slide.is-active .hero-item,
-    .hero-badge .pip {
+    .hero-slide.is-active .hero-item {
       animation: none;
     }
     .hero-progress__bar {
@@ -305,7 +209,6 @@ const slides = [
   document.querySelectorAll<HTMLElement>('.hero').forEach((hero) => {
     const track = hero.querySelector<HTMLElement>('[data-hero-track]');
     const slides = Array.from(hero.querySelectorAll<HTMLElement>('[data-hero-slide]'));
-    const dots = Array.from(hero.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
     const counter = hero.querySelector<HTMLElement>('[data-hero-counter]');
     const progress = hero.querySelector<HTMLElement>('.hero-progress__bar');
     if (!track || slides.length < 2) return;
@@ -318,7 +221,6 @@ const slides = [
     const setActive = (index: number) => {
       current = index;
       slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
-      dots.forEach((dot, i) => dot.setAttribute('aria-current', i === index ? 'true' : 'false'));
       if (counter) {
         counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
       }
@@ -354,13 +256,6 @@ const slides = [
       goTo(current + 1);
       startAutoplay();
     });
-    dots.forEach((dot) => {
-      dot.addEventListener('click', () => {
-        goTo(Number(dot.dataset.index ?? 0));
-        startAutoplay();
-      });
-    });
-
     let scrollTimer: number | undefined;
     track.addEventListener('scroll', () => {
       if (scrollTimer) window.clearTimeout(scrollTimer);
