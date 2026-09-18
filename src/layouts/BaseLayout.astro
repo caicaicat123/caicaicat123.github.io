@@ -28,25 +28,24 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#0B0F14" />
+    <meta name="theme-color" content="#F7F4ED" />
 
     <script is:inline>
       // 在首屏渲染前定好主题，避免深色/浅色闪一下
       (function () {
-        var theme = 'dark';
+        // 默认宣纸（浅色）——这是设计基准；只有用户手动切过或系统偏好深色才用松烟
+        var theme = 'light';
         try {
           var saved = localStorage.getItem('nwn-theme');
           if (saved === 'light' || saved === 'dark') {
             theme = saved;
-          } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-            theme = 'light';
           }
         } catch (e) {
-          /* localStorage 不可用时按默认深色 */
+          /* localStorage 不可用时按默认宣纸（浅色） */
         }
         document.documentElement.setAttribute('data-theme', theme);
         var meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', theme === 'light' ? '#f6f8fa' : '#0b0f14');
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#f7f4ed' : '#14120f');
       })();
     </script>
 

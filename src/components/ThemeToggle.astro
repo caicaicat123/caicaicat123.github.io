@@ -43,7 +43,7 @@ const label = '切换深色 / 浅色主题';
   function applyTheme(theme: 'light' | 'dark') {
     document.documentElement.setAttribute('data-theme', theme);
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'light' ? '#f6f8fa' : '#0b0f14');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#f7f4ed' : '#14120f');
   }
 
   if (toggle) {
