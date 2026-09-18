@@ -19,47 +19,17 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 
   <!-- 服务器状态 -->
   <section id="server-status" class="mx-auto max-w-6xl px-4 py-20">
-    <SectionHeading
-      eyebrow="SERVER"
-      title="服务器状态"
-      desc="Java 版 26.1.2，1.7 至 26.1 全版本可进，离线模式。下面是实时状态查询。"
-    />
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <ServerStatus />
-      <div class="card flex flex-col justify-between p-5">
-        <div>
-          <p class="text-sm font-medium text-ink">加入之前</p>
-          <p class="mt-2 text-base leading-relaxed text-muted">
-            服务器是离线模式，进服后要先用登录插件注册账号。规则与教程都在 Minecraft 页面。
-          </p>
-        </div>
-        <a href="/minecraft" class="mt-4 text-sm text-primary transition-opacity hover:opacity-80">
-          查看规则与教程 →
-        </a>
-      </div>
-      <div class="card flex flex-col justify-between p-5">
-        <div>
-          <p class="text-sm font-medium text-ink">社区与版本</p>
-          <dl class="mt-3 space-y-1.5 text-xs text-muted">
-            <div class="flex justify-between gap-3">
-              <dt>客户端</dt>
-              <dd class="text-ink">Java 版</dd>
-            </div>
-            <div class="flex justify-between gap-3">
-              <dt>开服时间</dt>
-              <dd class="text-ink">2024 年至今</dd>
-            </div>
-            <div class="flex justify-between gap-3">
-              <dt>QQ 群</dt>
-              <dd class="font-mono text-ink">{site.community.qq}</dd>
-            </div>
-          </dl>
-        </div>
-        <a href="/contact" class="mt-4 text-sm text-primary transition-opacity hover:opacity-80">
-          加入社区 →
-        </a>
-      </div>
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <SectionHeading
+        eyebrow="SERVER"
+        title="服务器状态"
+        desc="Java 版 26.1.2，全版本客户端可进，离线模式。"
+      />
+      <a href="/minecraft" class="mb-14 text-sm text-primary transition-opacity hover:opacity-80">
+        服务器详情 →
+      </a>
     </div>
+    <ServerStatus mini />
   </section>
 
   <!-- 最新文章 -->

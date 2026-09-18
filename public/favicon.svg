@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <!-- 四色方块独立成标，不画底板：避免在浅色标签栏上出现一圈深色方块 -->
-  <rect x="2" y="2" width="13" height="13" rx="2.5" fill="#5EEAD4"/>
-  <rect x="17" y="2" width="13" height="13" rx="2.5" fill="#22D3EE"/>
-  <rect x="2" y="17" width="13" height="13" rx="2.5" fill="#A78BFA"/>
-  <rect x="17" y="17" width="13" height="13" rx="2.5" fill="#FACC15"/>
+  <!-- 国风四色：朱砂 · 缃色 · 竹青 · 墨 -->
+  <rect x="2" y="2" width="13" height="13" rx="2" fill="#B93A32"/>
+  <rect x="17" y="2" width="13" height="13" rx="2" fill="#9A6B00"/>
+  <rect x="2" y="17" width="13" height="13" rx="2" fill="#4A7C59"/>
+  <rect x="17" y="17" width="13" height="13" rx="2" fill="#1F1D1A"/>
 </svg>

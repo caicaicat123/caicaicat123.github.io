@@ -10,12 +10,6 @@ const slides = [
     desc: '当前版本 26.1.2，1.7 到 26.1 的任何客户端都能直接进。离线模式也能玩，领地保护和方块回滚守着你的家，被拆的东西能查、能还原。',
     primary: { label: '进入服务器', href: '/minecraft' },
     secondary: { label: '查看实时状态', href: '#server-status' },
-    stats: [
-      { k: '开服', v: '2024 年' },
-      { k: '版本', v: '26.1.2' },
-      { k: '在线上限', v: '30 人' },
-      { k: '客户端', v: '1.7 – 26.1' },
-    ],
     theme: 'mc',
   },
   {
@@ -26,12 +20,6 @@ const slides = [
     desc: '正在为 The Fire Rises 制作附加内容（Add-on），当前做的是重庆模式的债务相关国策与决议。',
     primary: { label: '了解内容', href: '/mod' },
     secondary: { label: '看看项目', href: '/projects' },
-    stats: [
-      { k: '载体', v: 'TFR Add-on' },
-      { k: '游戏', v: 'Hearts of Iron IV' },
-      { k: '内容', v: '债务国策决议' },
-      { k: '发布', v: '暂不公开' },
-    ],
     theme: 'mod',
   },
 ];
@@ -87,7 +75,7 @@ const slides = [
           aria-roledescription="页面"
           aria-label={`${index + 1} / ${slides.length}：${slide.eyebrow}`}
         >
-          <div class="relative mx-auto flex max-w-6xl items-center gap-12 px-4 pb-14 pt-10 sm:pb-20 sm:pt-14">
+          <div class="relative mx-auto flex max-w-6xl items-center gap-12 px-4 pb-10 pt-10 sm:pb-14 sm:pt-12">
             <div class="relative max-w-3xl flex-1">
               <p class="hero-item font-pixel text-[11px] text-primary-2" style="--i:0">
                 {slide.tag} · {slide.eyebrow}
@@ -116,19 +104,6 @@ const slides = [
                 </a>
               </div>
 
-              <dl
-                class="hero-item mt-12 grid max-w-2xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-4"
-                style="--i:4"
-              >
-                {slide.stats.map((stat) => (
-                  <div class="bg-bg px-5 py-4">
-                    <dt class="font-pixel text-[10.5px] text-muted">{stat.k}</dt>
-                    <dd class="mt-2 font-mono text-[21px] font-semibold leading-none text-strong">
-                      {stat.v}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
             </div>
 
             <!-- 印章 + 竖排题跋 -->
