@@ -15,9 +15,26 @@ interface Props {
 }
 
 const { title, description, pubDate, updatedDate, category, tags, prev, next } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: pubDate.toISOString(),
+  dateModified: (updatedDate ?? pubDate).toISOString(),
+  inLanguage: 'zh-CN',
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+  author: { '@type': 'Person', name: site.author },
+  publisher: { '@id': `${site.url}/#organization` },
+  articleSection: category,
+  keywords: tags.join(', '),
+};
 ---
 
 <BaseLayout title={title} description={description} ogType="article">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <article class="mx-auto max-w-3xl px-4 py-12">
     <a href="/blog" class="text-sm text-muted transition-colors hover:text-primary">← 返回博客</a>
 

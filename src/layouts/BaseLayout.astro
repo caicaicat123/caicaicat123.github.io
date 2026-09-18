@@ -63,6 +63,32 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="alternate" type="application/rss+xml" title={`${site.name} · 博客`} href="/rss.xml" />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+          {
+            '@type': 'Organization',
+            '@id': `${site.url}/#organization`,
+            name: site.name,
+            alternateName: [site.nameEn, site.shortName],
+            url: site.url,
+            logo: ogImage,
+            email: site.email,
+            sameAs: [site.github],
+          },
+          {
+            '@type': 'WebSite',
+            '@id': `${site.url}/#website`,
+            name: `${site.name} · ${site.nameEn}`,
+            url: site.url,
+            inLanguage: 'zh-CN',
+            publisher: { '@id': `${site.url}/#organization` },
+          },
+        ],
+      })}
+    />
     <slot name="head" />
   </head>
 
