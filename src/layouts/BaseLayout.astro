@@ -62,6 +62,7 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} · 博客`} href="/rss.xml" />
     <slot name="head" />
   </head>
 

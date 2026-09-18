@@ -63,6 +63,7 @@ export const nav = [
   { href: '/minecraft', label: 'Minecraft' },
   { href: '/mod', label: '钢铁雄心4' },
   { href: '/projects', label: '项目' },
+  { href: '/blog', label: '博客' },
   { href: '/roadmap', label: '路线图' },
   { href: '/about', label: '关于' },
   { href: '/contact', label: '联系' },

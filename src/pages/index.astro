@@ -1,11 +1,18 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 import HeroCarousel from '../components/HeroCarousel.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ServerStatus from '../components/ServerStatus.astro';
+import BlogCard from '../components/BlogCard.astro';
 import RoadmapItem from '../components/RoadmapItem.astro';
 import { site } from '../data/site';
 import { roadmap } from '../data/roadmap';
+import { formatDate } from '../utils/format';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 
 const matrix = [
   {
@@ -106,6 +113,33 @@ const previewRoadmap = roadmap.slice(0, 3);
         }
       </div>
     </div>
+  </section>
+
+  <!-- 最新文章 -->
+  <section class="mx-auto max-w-6xl px-4 py-16">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <SectionHeading eyebrow="BLOG" title="最新文章" />
+      <a href="/blog" class="mb-8 text-sm text-primary transition-opacity hover:opacity-80">
+        全部文章 →
+      </a>
+    </div>
+    <div class="grid gap-5 md:grid-cols-3">
+      {
+        posts.map((post) => (
+          <BlogCard
+            title={post.data.title}
+            description={post.data.description}
+            href={`/blog/${post.id}/`}
+            date={formatDate(post.data.pubDate)}
+            category={post.data.category}
+            tags={post.data.tags}
+          />
+        ))
+      }
+    </div>
+    {
+      posts.length === 0 && <p class="card p-5 text-sm text-muted">还没有文章，第一篇正在写。</p>
+    }
   </section>
 
   <!-- 路线图预览 -->
