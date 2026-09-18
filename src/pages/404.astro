@@ -21,7 +21,7 @@ import { nav } from '../data/site';
     <div class="mt-8 flex flex-wrap justify-center gap-2">
       <a
         href="/"
-        class="rounded-md border border-primary/40 bg-primary/10 px-4 py-2 text-sm text-primary transition-colors hover:bg-primary/20"
+        class="btn btn-accent"
       >
         返回首页
       </a>
@@ -29,7 +29,7 @@ import { nav } from '../data/site';
         nav.slice(1, 5).map((item) => (
           <a
             href={item.href}
-            class="rounded-md border border-line px-4 py-2 text-sm text-muted transition-colors hover:text-ink"
+            class="btn btn-subtle"
           >
             {item.label}
           </a>

@@ -37,25 +37,39 @@ const slides = [
 ];
 ---
 
-<section class="hero relative overflow-hidden border-b border-line" aria-roledescription="轮播" aria-label="站点两个方向">
-  <div class="pixel-grid pointer-events-none absolute inset-0 opacity-70" aria-hidden="true"></div>
+<section
+  class="hero relative overflow-hidden border-b border-line"
+  aria-roledescription="轮播"
+  aria-label="站点两个方向"
+>
+  <div class="relative mx-auto max-w-6xl px-4 pt-9">
+    <div class="flex flex-wrap items-start justify-between gap-4">
+      <div class="flex flex-col gap-3">
+        <p class="hero-badge">
+          <span class="pip" aria-hidden="true"></span>
+          Minecraft 服务器 · 钢铁雄心 4 Mod
+        </p>
+        <h1 class="text-[13px] font-medium tracking-[0.04em] text-muted sm:text-sm">
+          <span class="font-bold tracking-[0.12em] text-strong">{site.name}</span>
+          <span class="mx-2 text-muted">·</span>
+          {site.slogan}
+        </h1>
+      </div>
 
-  <div class="relative mx-auto max-w-6xl px-4 pt-10 sm:pt-12">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <h1 class="flex flex-wrap items-center gap-2">
-        <span class="badge badge-primary font-pixel">{site.nameEn}</span>
-        <span class="text-sm font-medium text-ink sm:text-base">{site.name} · {site.slogan}</span>
-      </h1>
       <div class="flex items-center gap-3">
         <span class="font-pixel text-xs text-muted" data-hero-counter>01 / 02</span>
         <div class="flex gap-1.5">
           <button class="hero-arrow" type="button" data-hero-prev aria-label="上一页">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6"></path>
+            </svg>
           </button>
           <button class="hero-arrow" type="button" data-hero-next aria-label="下一页">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 6l6 6-6 6"></path>
+            </svg>
           </button>
         </div>
       </div>
@@ -73,47 +87,55 @@ const slides = [
           aria-roledescription="页面"
           aria-label={`${index + 1} / ${slides.length}：${slide.eyebrow}`}
         >
-          <div class="relative mx-auto max-w-6xl px-4 py-14 sm:py-16">
-            <div class={`hero-glow hero-glow--${slide.theme}`} aria-hidden="true"></div>
-
-            <div class="relative max-w-3xl">
-              <p class="hero-item font-pixel text-xs tracking-wider text-primary" style="--i:0">
+          <div class="relative mx-auto flex max-w-6xl items-center gap-12 px-4 pb-14 pt-10 sm:pb-20 sm:pt-14">
+            <div class="relative max-w-3xl flex-1">
+              <p class="hero-item font-pixel text-[11px] text-primary-2" style="--i:0">
                 {slide.tag} · {slide.eyebrow}
               </p>
 
-              <h2 class="hero-item mt-4 text-4xl font-semibold leading-tight tracking-tight text-strong sm:text-5xl" style="--i:1">
+              <h2
+                class="hero-item mt-5 text-[clamp(34px,5.4vw,58px)] font-extrabold leading-[1.06] tracking-[-0.04em] text-strong"
+                style="--i:1"
+              >
                 {slide.title[0]}
                 <br class="hidden sm:block" />
                 {slide.title[1]}
               </h2>
 
-              <p class="hero-item mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg" style="--i:2">
+              <p
+                class="hero-item mt-7 max-w-xl text-[16.5px] leading-[1.85] tracking-[0.02em] text-muted"
+                style="--i:2"
+              >
                 {slide.desc}
               </p>
 
-              <div class="hero-item mt-8 flex flex-wrap items-center gap-3" style="--i:3">
-                <a
-                  href={slide.primary.href}
-                  class="rounded-md border border-primary/40 bg-primary/10 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
-                >
-                  {slide.primary.label}
-                </a>
-                <a
-                  href={slide.secondary.href}
-                  class="rounded-md border border-line px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-primary/50 hover:text-primary"
-                >
+              <div class="hero-item mt-9 flex flex-wrap items-center gap-3" style="--i:3">
+                <a href={slide.primary.href} class="btn btn-accent btn-lg">{slide.primary.label}</a>
+                <a href={slide.secondary.href} class="btn btn-standard btn-lg">
                   {slide.secondary.label}
                 </a>
               </div>
 
-              <dl class="hero-item mt-10 grid max-w-2xl grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4" style="--i:4">
+              <dl
+                class="hero-item mt-12 grid max-w-2xl grid-cols-2 gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-4"
+                style="--i:4"
+              >
                 {slide.stats.map((stat) => (
-                  <div>
-                    <dt class="text-xs text-muted">{stat.k}</dt>
-                    <dd class="mt-0.5 font-mono text-sm text-ink">{stat.v}</dd>
+                  <div class="bg-bg px-5 py-4">
+                    <dt class="font-pixel text-[10.5px] text-muted">{stat.k}</dt>
+                    <dd class="mt-2 font-mono text-[21px] font-semibold leading-none text-strong">
+                      {stat.v}
+                    </dd>
                   </div>
                 ))}
               </dl>
+            </div>
+
+            <!-- 印章：唯一的 conic-gradient，只做旋转光边 -->
+            <div class="hero-item hidden shrink-0 lg:block" style="--i:5">
+              <div class="seal">
+                <span>新</span>
+              </div>
             </div>
           </div>
         </article>
@@ -121,8 +143,8 @@ const slides = [
     }
   </div>
 
-  <div class="relative mx-auto max-w-6xl px-4 pb-10">
-    <div class="flex items-center gap-3">
+  <div class="relative mx-auto max-w-6xl px-4 pb-9">
+    <div class="flex items-center gap-4">
       {
         slides.map((slide, index) => (
           <button
@@ -137,15 +159,42 @@ const slides = [
           </button>
         ))
       }
-      <div class="hero-progress ml-auto hidden h-0.5 w-28 overflow-hidden rounded-full bg-soft sm:block">
+      <div class="hero-progress ml-auto hidden h-px w-28 overflow-hidden bg-line sm:block">
         <span class="hero-progress__bar block h-full w-0 bg-primary"></span>
       </div>
     </div>
-    <p class="mt-4 font-pixel text-xs text-muted">{site.vision}</p>
+    <p class="mt-5 font-pixel text-[11px] text-muted">{site.vision}</p>
   </div>
 </section>
 
 <style>
+  /* 徽标胶囊：左侧一枚呼吸的红点 */
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px 6px 12px;
+    border: 1px solid var(--color-line-2);
+    border-radius: 999px;
+    background: var(--color-soft);
+    color: var(--color-muted);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    align-self: flex-start;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .hero-badge .pip {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 12px var(--color-primary);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+
   .hero-track {
     display: flex;
     overflow-x: auto;
@@ -162,7 +211,7 @@ const slides = [
   }
 
   .hero-track:focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-accent);
     outline-offset: -2px;
   }
 
@@ -174,41 +223,14 @@ const slides = [
     scroll-snap-stop: always;
   }
 
-  /* 每页自己的光晕，避免两页看起来一样 */
-  .hero-glow {
-    position: absolute;
-    z-index: 0;
-    width: 22rem;
-    height: 22rem;
-    border-radius: 999px;
-    pointer-events: none;
-    opacity: 0.9;
-  }
-
-  .hero-glow--mc {
-    top: -6rem;
-    right: -4rem;
-    background: radial-gradient(closest-side, var(--glow-1), transparent 70%);
-  }
-
-  .hero-glow--mod {
-    top: -6rem;
-    right: -4rem;
-    background: radial-gradient(closest-side, var(--glow-1), transparent 70%);
-  }
-
   /* 进场：只有当前页播放，逐条错开 */
   .hero-item {
     opacity: 1;
   }
 
   .hero-slide.is-active .hero-item {
-    animation: heroIn 0.62s cubic-bezier(0.22, 0.61, 0.36, 1) both;
-    animation-delay: calc(var(--i, 0) * 90ms);
-  }
-
-  .hero-slide.is-active .hero-glow {
-    animation: heroGlow 0.9s ease both, heroFloat 9s ease-in-out 1s infinite;
+    animation: heroIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 80ms);
   }
 
   @keyframes heroIn {
@@ -222,44 +244,24 @@ const slides = [
     }
   }
 
-  @keyframes heroGlow {
-    from {
-      opacity: 0;
-      transform: scale(0.85);
-    }
-    to {
-      opacity: 0.9;
-      transform: scale(1);
-    }
-  }
-
-  @keyframes heroFloat {
-    0%,
-    100% {
-      transform: translateY(0) scale(1);
-    }
-    50% {
-      transform: translateY(12px) scale(1.04);
-    }
-  }
-
   .hero-arrow {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 0.5rem;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
     border: 1px solid var(--color-line);
     color: var(--color-muted);
     background: transparent;
-    transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+    transition: color 0.2s var(--ease), border-color 0.2s var(--ease),
+      background-color 0.2s var(--ease);
   }
 
   .hero-arrow:hover {
-    color: var(--color-primary);
-    border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
-    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    color: var(--color-ink);
+    border-color: var(--color-line-2);
+    background: var(--color-soft);
   }
 
   .hero-dot {
@@ -269,8 +271,9 @@ const slides = [
     border: 0;
     background: transparent;
     color: var(--color-muted);
-    font-size: 0.75rem;
-    transition: color 0.2s ease;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    transition: color 0.2s var(--ease);
   }
 
   .hero-dot__label {
@@ -287,7 +290,7 @@ const slides = [
     width: 0;
     border-radius: 999px;
     background: var(--color-primary);
-    transition: width 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .hero-dot[aria-current='true'] {
@@ -311,7 +314,7 @@ const slides = [
       scroll-behavior: auto;
     }
     .hero-slide.is-active .hero-item,
-    .hero-slide.is-active .hero-glow {
+    .hero-badge .pip {
       animation: none;
     }
     .hero-progress__bar {
@@ -340,13 +343,18 @@ const slides = [
       current = index;
       slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
       dots.forEach((dot, i) => dot.setAttribute('aria-current', i === index ? 'true' : 'false'));
-      if (counter) counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+      if (counter) {
+        counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+      }
       if (progress) progress.style.width = `${((index + 1) / slides.length) * 100}%`;
     };
 
     const goTo = (index: number) => {
       const target = (index + slides.length) % slides.length;
-      track.scrollTo({ left: target * track.clientWidth, behavior: reduceMotion ? 'auto' : 'smooth' });
+      track.scrollTo({
+        left: target * track.clientWidth,
+        behavior: reduceMotion ? 'auto' : 'smooth',
+      });
       setActive(target);
     };
 
@@ -377,7 +385,6 @@ const slides = [
       });
     });
 
-    // 手动滑动后同步状态，并重新计时
     let scrollTimer: number | undefined;
     track.addEventListener('scroll', () => {
       if (scrollTimer) window.clearTimeout(scrollTimer);
@@ -400,7 +407,9 @@ const slides = [
     ['pointerenter', 'focusin'].forEach((type) => hero.addEventListener(type, () => (paused = true)));
     ['pointerleave', 'focusout'].forEach((type) => hero.addEventListener(type, () => (paused = false)));
 
-    window.addEventListener('resize', () => track.scrollTo({ left: current * track.clientWidth, behavior: 'auto' }));
+    window.addEventListener('resize', () =>
+      track.scrollTo({ left: current * track.clientWidth, behavior: 'auto' }),
+    );
 
     setActive(0);
     startAutoplay();

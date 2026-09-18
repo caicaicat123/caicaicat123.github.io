@@ -48,8 +48,10 @@ const articleSchema = {
           )
         }
       </div>
-      <h1 class="text-2xl font-semibold leading-snug text-strong sm:text-3xl">{title}</h1>
-      <p class="mt-3 text-base leading-relaxed text-muted">{description}</p>
+      <h1 class="text-[clamp(28px,3.6vw,40px)] font-extrabold leading-[1.16] tracking-[-0.03em] text-strong">
+        {title}
+      </h1>
+      <p class="mt-4 text-base leading-[1.85] tracking-[0.02em] text-muted">{description}</p>
       {
         tags.length > 0 && (
           <div class="mt-4 flex flex-wrap gap-2">

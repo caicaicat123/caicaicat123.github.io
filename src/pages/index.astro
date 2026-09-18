@@ -103,7 +103,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
         <div class="mt-6 flex flex-wrap gap-3">
           <a
             href="/contact"
-            class="rounded-md border border-primary/40 bg-primary/10 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
+            class="btn btn-accent btn-lg"
           >
             联系我们
           </a>
@@ -111,7 +111,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
             href={site.github}
             target="_blank"
             rel="noopener noreferrer"
-            class="rounded-md border border-line px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-primary/50 hover:text-primary"
+            class="btn btn-standard btn-lg"
           >
             GitHub
           </a>

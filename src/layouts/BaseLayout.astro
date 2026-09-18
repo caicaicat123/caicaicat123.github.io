@@ -93,6 +93,14 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
   </head>
 
   <body class="flex min-h-screen flex-col">
+    <!-- 背景层：56px 网格 + 三团光晕（径向模糊属于光效，不是装饰渐变） -->
+    <div class="bg" aria-hidden="true">
+      <div class="bg-grid"></div>
+      <div class="bg-orb bg-orb-1"></div>
+      <div class="bg-orb bg-orb-2"></div>
+      <div class="bg-orb bg-orb-3"></div>
+    </div>
+
     <a
       href="#main"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:text-primary"
@@ -104,5 +112,45 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
       <slot />
     </main>
     <Footer />
+
+    <script>
+      // 光标柔光：只有精确指针 + 未开启「减少动效」时才启用
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const finePointer = window.matchMedia('(pointer: fine)').matches;
+      const bgLayer = document.querySelector('.bg');
+
+      if (!reduceMotion && finePointer && bgLayer) {
+        const orb = document.createElement('div');
+        orb.className = 'bg-cursor';
+        bgLayer.appendChild(orb);
+
+        let x = window.innerWidth / 2;
+        let y = window.innerHeight / 2;
+        let cx = x;
+        let cy = y;
+        let raf = 0;
+
+        const tick = () => {
+          cx += (x - cx) * 0.08;
+          cy += (y - cy) * 0.08;
+          orb.style.left = `${cx}px`;
+          orb.style.top = `${cy}px`;
+          raf = requestAnimationFrame(tick);
+        };
+
+        window.addEventListener(
+          'mousemove',
+          (event) => {
+            x = event.clientX;
+            y = event.clientY;
+            if (!raf) raf = requestAnimationFrame(tick);
+          },
+          { passive: true },
+        );
+
+        document.addEventListener('mouseleave', () => (orb.style.opacity = '0'));
+        document.addEventListener('mouseenter', () => (orb.style.opacity = '0.3'));
+      }
+    </script>
   </body>
 </html>

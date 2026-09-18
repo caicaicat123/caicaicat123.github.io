@@ -2,86 +2,125 @@
 @source "../";
 
 /*
- * 主题：深色为默认，浅色通过 <html data-theme="light"> 切换。
+ * 视觉体系：玄为底 · 赤为韵 · 天青与金为辅（参考「山海 · 新中式科技设计系统」）
  *
- * 注意：Tailwind 对带透明度的类（如 bg-surface/30）会在构建期把颜色写死，
- * 不会跟随 CSS 变量变化。这类例外统一放在文件末尾的「浅色模式补偿」里覆盖。
+ * 六条规矩：
+ *   01 令牌先行    —— 颜色 / 字号 / 间距 / 圆角 / 阴影全部走变量
+ *   02 留白即内容  —— 区块间距 104px，标题与正文 28px
+ *   03 材质建立深度 —— 导航用亚克力，卡片用一层极薄玻璃，光晕只出现在关键交互处
+ *   04 实色胜过渐变 —— 填充、按钮、进度、强调文字全部实色；只有背景光晕与印章旋转光边保留渐变
+ *   05 焦点必须可见 —— 内环玄色、外环金色，深浅背景都清楚
+ *   06 动效要慢    —— 入场 600ms，交互反馈 200ms
+ *
+ * 注意：Tailwind 对带透明度的类（bg-surface/30 之类）会在构建期把颜色写死，
+ * 这类例外统一放在文件末尾的「浅色模式补偿」里覆盖。
  */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
-/* ── 设计令牌（对应计划书 8.1 视觉规范） ───────────────────────── */
+/* ── 令牌 ─────────────────────────────────────────────────── */
 @theme {
-  --color-bg: #0b0f14;
-  --color-surface: #111a24;
-  --color-surface-2: #16202c;
-  --color-primary: #5eead4;
-  --color-cyan: #22d3ee;
-  --color-secondary: #a78bfa;
-  --color-accent: #facc15;
-  --color-ink: #e5e7eb;
-  --color-muted: #8fa3b8;
-  --color-strong: #ffffff;
+  /* 玄（底）与深空（层） */
+  --color-bg: #06070a;
+  --color-surface: #0e1016;
+  --color-surface-2: #141821;
   --color-soft: rgba(255, 255, 255, 0.06);
-  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line: rgba(255, 255, 255, 0.09);
+  --color-line-2: rgba(255, 255, 255, 0.16);
 
-  /* 字体全部走系统栈：不引入 Google Fonts 等外部 CDN，保证国内首屏速度 */
-  --font-sans: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei",
-    "PingFang SC", "Hiragino Sans GB", "Source Han Sans SC", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Consolas,
-    "Liberation Mono", monospace;
-  --font-pixel: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  /* 文字三阶 */
+  --color-strong: #ffffff;
+  --color-ink: #f2f4f8;
+  --color-muted: #a6aebc;
+
+  /* 唯一强调色：中国红 */
+  --color-primary: #e23d3d;
+  --color-primary-2: #ff5a4e;
+
+  /* 辅助：天青 · 玉 · 金 */
+  --color-cyan: #5b9bb5;
+  --color-secondary: #7db8a6;
+  --color-accent: #d4b36a;
+
+  /* 字体：标题黑体、点缀宋体、数字等宽 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "HarmonyOS Sans SC", "MiSans", "Noto Sans SC", "Microsoft YaHei",
+    "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC",
+    "SimSun", Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code", Menlo,
+    Consolas, monospace;
+  --font-pixel: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Mono",
+    Consolas, monospace;
 }
 
 :root {
-  --grid-line: rgba(255, 255, 255, 0.045);
-  --glow-1: rgba(94, 234, 212, 0.18);
-  --glow-2: rgba(167, 139, 250, 0.16);
+  /* 网格与光晕（径向模糊属于光效，不是装饰渐变） */
+  --grid-line: rgba(255, 255, 255, 0.06);
+  --glow-red: rgba(226, 61, 61, 0.42);
+  --glow-cyan: rgba(91, 155, 181, 0.32);
+  --glow-gold: rgba(212, 179, 106, 0.26);
+  --glow-1: var(--glow-red);
+  --glow-2: var(--glow-cyan);
+  --acrylic: rgba(6, 7, 10, 0.72);
   --card-shadow: none;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
   color-scheme: dark;
 }
 
-/* ── 浅色主题 ─────────────────────────────────────────────── */
+/* ── 浅色：宣纸 ───────────────────────────────────────────── */
 :root[data-theme='light'] {
-  --color-bg: #f6f8fa;
+  --color-bg: #f6f4ee;
   --color-surface: #ffffff;
-  --color-surface-2: #eef2f6;
-  --color-primary: #0f766e;
-  --color-cyan: #0e7490;
-  --color-secondary: #6d28d9;
-  --color-accent: #a16207;
-  --color-ink: #1f2937;
-  --color-muted: #5b6b7c;
-  --color-strong: #0b0f14;
-  --color-soft: rgba(15, 23, 42, 0.05);
-  --color-line: rgba(15, 23, 42, 0.1);
-  --grid-line: rgba(15, 23, 42, 0.055);
-  --glow-1: rgba(15, 118, 110, 0.1);
-  --glow-2: rgba(109, 40, 217, 0.08);
-  --card-shadow: 0 1px 3px rgba(15, 23, 42, 0.07);
+  --color-surface-2: #edeae2;
+  --color-soft: rgba(20, 22, 26, 0.05);
+  --color-line: rgba(20, 22, 26, 0.1);
+  --color-line-2: rgba(20, 22, 26, 0.18);
+
+  --color-strong: #0b0d12;
+  --color-ink: #14161a;
+  --color-muted: #4a4f58;
+
+  --color-primary: #d2302c;
+  --color-primary-2: #e23d3d;
+  --color-cyan: #3e7a92;
+  --color-secondary: #558a7a;
+  --color-accent: #a88841;
+
+  --grid-line: rgba(20, 22, 26, 0.05);
+  --glow-red: rgba(210, 48, 44, 0.16);
+  --glow-cyan: rgba(62, 122, 146, 0.14);
+  --glow-gold: rgba(168, 136, 65, 0.14);
+  --acrylic: rgba(246, 244, 238, 0.72);
+  --card-shadow: 0 1px 2px rgba(20, 22, 26, 0.05);
   color-scheme: light;
 }
 
+/* ── 基础 ─────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background-color: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: 15px;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
-  color: var(--color-strong);
+  background: var(--color-primary);
+  color: #fff;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-accent);
+  border-radius: 6px;
 }
 
 code,
@@ -90,95 +129,364 @@ kbd {
   font-family: var(--font-mono);
 }
 
-/* 标题用的等宽点缀，仅用于英文/数字标签 */
+/* 等宽点缀：章节标签、数字、英文小字 */
 .font-pixel {
-  font-family: var(--font-pixel);
-  letter-spacing: 0.08em;
+  font-family: var(--font-mono);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
 }
 
-/* ── 通用组件类 ─────────────────────────────────────────────── */
+/* 宋体点缀：引文、副标题 */
+.font-serif {
+  font-family: var(--font-serif);
+  letter-spacing: 0.03em;
+}
+
+/* ── 背景层：网格 + 三团光晕 ───────────────────────────────── */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-grid {
+  position: absolute;
+  inset: -1px;
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 100% 80% at 50% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(ellipse 100% 80% at 50% 0%, #000 0%, transparent 72%);
+  opacity: 0.55;
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(110px);
+  will-change: transform;
+}
+
+.bg-orb-1 {
+  width: 620px;
+  height: 620px;
+  top: -180px;
+  left: -160px;
+  background: radial-gradient(circle, var(--glow-red), transparent 70%);
+  animation: drift 16s ease-in-out infinite alternate;
+}
+
+.bg-orb-2 {
+  width: 720px;
+  height: 720px;
+  top: 6%;
+  right: -260px;
+  background: radial-gradient(circle, var(--glow-cyan), transparent 70%);
+  animation: drift 20s ease-in-out infinite alternate-reverse;
+}
+
+.bg-orb-3 {
+  width: 520px;
+  height: 520px;
+  bottom: -180px;
+  left: 32%;
+  background: radial-gradient(circle, var(--glow-gold), transparent 70%);
+  animation: drift 24s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  from {
+    scale: 1;
+    opacity: 0.7;
+  }
+  to {
+    scale: 1.16;
+    opacity: 1;
+  }
+}
+
+/* 光标柔光：跟随鼠标的一小团红光（JS 动态插入） */
+.bg-cursor {
+  position: absolute;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-red), transparent 65%);
+  filter: blur(80px);
+  opacity: 0.3;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s var(--ease);
+  pointer-events: none;
+}
+
+/* 旧组件仍在用的装饰类：收敛为极淡的底纹与单色光晕 */
+.pixel-grid {
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.glow-primary,
+.glow-secondary {
+  background: radial-gradient(closest-side, var(--glow-red), transparent 70%);
+}
+
+/* ── 材质：卡片 / 标签 / 按钮 ──────────────────────────────── */
 .card {
-  background-color: var(--color-surface);
+  position: relative;
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
   border: 1px solid var(--color-line);
-  border-radius: 0.75rem;
+  border-radius: 16px;
   box-shadow: var(--card-shadow);
-  transition: transform 0.18s ease, border-color 0.18s ease,
-    background-color 0.18s ease;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+
+/* 顶部 1px 受光面：比渐变更克制 */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  border-radius: 16px 16px 0 0;
+  background: rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+[data-theme='light'] .card::before {
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .card:hover {
-  border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
-  background-color: var(--color-surface-2);
+  border-color: var(--color-line-2);
+  background: color-mix(in srgb, var(--color-surface-2) 92%, transparent);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.15rem 0.55rem;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  border-radius: 999px;
+  gap: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  border-radius: 6px;
   border: 1px solid var(--color-line);
   color: var(--color-muted);
 }
 
 .badge-primary {
-  color: var(--color-primary);
-  border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
-  background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary-2);
+  border-color: color-mix(in srgb, var(--color-primary) 34%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
 }
 
-/* 像素方块网格背景，用在 Hero 与区块底纹 */
-.pixel-grid {
-  background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size: 32px 32px;
+/* 章节标签：短横 + 等宽大写 */
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-primary-2);
 }
 
-.glow-primary {
-  background: radial-gradient(closest-side, var(--glow-1), transparent 70%);
+.section-label::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--color-primary);
+  box-shadow: 0 0 12px var(--color-primary);
 }
 
-.glow-secondary {
-  background: radial-gradient(closest-side, var(--glow-2), transparent 70%);
+/* 三级按钮（实色，圆角 6px） */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease),
+    color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
 }
 
-/* 状态呼吸灯 */
+.btn-accent {
+  position: relative;
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14), 0 4px 18px var(--glow-red);
+}
+
+/* 顶部 1px 白线表示受光面 */
+.btn-accent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.32);
+  pointer-events: none;
+}
+
+.btn-accent:hover {
+  background: var(--color-primary-2);
+  transform: translateY(-1px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 8px 28px var(--glow-red);
+}
+
+.btn-standard {
+  background: var(--color-soft);
+  border-color: var(--color-line-2);
+  color: var(--color-ink);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.btn-standard:hover {
+  border-color: var(--color-line-2);
+  background: color-mix(in srgb, var(--color-soft) 160%, transparent);
+}
+
+.btn-subtle {
+  color: var(--color-muted);
+}
+
+.btn-subtle:hover {
+  background: var(--color-soft);
+  color: var(--color-ink);
+}
+
+.btn-sm {
+  height: 32px;
+  padding: 0 13px;
+  font-size: 13px;
+}
+
+/* ── 印章（唯一的 conic-gradient：功能性旋转光边） ─────────── */
+.seal {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background: var(--color-primary);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3),
+    0 24px 72px var(--glow-red);
+  animation: seal-float 6s ease-in-out infinite;
+}
+
+.seal::before {
+  content: '';
+  position: absolute;
+  inset: 11px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+.seal::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 24px;
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.75) 30deg,
+    transparent 60deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: seal-rotate 8s linear infinite;
+  pointer-events: none;
+}
+
+.seal span {
+  font-family: var(--font-serif);
+  font-size: 76px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+}
+
+@keyframes seal-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2.5deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0deg);
+  }
+}
+
+@keyframes seal-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── 状态灯 ───────────────────────────────────────────────── */
 .status-dot {
-  width: 0.6rem;
-  height: 0.6rem;
+  width: 0.55rem;
+  height: 0.55rem;
   border-radius: 999px;
   background: var(--color-muted);
+  flex: none;
 }
 
 .status-online {
-  background: var(--color-primary);
-  box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-primary) 60%, transparent);
-  animation: pulse 2.4s infinite;
+  background: var(--color-secondary);
+  box-shadow: 0 0 12px var(--color-secondary);
+  animation: pulse 2.4s ease-in-out infinite;
 }
 
 .status-offline {
-  background: #ef4444;
+  background: var(--color-primary);
+  box-shadow: 0 0 12px var(--color-primary);
 }
 
 @keyframes pulse {
-  70% {
-    box-shadow: 0 0 0 10px transparent;
-  }
+  0%,
   100% {
-    box-shadow: 0 0 0 0 transparent;
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85);
   }
 }
 
 .fade-up {
-  animation: fadeUp 0.5s ease both;
+  animation: fadeUp 0.6s var(--ease) both;
 }
 
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -186,7 +494,7 @@ kbd {
   }
 }
 
-/* ── 主题切换按钮图标 ────────────────────────────────────────── */
+/* ── 主题切换按钮图标 ──────────────────────────────────────── */
 .icon-sun {
   display: block;
 }
@@ -203,25 +511,28 @@ kbd {
   display: block;
 }
 
-/* 正文排版（日志详情） */
+/* ── 正文排版（文章） ─────────────────────────────────────── */
 .prose-nwn {
+  font-size: 16px;
   line-height: 1.95;
+  letter-spacing: 0.02em;
   color: var(--color-ink);
 }
 
 .prose-nwn h2 {
-  margin-top: 2.25rem;
-  margin-bottom: 0.75rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.9rem;
   font-size: 1.4rem;
-  font-weight: 600;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   color: var(--color-strong);
 }
 
 .prose-nwn h3 {
-  margin-top: 1.75rem;
-  margin-bottom: 0.6rem;
+  margin-top: 2rem;
+  margin-bottom: 0.7rem;
   font-size: 1.15rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-strong);
 }
 
@@ -245,31 +556,32 @@ kbd {
 }
 
 .prose-nwn a {
-  color: var(--color-primary);
+  color: var(--color-primary-2);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 .prose-nwn pre {
-  margin: 1.25rem 0;
+  margin: 1.4rem 0;
   padding: 1rem 1.1rem;
-  border-radius: 0.6rem;
+  border-radius: 10px;
   border: 1px solid var(--color-line);
   overflow-x: auto;
   font-size: 0.875rem;
 }
 
 .prose-nwn :not(pre) > code {
-  padding: 0.12rem 0.38rem;
-  border-radius: 0.35rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
   background: var(--color-soft);
-  font-size: 0.875em;
+  font-size: 0.88em;
 }
 
 .prose-nwn blockquote {
-  margin: 1.25rem 0;
+  margin: 1.4rem 0;
   padding-left: 1rem;
-  border-left: 3px solid color-mix(in srgb, var(--color-primary) 40%, transparent);
+  border-left: 2px solid var(--color-primary);
+  font-family: var(--font-serif);
   color: var(--color-muted);
 }
 
@@ -280,13 +592,15 @@ kbd {
   body {
     transition: none;
   }
-  .card:hover {
+  .card:hover,
+  .btn-accent:hover {
     transform: none;
   }
-  .fade-up {
-    animation: none;
-  }
-  .status-online {
+  .fade-up,
+  .status-online,
+  .bg-orb,
+  .seal,
+  .seal::after {
     animation: none;
   }
 }
@@ -294,14 +608,13 @@ kbd {
 /* ── 浅色模式补偿 ────────────────────────────────────────────
  * Tailwind 会把 bg-surface/30 这类带透明度的类编译成固定色值，
  * 这里按主题重新计算，避免浅色下出现深色色块。
- * 装饰性色块（bg-cyan/70、bg-accent/70 等）保持原样，浅色下依然成立。
  */
 :root[data-theme='light'] .bg-surface\/30 {
-  background-color: color-mix(in srgb, var(--color-surface-2) 65%, transparent);
+  background-color: color-mix(in srgb, var(--color-surface-2) 60%, transparent);
 }
 
 :root[data-theme='light'] .bg-surface\/40 {
-  background-color: color-mix(in srgb, var(--color-surface-2) 80%, transparent);
+  background-color: color-mix(in srgb, var(--color-surface-2) 78%, transparent);
 }
 
 :root[data-theme='light'] .bg-bg\/85 {

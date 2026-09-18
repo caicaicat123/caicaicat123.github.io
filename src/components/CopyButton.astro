@@ -12,18 +12,15 @@ const configured = !isPlaceholder(value);
 
 const toneClass =
   tone === 'primary'
-    ? 'border-primary/40 bg-primary/10 text-primary hover:bg-primary/20'
-    : 'border-line text-muted hover:text-ink';
+    ? 'btn btn-accent btn-sm'
+    : 'btn btn-standard btn-sm';
 ---
 
 {
   configured ? (
     <button
       type="button"
-      class:list={[
-        'inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm transition-colors',
-        toneClass,
-      ]}
+      class={toneClass}
       data-copy={value}
       aria-label={`${label}：${value}`}
     >
