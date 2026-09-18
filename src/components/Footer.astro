@@ -11,12 +11,14 @@ const related = [...nav.slice(4), ...extraNav];
     <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
       <div class="sm:col-span-2">
         <div class="flex items-center gap-3">
-          <span class="grid h-8 w-8 shrink-0 grid-cols-2 grid-rows-2 gap-[3px]" aria-hidden="true">
-            <i class="rounded-[2px] bg-primary"></i>
-            <i class="rounded-[2px] bg-accent"></i>
-            <i class="rounded-[2px] bg-cyan"></i>
-            <i class="rounded-[2px] bg-strong"></i>
-          </span>
+          <img
+            src="/favicon.svg"
+            alt=""
+            width="36"
+            height="36"
+            class="h-9 w-9 shrink-0"
+            aria-hidden="true"
+          />
           <span class="flex flex-col leading-none">
             <strong class="text-[14.5px] font-bold tracking-[0.14em] text-strong">{site.name}</strong>
             <span class="font-pixel mt-1 text-[9.5px] text-muted">{site.nameEn}</span>
