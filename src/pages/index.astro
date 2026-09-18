@@ -1,18 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroCarousel from '../components/HeroCarousel.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ServerStatus from '../components/ServerStatus.astro';
-import BlogCard from '../components/BlogCard.astro';
 import RoadmapItem from '../components/RoadmapItem.astro';
 import { site } from '../data/site';
 import { roadmap } from '../data/roadmap';
-import { formatDate } from '../utils/format';
-
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 3);
 
 const matrix = [
   {
@@ -23,11 +16,11 @@ const matrix = [
     cta: '服务器信息',
   },
   {
-    tag: 'AI',
-    title: 'AI 实验室',
-    desc: '稷下 Jixia：聚焦哲学、心理学、经济学的人文社科模型，为世界政治经济提供预测指南。',
-    href: '/ai-lab',
-    cta: '查看实验方向',
+    tag: 'MOD',
+    title: '钢铁雄心 4 Mod',
+    desc: '正在筹备的《钢铁雄心 4》Mod。方向已定，具体方案还在制定。',
+    href: '/mod',
+    cta: '查看计划',
   },
   {
     tag: 'OPEN',
@@ -96,7 +89,7 @@ const previewRoadmap = roadmap.slice(0, 3);
       <SectionHeading
         eyebrow="WHAT WE DO"
         title="我们在做什么"
-        desc="一条主线两条支线：把游戏服务器运营好，同时用它来验证 AI 的想法。"
+        desc="两条线：把《我的世界》服务器长期运营下去，同时开始做《钢铁雄心 4》Mod。"
       />
       <div class="grid gap-5 md:grid-cols-3">
         {
@@ -113,35 +106,6 @@ const previewRoadmap = roadmap.slice(0, 3);
         }
       </div>
     </div>
-  </section>
-
-  <!-- 最新日志 -->
-  <section class="mx-auto max-w-6xl px-4 py-16">
-    <div class="flex flex-wrap items-end justify-between gap-4">
-      <SectionHeading eyebrow="LOG" title="最新技术日志" />
-      <a href="/blog" class="mb-8 text-sm text-primary transition-opacity hover:opacity-80">
-        全部日志 →
-      </a>
-    </div>
-    <div class="grid gap-5 md:grid-cols-3">
-      {
-        posts.map((post) => (
-          <BlogCard
-            title={post.data.title}
-            description={post.data.description}
-            href={`/blog/${post.id}/`}
-            date={formatDate(post.data.pubDate)}
-            category={post.data.category}
-            tags={post.data.tags}
-          />
-        ))
-      }
-    </div>
-    {
-      posts.length === 0 && (
-        <p class="card p-5 text-sm text-muted">还没有日志，第一篇正在写。</p>
-      )
-    }
   </section>
 
   <!-- 路线图预览 -->
@@ -176,7 +140,7 @@ const previewRoadmap = roadmap.slice(0, 3);
       <div class="relative max-w-2xl">
         <h2 class="text-xl font-semibold text-strong sm:text-2xl">一起来把这个世界做大</h2>
         <p class="mt-3 text-sm leading-relaxed text-muted">
-          无论你是想进来盖房子、写代码，还是想一起训模型，都欢迎先来社区看看。
+          无论你是想进来盖房子、写代码，还是想一起做 Mod，都欢迎先来社区看看。
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
           <a

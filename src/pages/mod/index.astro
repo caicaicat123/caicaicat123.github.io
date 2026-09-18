@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { modProject } from '../../data/mod';
+---
+
+<BaseLayout
+  title="Mod 开发"
+  description="新世界网络正在筹备《钢铁雄心 4》Mod 开发，目前处于方案制定阶段。"
+>
+  <section class="relative overflow-hidden border-b border-line">
+    <div class="pixel-grid absolute inset-0 opacity-70" aria-hidden="true"></div>
+    <div class="glow-secondary absolute -right-20 -top-20 h-72 w-72" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-6xl px-4 py-14">
+      <p class="font-pixel mb-3 text-xs tracking-wider text-secondary">
+        MOD · {modProject.gameEn}
+      </p>
+      <h1 class="text-2xl font-semibold text-strong sm:text-3xl">
+        {modProject.game} Mod 开发
+      </h1>
+      <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted">{modProject.summary}</p>
+      <div class="mt-6 flex flex-wrap items-center gap-2">
+        <span class="badge badge-primary font-pixel">{modProject.stage}</span>
+        <span class="badge">{modProject.stageNote}</span>
+        <span class="badge">{modProject.gameEn}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <SectionHeading
+      eyebrow="PENDING"
+      title="还在确定的事"
+      desc="下面每一项都还没定，定了就补上。"
+    />
+    <dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        modProject.pending.map((item) => (
+          <div class="card p-5">
+            <dt class="text-xs text-muted">{item.k}</dt>
+            <dd class="mt-1 font-mono text-sm text-ink">{item.v}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="border-t border-line bg-surface/30">
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <SectionHeading eyebrow="NOTE" title="关于这一页" />
+      <ul class="space-y-3">
+        {
+          modProject.notes.map((note, index) => (
+            <li class="card flex gap-4 p-4">
+              <span class="font-pixel text-xs text-muted">{String(index + 1).padStart(2, '0')}</span>
+              <span class="text-sm leading-relaxed text-ink">{note}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

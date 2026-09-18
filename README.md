@@ -8,8 +8,6 @@
 |---|---|
 | 框架 | Astro 5 + TypeScript |
 | 样式 | Tailwind CSS v4（经 `@tailwindcss/vite` 接入） |
-| 内容 | Markdown / MDX + Content Collections |
-| 订阅 | `@astrojs/rss` 生成 `/rss.xml` |
 | 站点地图 | `@astrojs/sitemap` 生成 `sitemap-index.xml` |
 | 部署 | GitHub Actions → GitHub Pages |
 
@@ -35,35 +33,14 @@ npm run preview  # 预览 dist/
 │  └─ robots.txt
 ├─ scripts/generate-og.mjs        # 重新生成分享图
 └─ src/
-   ├─ components/                 # 页面组件
-   ├─ content/blog/               # 技术日志（Markdown / MDX）
-   ├─ data/                       # 站点信息、服务器、AI 实验室、项目、路线图
-   ├─ layouts/                    # 基础布局与日志布局
+   ├─ components/                 # 页面组件（页头、页脚、Hero 轮播、服务器状态…）
+   ├─ data/                       # 站点信息、服务器、Mod 计划、项目、路线图
+   ├─ layouts/                    # 基础布局
    ├─ pages/                      # 路由
-   ├─ styles/global.css           # 设计令牌与通用样式
-   └─ content.config.ts           # 内容集合定义
+   └─ styles/global.css           # 设计令牌与通用样式
 ```
 
 ## 更新内容
-
-### 发一篇技术日志
-
-在 `src/content/blog/` 新建 `.md` 或 `.mdx` 文件，文件名即 URL 路径：
-
-```markdown
----
-title: 标题
-description: 一句话摘要，会显示在列表和搜索结果里
-pubDate: 2026-09-12
-category: 技术日志
-tags: [标签一, 标签二]
-draft: false
----
-
-正文……
-```
-
-`draft: true` 的文章不会进入构建产物。`assets/` 的图片可直接引用。
 
 ### 补全站点信息
 
@@ -73,11 +50,12 @@ draft: false
 |---|---|
 | `src/data/site.ts` | 站点名、域名、邮箱、服务器地址与版本、社区入口 |
 | `src/data/minecraft.ts` | 服务器特点、规则、加入教程、公告 |
-| `src/data/ai.ts` | 实验室使命、实验方向、M1–M4 路线图、实验日志 |
+| `src/data/mod.ts` | 钢铁雄心 4 Mod 的状态与待定项 |
 | `src/data/projects.ts` | 项目卡片 |
 | `src/data/roadmap.ts` | 发展路线图 |
 
-服务器地址填入 `src/data/site.ts` 后，「服务器状态」组件会自动通过 mcsrvstat 查询并显示实时在线状态；留空则显示「待填写」且不发起请求。
+服务器地址填入 `src/data/site.ts` 后，「服务器状态」组件会自动查询并显示实时在线状态
+（主源 `mcapi.us`，备用 `api.mcsrvstat.us`）；留空则显示「待填写」且不发起请求。
 
 ### 重新生成分享图
 
@@ -98,6 +76,6 @@ node scripts/generate-og.mjs
 ## 验收要点
 
 - `npm run build` 无错误。
-- 所有路由可访问：`/`、`/minecraft`、`/ai-lab`、`/projects`、`/blog`、`/blog/<slug>`、`/blog/category/<slug>`、`/roadmap`、`/about`、`/contact`、`/404`。
+- 所有路由可访问：`/`、`/minecraft`、`/mod`、`/projects`、`/roadmap`、`/about`、`/contact`、`/404`。
 - 移动端 375px 宽度无横向滚动。
 - `public/CNAME` 内容为 `nwbbs.cn`，`astro.config.mjs` 的 `site` 为 `https://nwbbs.cn`，`base` 为 `/`。

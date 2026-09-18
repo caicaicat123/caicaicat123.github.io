@@ -18,10 +18,10 @@ export const projects = [
     links: [],
   },
   {
-    name: '稷下 Jixia',
-    tag: 'AI',
-    status: '进行中' as ProjectStatus,
-    desc: '自研人文社科模型，聚焦哲学、心理学、经济学，为世界政治经济提供预测指南。当前版本 Jixia-1.0（开发中）。',
+    name: '钢铁雄心 4 Mod',
+    tag: 'MOD',
+    status: '规划中' as ProjectStatus,
+    desc: '正在筹备的《钢铁雄心 4》Mod。方向已定，具体方案制定中，确定后会在这里更新。',
     links: [],
   },
 ] as const;
