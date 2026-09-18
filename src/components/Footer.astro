@@ -2,6 +2,8 @@
 import { nav, site } from '../data/site';
 
 const year = new Date().getFullYear();
+// 版权年份区间：起始年用工作室开始运营的年份（site.startedAt）
+const yearRange = String(year) === site.startedAt ? site.startedAt : `${site.startedAt}–${year}`;
 ---
 
 <footer class="mt-20 border-t border-line bg-surface/40">
@@ -58,7 +60,7 @@ const year = new Date().getFullYear();
     <div
       class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-muted sm:flex-row sm:items-center sm:justify-between"
     >
-      <p>© {year} {site.name} · {site.domain}</p>
+      <p>Copyright © {yearRange} {site.nameEn}, All Rights Reserved.</p>
       <p class="font-pixel">{site.slogan}</p>
     </div>
   </div>

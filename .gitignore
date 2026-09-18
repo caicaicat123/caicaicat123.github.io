@@ -7,3 +7,6 @@ dist/
 .env
 .env.production
 .vscode/
+
+# 项目管理文档：只留在本地，不随站点仓库公开
+说明.md
