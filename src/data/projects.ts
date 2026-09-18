@@ -11,10 +11,10 @@ export const projects = [
     links: [{ label: '源码仓库', href: 'https://github.com/caicaicat123/caicaicat123.github.io' }],
   },
   {
-    name: 'Minecraft 服务器',
+    name: '新世界服务器',
     tag: 'Game',
     status: '长期维护' as ProjectStatus,
-    desc: '工作室的核心业务载体，也是 AI 实验的真实运行环境。',
+    desc: '2024 年开服、长期运营的《我的世界》插件生存服，全版本客户端可进。',
     links: [],
   },
   {

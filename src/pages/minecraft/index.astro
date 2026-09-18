@@ -11,17 +11,19 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 ---
 
 <BaseLayout
-  title="Minecraft 服务器"
-  description="新世界网络 Minecraft Java 版插件生存服：地址、版本、规则、加入教程与实时状态查询。"
+  title="新世界服务器"
+  description="新世界服务器（NewWorldMC，NWM）：新世界网络运营的《我的世界》Java 版插件生存服，含地址、版本、规则、加入教程与实时状态查询。"
 >
   <section class="border-b border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
-      <p class="font-pixel mb-3 text-xs tracking-wider text-primary">MINECRAFT</p>
-      <h1 class="text-2xl font-semibold text-strong sm:text-3xl">Java 版插件生存服</h1>
+      <p class="font-pixel mb-3 text-xs tracking-wider text-primary">
+        {site.server.nameEn} · {site.server.shortName}
+      </p>
+      <h1 class="text-2xl font-semibold text-strong sm:text-3xl">{site.server.name}</h1>
       <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted">
-        一台持续运营的《我的世界》生存服务器，{openedAt}。当前版本 {version}，
-        1.7 到 26.1 的任何客户端都能直接进入，离线模式也能玩。在原版生存基础上加入实用插件，
-        同时也是我们做 AI 实验的真实场地——服务器里那只叫「幽灵」的 AI 就住在这里。
+        一台持续运营的《我的世界》Java 版插件生存服，{openedAt}。当前版本 {version}，
+        1.7 到 26.1 的任何客户端都能直接进入，离线模式也能玩。原版生存基础上加了实用插件，
+        还有一只住在聊天里的「幽灵」。
       </p>
     </div>
   </section>
