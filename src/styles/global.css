@@ -107,7 +107,6 @@ kbd {
 }
 
 .card:hover {
-  transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);
   background-color: var(--color-surface-2);
 }
@@ -206,7 +205,7 @@ kbd {
 
 /* 正文排版（日志详情） */
 .prose-nwn {
-  line-height: 1.85;
+  line-height: 1.95;
   color: var(--color-ink);
 }
 
@@ -229,7 +228,7 @@ kbd {
 .prose-nwn p,
 .prose-nwn ul,
 .prose-nwn ol {
-  margin-bottom: 1rem;
+  margin-bottom: 1.35rem;
 }
 
 .prose-nwn ul,

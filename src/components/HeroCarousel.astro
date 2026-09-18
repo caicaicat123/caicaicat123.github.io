@@ -21,16 +21,16 @@ const slides = [
   {
     key: 'mod',
     tag: 'MOD',
-    eyebrow: '钢铁雄心 4',
-    title: ['准备做一个', '还没公开的 Mod。'],
-    desc: '方向已经定了——做《钢铁雄心 4》的 Mod。做什么内容、改哪个剧本、什么时候开工，都还在定。方案成形后会在这里公开。',
-    primary: { label: '了解 Mod 计划', href: '/mod' },
+    eyebrow: 'The Fire Rises · Add-on',
+    title: ['钢铁雄心 4 的', 'The Fire Rises 附加内容。'],
+    desc: '正在为 The Fire Rises 制作附加内容（Add-on），当前做的是重庆模式的债务相关国策与决议。',
+    primary: { label: '了解内容', href: '/mod' },
     secondary: { label: '看看项目', href: '/projects' },
     stats: [
-      { k: '状态', v: '筹备中' },
+      { k: '载体', v: 'TFR Add-on' },
       { k: '游戏', v: 'Hearts of Iron IV' },
-      { k: '方案', v: '制定中' },
-      { k: '发布日期', v: '待定' },
+      { k: '内容', v: '债务国策决议' },
+      { k: '发布', v: '暂不公开' },
     ],
     theme: 'mod',
   },
@@ -94,11 +94,7 @@ const slides = [
               <div class="hero-item mt-8 flex flex-wrap items-center gap-3" style="--i:3">
                 <a
                   href={slide.primary.href}
-                  class={`rounded-md border px-5 py-2.5 text-sm font-medium transition-colors ${
-                    slide.theme === 'mod'
-                      ? 'border-secondary/50 bg-secondary/10 text-secondary hover:bg-secondary/20'
-                      : 'border-primary/40 bg-primary/10 text-primary hover:bg-primary/20'
-                  }`}
+                  class="rounded-md border border-primary/40 bg-primary/10 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/20"
                 >
                   {slide.primary.label}
                 </a>
@@ -198,7 +194,7 @@ const slides = [
   .hero-glow--mod {
     top: -6rem;
     right: -4rem;
-    background: radial-gradient(closest-side, var(--glow-2), transparent 70%);
+    background: radial-gradient(closest-side, var(--glow-1), transparent 70%);
   }
 
   /* 进场：只有当前页播放，逐条错开 */

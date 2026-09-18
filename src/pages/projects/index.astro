@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
+import RoadmapItem from '../../components/RoadmapItem.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import { projects } from '../../data/projects';
+import { roadmap } from '../../data/roadmap';
 import { site } from '../../data/site';
 ---
 
@@ -32,11 +34,39 @@ import { site } from '../../data/site';
     </div>
   </section>
 
+  <section class="border-t border-line">
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <SectionHeading
+          eyebrow="ROADMAP"
+          title="路线图"
+          desc="时间点会随实际情况调整，改动会记在博客里。"
+        />
+        <a href="/roadmap" class="mb-8 text-sm text-primary transition-opacity hover:opacity-80">
+          完整路线图 →
+        </a>
+      </div>
+      <div class="grid gap-x-10 md:grid-cols-3">
+        {
+          roadmap.slice(0, 3).map((item) => (
+            <RoadmapItem
+              phase={item.phase}
+              period={item.period}
+              title={item.title}
+              status={item.status}
+              items={item.items}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
   <section class="border-t border-line bg-surface/30">
     <div class="mx-auto max-w-6xl px-4 py-14">
       <SectionHeading eyebrow="OPEN SOURCE" title="开源计划" desc="能开源的尽量开源。" />
       <div class="card p-6">
-        <p class="text-sm leading-relaxed text-muted">
+        <p class="text-base leading-relaxed text-muted">
           插件与工具类项目会在条件成熟后陆续开源，仓库入口统一放在 GitHub。
           目前公开发布的仓库可以直接在 GitHub 上查看。
         </p>
@@ -51,7 +81,7 @@ import { site } from '../../data/site';
           </a>
           <a
             href="/mod"
-            class="rounded-md border border-line px-4 py-2 text-sm text-ink transition-colors hover:border-secondary/50"
+            class="rounded-md border border-line px-4 py-2 text-sm text-ink transition-colors hover:border-primary/50 hover:text-primary"
           >
             查看 Mod 计划
           </a>

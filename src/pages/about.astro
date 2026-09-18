@@ -26,7 +26,7 @@ const values = [
   <section class="mx-auto max-w-4xl px-4 py-14">
     <p class="font-pixel mb-3 text-xs tracking-wider text-primary">ABOUT</p>
     <h1 class="text-2xl font-semibold text-strong sm:text-3xl">关于 {site.name}</h1>
-    <p class="mt-5 text-sm leading-relaxed text-muted sm:text-base">
+    <p class="mt-5 text-base leading-relaxed text-muted sm:text-base">
       {site.description}
     </p>
 
@@ -45,7 +45,7 @@ const values = [
           values.map((value) => (
             <div class="card p-5">
               <h3 class="text-sm font-semibold text-strong">{value.title}</h3>
-              <p class="mt-2 text-sm leading-relaxed text-muted">{value.desc}</p>
+              <p class="mt-2 text-base leading-relaxed text-muted">{value.desc}</p>
             </div>
           ))
         }
@@ -57,30 +57,44 @@ const values = [
       <div class="card p-6">
         <p class="text-sm font-semibold text-strong">断了一只爪子的招财猫</p>
         <p class="font-pixel mt-1 text-xs text-muted">创始人 / 唯一成员</p>
-        <p class="text-sm leading-relaxed text-muted">
+        <p class="text-base leading-relaxed text-muted">
           服务器运维、插件开发、网站与 Mod 开发，目前都由我一个人在做。
           所以这个站点既是门面，也是我的工作台。
         </p>
-        <p class="mt-3 text-sm leading-relaxed text-muted">
+        <p class="mt-3 text-base leading-relaxed text-muted">
           工作室自 2024 年运营《我的世界》服务器起持续至今。
         </p>
       </div>
     </div>
 
     <div class="mt-12">
-      <SectionHeading eyebrow="CONTACT" title="找到我们" />
+      <SectionHeading
+        eyebrow="CONTACT"
+        title="找到我们"
+        desc="合作、反馈、进服申请都走这几个入口。"
+      />
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="card p-5">
+          <p class="text-xs text-muted">电子邮箱</p>
+          <p class="mt-1 break-all font-mono text-sm text-ink">{site.email}</p>
+        </div>
+        <div class="card p-5">
+          <p class="text-xs text-muted">QQ 群</p>
+          <p class="mt-1 font-mono text-sm text-ink">{site.community.qq}</p>
+        </div>
+      </div>
       <div class="flex flex-wrap gap-3">
         <a
           href="/contact"
           class="rounded-md border border-primary/40 bg-primary/10 px-4 py-2 text-sm text-primary transition-colors hover:bg-primary/20"
         >
-          联系方式
+          全部联系方式
         </a>
         <a
           href={site.github}
           target="_blank"
           rel="noopener noreferrer"
-          class="rounded-md border border-line px-4 py-2 text-sm text-ink transition-colors hover:border-secondary/50"
+          class="rounded-md border border-line px-4 py-2 text-sm text-ink transition-colors hover:border-primary/50 hover:text-primary"
         >
           GitHub
         </a>

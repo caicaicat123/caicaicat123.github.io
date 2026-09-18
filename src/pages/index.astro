@@ -5,40 +5,12 @@ import HeroCarousel from '../components/HeroCarousel.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ServerStatus from '../components/ServerStatus.astro';
 import BlogCard from '../components/BlogCard.astro';
-import RoadmapItem from '../components/RoadmapItem.astro';
 import { site } from '../data/site';
-import { roadmap } from '../data/roadmap';
 import { formatDate } from '../utils/format';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 3);
-
-const matrix = [
-  {
-    tag: 'GAME',
-    title: '新世界服务器',
-    desc: '长期运营的《我的世界》插件生存服，全版本客户端可进，也是社区入口。',
-    href: '/minecraft',
-    cta: '服务器信息',
-  },
-  {
-    tag: 'MOD',
-    title: '钢铁雄心 4 Mod',
-    desc: '正在筹备的《钢铁雄心 4》Mod。方向已定，具体方案还在制定。',
-    href: '/mod',
-    cta: '查看计划',
-  },
-  {
-    tag: 'OPEN',
-    title: '开源与归档',
-    desc: '插件与工具尽量开源，代码放在 GitHub，开发过程公开记录。',
-    href: '/projects',
-    cta: '浏览项目',
-  },
-];
-
-const previewRoadmap = roadmap.slice(0, 3);
 ---
 
 <BaseLayout title={site.name}>
@@ -46,7 +18,7 @@ const previewRoadmap = roadmap.slice(0, 3);
   <HeroCarousel />
 
   <!-- 服务器状态 -->
-  <section id="server-status" class="mx-auto max-w-6xl px-4 py-16">
+  <section id="server-status" class="mx-auto max-w-6xl px-4 py-20">
     <SectionHeading
       eyebrow="SERVER"
       title="服务器状态"
@@ -57,7 +29,7 @@ const previewRoadmap = roadmap.slice(0, 3);
       <div class="card flex flex-col justify-between p-5">
         <div>
           <p class="text-sm font-medium text-ink">加入之前</p>
-          <p class="mt-2 text-sm leading-relaxed text-muted">
+          <p class="mt-2 text-base leading-relaxed text-muted">
             服务器是离线模式，进服后要先用登录插件注册账号。规则与教程都在 Minecraft 页面。
           </p>
         </div>
@@ -90,33 +62,9 @@ const previewRoadmap = roadmap.slice(0, 3);
     </div>
   </section>
 
-  <!-- 业务矩阵 -->
-  <section class="border-y border-line bg-surface/30">
-    <div class="mx-auto max-w-6xl px-4 py-16">
-      <SectionHeading
-        eyebrow="WHAT WE DO"
-        title="我们在做什么"
-        desc="两条线：把《我的世界》服务器长期运营下去，同时开始做《钢铁雄心 4》Mod。"
-      />
-      <div class="grid gap-5 md:grid-cols-3">
-        {
-          matrix.map((item) => (
-            <a href={item.href} class="card group flex h-full flex-col p-5">
-              <span class="badge badge-primary font-pixel mb-3 self-start">{item.tag}</span>
-              <h3 class="text-base font-semibold text-strong">{item.title}</h3>
-              <p class="mt-2 flex-1 text-sm leading-relaxed text-muted">{item.desc}</p>
-              <span class="mt-4 text-sm text-primary transition-transform group-hover:translate-x-0.5">
-                {item.cta} →
-              </span>
-            </a>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
   <!-- 最新文章 -->
-  <section class="mx-auto max-w-6xl px-4 py-16">
+  <section class="border-y border-line bg-surface/30">
+    <div class="mx-auto max-w-6xl px-4 py-20">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <SectionHeading eyebrow="BLOG" title="最新文章" />
       <a href="/blog" class="mb-8 text-sm text-primary transition-opacity hover:opacity-80">
@@ -140,40 +88,16 @@ const previewRoadmap = roadmap.slice(0, 3);
     {
       posts.length === 0 && <p class="card p-5 text-sm text-muted">还没有文章，第一篇正在写。</p>
     }
-  </section>
-
-  <!-- 路线图预览 -->
-  <section class="border-t border-line bg-surface/30">
-    <div class="mx-auto max-w-6xl px-4 py-16">
-      <div class="flex flex-wrap items-end justify-between gap-4">
-        <SectionHeading eyebrow="ROADMAP" title="路线图" />
-        <a href="/roadmap" class="mb-8 text-sm text-primary transition-opacity hover:opacity-80">
-          完整路线图 →
-        </a>
-      </div>
-      <div class="grid gap-x-10 md:grid-cols-3">
-        {
-          previewRoadmap.map((item) => (
-            <RoadmapItem
-              phase={item.phase}
-              period={item.period}
-              title={item.title}
-              status={item.status}
-              items={item.items}
-            />
-          ))
-        }
-      </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="mx-auto max-w-6xl px-4 py-16">
+  <section class="mx-auto max-w-6xl px-4 py-20">
     <div class="pixel-grid card relative overflow-hidden p-8 sm:p-10">
       <div class="glow-primary absolute -right-10 -top-10 h-56 w-56" aria-hidden="true"></div>
       <div class="relative max-w-2xl">
         <h2 class="text-xl font-semibold text-strong sm:text-2xl">一起来把这个世界做大</h2>
-        <p class="mt-3 text-sm leading-relaxed text-muted">
+        <p class="mt-3 text-base leading-relaxed text-muted">
           无论你是想进来盖房子、写代码，还是想一起做 Mod，都欢迎先来社区看看。
         </p>
         <div class="mt-6 flex flex-wrap gap-3">
@@ -187,7 +111,7 @@ const previewRoadmap = roadmap.slice(0, 3);
             href={site.github}
             target="_blank"
             rel="noopener noreferrer"
-            class="rounded-md border border-line px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-secondary/50 hover:text-secondary"
+            class="rounded-md border border-line px-5 py-2.5 text-sm font-medium text-ink transition-colors hover:border-primary/50 hover:text-primary"
           >
             GitHub
           </a>

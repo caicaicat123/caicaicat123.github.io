@@ -58,13 +58,18 @@ export const site = {
   },
 } as const;
 
+/** 顶栏导航：刻意控制在 6 项以内（Apple / Google 的共同做法是少而宽） */
 export const nav = [
   { href: '/', label: '首页' },
   { href: '/minecraft', label: 'Minecraft' },
   { href: '/mod', label: '钢铁雄心4' },
   { href: '/projects', label: '项目' },
   { href: '/blog', label: '博客' },
-  { href: '/roadmap', label: '路线图' },
   { href: '/about', label: '关于' },
+] as const;
+
+/** 不进顶栏、但页面保留且要能被找到的入口（页脚与站内链接使用） */
+export const extraNav = [
+  { href: '/roadmap', label: '路线图' },
   { href: '/contact', label: '联系' },
 ] as const;
