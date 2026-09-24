@@ -12,7 +12,7 @@ export const projects = [
   },
   {
     name: '新世界服务器',
-    tag: 'Game',
+    tag: 'Minecraft',
     status: '长期维护' as ProjectStatus,
     desc: '2024 年开服、长期运营的《我的世界》插件生存服，全版本客户端可进。',
     links: [],
