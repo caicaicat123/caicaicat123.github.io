@@ -8,7 +8,8 @@ export async function GET(context) {
   );
 
   return rss({
-    title: `${site.name} · 技术日志`,
+    // 站内把这栏叫「博客」，RSS 标题跟着走，别再用旧的「技术日志」
+    title: `${site.name} · 博客`,
     description: site.description,
     site: context.site ?? site.url,
     items: posts.map((post) => ({

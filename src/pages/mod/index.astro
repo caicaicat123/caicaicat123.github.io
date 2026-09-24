@@ -6,21 +6,21 @@ import { modProject } from '../../data/mod';
 
 <BaseLayout
   title="Mod 开发"
-  description="新世界网络正在筹备《钢铁雄心 4》Mod 开发，目前处于方案制定阶段。"
+  description="新世界网络的《钢铁雄心 4》Mod 开发：The Fire Rises 附加内容，做重庆模式的债务相关国策与决议。"
 >
   <section class="relative overflow-hidden border-b border-line">
     <div class="pixel-grid absolute inset-0 opacity-70" aria-hidden="true"></div>
     <div class="glow-primary absolute -right-20 -top-20 h-72 w-72" aria-hidden="true"></div>
     <div class="relative mx-auto max-w-6xl px-4 py-14">
-      <p class="font-pixel mb-3 text-xs tracking-wider text-primary">
+      <p class="label-latin mb-3 text-xs text-primary">
         MOD · {modProject.gameEn}
       </p>
-      <h1 class="text-2xl font-semibold text-strong sm:text-3xl">
+      <h1 class="text-2xl font-medium text-strong sm:text-3xl">
         {modProject.title}
       </h1>
       <p class="mt-4 max-w-2xl text-base leading-relaxed text-muted">{modProject.summary}</p>
       <div class="mt-6 flex flex-wrap items-center gap-2">
-        <span class="badge badge-primary font-pixel">{modProject.stage}</span>
+        <span class="badge badge-primary label-cjk">{modProject.stage}</span>
         <span class="badge">{modProject.stageNote}</span>
         <span class="badge">{modProject.gameEn}</span>
       </div>
@@ -32,7 +32,7 @@ import { modProject } from '../../data/mod';
     <SectionHeading
       eyebrow="DETAILS"
       title="内容与状态"
-      desc="目前公开到这一档，方案细节定了再补。"
+      desc="目前公开到这一档，进展会同步到本页。"
     />
     <dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {

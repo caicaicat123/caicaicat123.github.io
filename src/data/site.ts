@@ -58,18 +58,31 @@ export const site = {
   },
 } as const;
 
-/** 顶栏导航：刻意控制在 6 项以内（Apple / Google 的共同做法是少而宽） */
+/**
+ * 顶栏导航：刻意控制在 6 项以内（Apple / Google 的共同做法是少而宽）。
+ * 注意：路径一律带尾斜杠 —— 产物是 about/index.html，canonical 也是带斜杠的，
+ * 不带斜杠的链接会让 GitHub Pages 多返回一次 301。
+ */
 export const nav = [
   { href: '/', label: '首页' },
-  { href: '/minecraft', label: 'Minecraft' },
-  { href: '/mod', label: '钢铁雄心4' },
-  { href: '/projects', label: '项目' },
-  { href: '/blog', label: '博客' },
-  { href: '/about', label: '关于' },
+  { href: '/minecraft/', label: 'Minecraft' },
+  { href: '/mod/', label: '钢铁雄心4' },
+  { href: '/projects/', label: '项目' },
+  { href: '/blog/', label: '博客' },
+  { href: '/about/', label: '关于' },
 ] as const;
 
 /** 不进顶栏、但页面保留且要能被找到的入口（页脚与站内链接使用） */
 export const extraNav = [
-  { href: '/roadmap', label: '路线图' },
-  { href: '/contact', label: '联系' },
+  { href: '/roadmap/', label: '路线图' },
+  { href: '/contact/', label: '联系' },
 ] as const;
+
+/**
+ * 页脚导航分组。以前页脚用的是 nav.slice(0, 4) / nav.slice(4) 这种魔法下标，
+ * 顶栏一变动页脚就会静默错位，所以这里显式列出来。
+ */
+export const footerNav = {
+  main: [nav[0], nav[1], nav[2], nav[3]],
+  related: [nav[4], nav[5], extraNav[0], extraNav[1]],
+} as const;

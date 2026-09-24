@@ -9,31 +9,30 @@ interface Props {
 
 const { phase, period, title, status, items } = Astro.props;
 
-const statusLabel =
-  status === 'in-progress' ? '进行中' : status === 'done' ? '已完成' : '规划中';
+const statusLabel = status === 'in-progress' ? '进行中' : status === 'done' ? '已完成' : '规划中';
+
+// 三个状态必须看得出区别（改前 done 与 in-progress 用的是同一个 badge-primary，
+// 颜色没在传递任何信息）：已完成＝竹青、进行中＝朱砂、规划中＝中性。
 const statusClass =
-  status === 'in-progress'
-    ? 'badge badge-primary'
-    : status === 'done'
-      ? 'badge badge-primary'
-      : 'badge';
+  status === 'done' ? 'badge badge-jade' : status === 'in-progress' ? 'badge badge-primary' : 'badge';
+
+// 时间轴标记统一用菱形，与「菱形标记替代圆点」的规矩一致
+const dotClass =
+  status === 'done' ? 'bg-cyan' : status === 'in-progress' ? 'bg-primary' : 'bg-line-2';
 ---
 
 <article class="relative border-l border-line pl-6 pb-10 last:pb-0">
   <span
-    class:list={[
-      'absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full',
-      status === 'planned' ? 'bg-line' : 'bg-primary',
-    ]}
+    class:list={['absolute -left-[5px] top-1.5 h-2.5 w-2.5 rotate-45', dotClass]}
     aria-hidden="true"></span>
 
   <div class="mb-2 flex flex-wrap items-center gap-2">
-    <span class="font-pixel text-xs text-muted">{phase}</span>
+    <span class="label-cjk text-xs text-muted">{phase}</span>
     <span class={statusClass}>{statusLabel}</span>
     <span class="text-xs text-muted">{period}</span>
   </div>
 
-  <h3 class="text-base font-semibold text-strong">{title}</h3>
+  <h3 class="text-base font-medium text-strong">{title}</h3>
   <ul class="mt-3 space-y-1.5 text-sm text-muted">
     {
       items.map((item) => (

@@ -20,8 +20,10 @@ export const projects = [
   {
     name: '钢铁雄心 4 Mod',
     tag: 'MOD',
-    status: '规划中' as ProjectStatus,
-    desc: '正在筹备的《钢铁雄心 4》Mod。方向已定，具体方案制定中，确定后会在这里更新。',
+    // 状态与 desc 对齐 data/mod.ts：那边是 Mod 页的唯一事实来源，
+    // 之前这里写「规划中 / 方案制定中」，和 Mod 页的「制作中 / 内容已搭建」互相打架。
+    status: '进行中' as ProjectStatus,
+    desc: 'The Fire Rises 附加内容，做重庆模式的债务相关国策与决议。内容已搭建，待游戏内实测。',
     links: [],
   },
 ] as const;

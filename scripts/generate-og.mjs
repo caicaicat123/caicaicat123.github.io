@@ -2,7 +2,10 @@
  * 生成社交分享图 public/og-default.png（1200×630）。
  *
  * 本机没有 Python / ImageMagick，因此用纯 Node（zlib + 手写 PNG 编码）
- * 生成位图：深色底 + 像素网格 + 品牌方块 + 点阵文字。
+ * 生成位图：松烟底 + 像素网格 + 品牌四色方块 + 点阵文字。
+ *
+ * 配色与站点「墨 · 国风」设计系统保持一致（朱砂 / 缃色 / 竹青 / 墨），
+ * 改色时同步 lib 里 public/icon.png 与 global.css 的令牌。
  *
  * 用法： node scripts/generate-og.mjs
  */
@@ -14,13 +17,14 @@ import { fileURLToPath } from 'node:url';
 const WIDTH = 1200;
 const HEIGHT = 630;
 
-const BG = [0x0b, 0x0f, 0x14];
-const PRIMARY = [0x5e, 0xea, 0xd4];
-const CYAN = [0x22, 0xd3, 0xee];
-const SECONDARY = [0xa7, 0x8b, 0xfa];
-const ACCENT = [0xfa, 0xcc, 0x15];
-const TEXT = [0xe5, 0xe7, 0xeb];
-const MUTED = [0x8f, 0xa3, 0xb8];
+/* 松烟底 + 国风四色。深色底上的「墨」用淡墨，否则和背景糊成一片。 */
+const BG = [0x14, 0x12, 0x0f]; // 松烟
+const CINNABAR = [0xb9, 0x3a, 0x32]; // 朱砂（唯一强调色）
+const AMBER = [0x9a, 0x6b, 0x00]; // 缃色
+const JADE = [0x4a, 0x7c, 0x59]; // 竹青
+const INK = [0x8a, 0x82, 0x74]; // 淡墨（深底可见的「墨」）
+const TEXT = [0xf7, 0xf4, 0xed]; // 宣纸
+const MUTED = [0x9a, 0x92, 0x83]; // 淡墨（浅）
 
 /** 5×7 点阵字形，仅覆盖本图用到的字符 */
 const FONT = {
@@ -86,25 +90,25 @@ function drawText(text, x, y, scale, color, letterSpacing = 1) {
 fillRect(0, 0, WIDTH, HEIGHT, BG);
 
 // 光晕
-radial(WIDTH - 150, 90, 430, PRIMARY, 0.16);
-radial(90, HEIGHT - 40, 380, SECONDARY, 0.14);
+radial(WIDTH - 150, 90, 430, CINNABAR, 0.16);
+radial(90, HEIGHT - 40, 380, JADE, 0.14);
 
 // 像素网格
-for (let x = 0; x < WIDTH; x += 40) fillRect(x, 0, 1, HEIGHT, [0xff, 0xff, 0xff], 0.05);
-for (let y = 0; y < HEIGHT; y += 40) fillRect(0, y, WIDTH, 1, [0xff, 0xff, 0xff], 0.05);
+for (let x = 0; x < WIDTH; x += 40) fillRect(x, 0, 1, HEIGHT, [0xff, 0xff, 0xff], 0.04);
+for (let y = 0; y < HEIGHT; y += 40) fillRect(0, y, WIDTH, 1, [0xff, 0xff, 0xff], 0.04);
 
-// 品牌方块（与 favicon 一致）
+// 品牌方块（与页头 logo 一致的国风四色：朱砂 / 缃色 / 竹青 / 墨）
 const blocks = [
-  { x: 88, y: 84, color: PRIMARY, alpha: 1 },
-  { x: 148, y: 84, color: CYAN, alpha: 0.65 },
-  { x: 88, y: 144, color: SECONDARY, alpha: 0.75 },
-  { x: 148, y: 144, color: ACCENT, alpha: 1 },
+  { x: 88, y: 84, color: CINNABAR, alpha: 1 },
+  { x: 148, y: 84, color: AMBER, alpha: 1 },
+  { x: 88, y: 144, color: JADE, alpha: 1 },
+  { x: 148, y: 144, color: INK, alpha: 1 },
 ];
 for (const block of blocks) fillRect(block.x, block.y, 48, 48, block.color, block.alpha);
 
 // 文字
 drawText('NEW WORLD NETWORK', 88, 250, 5, MUTED, 1);
-drawText('NWN', 84, 320, 30, PRIMARY, 2);
+drawText('NWN', 84, 320, 30, CINNABAR, 2);
 drawText('NWBBS.CN', 88, 560, 5, TEXT, 1);
 
 // ── PNG 编码 ────────────────────────────────────────────────

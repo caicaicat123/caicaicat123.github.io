@@ -7,10 +7,16 @@ import { blogCategories } from '../../../data/blog';
 import { formatDate } from '../../../utils/format';
 
 export async function getStaticPaths() {
-  return blogCategories.map((category) => ({
-    params: { slug: category.slug },
-    props: { category },
-  }));
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+  // 只为一篇都没有的分类建页：空壳分类页会被 sitemap 收录，
+  // 属于典型的薄内容页（改动前 /blog/category/notes/ 就是空的，线上 200）。
+  return blogCategories
+    .filter((category) => posts.some((post) => post.data.category === category.name))
+    .map((category) => ({
+      params: { slug: category.slug },
+      props: { category },
+    }));
 }
 
 const { category } = Astro.props;
@@ -18,6 +24,12 @@ const { category } = Astro.props;
 const posts = (
   await getCollection('blog', ({ data }) => !data.draft && data.category === category.name)
 ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 只列有文章的分类 —— 否则会链到根本没生成的分类页（404）
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const existingCategories = blogCategories.filter((item) =>
+  allPosts.some((post) => post.data.category === item.name),
+);
 ---
 
 <BaseLayout
@@ -25,7 +37,7 @@ const posts = (
   description={`新世界网络博客分类：${category.name}。${category.desc}`}
 >
   <section class="mx-auto max-w-6xl px-4 py-14">
-    <a href="/blog" class="text-sm text-muted transition-colors hover:text-primary">← 全部文章</a>
+    <a href="/blog/" class="text-sm text-muted transition-colors hover:text-primary">← 全部文章</a>
 
     <div class="mt-6">
       <SectionHeading eyebrow="CATEGORY" title={category.name} desc={category.desc} />
@@ -33,13 +45,10 @@ const posts = (
 
     <div class="mb-8 flex flex-wrap gap-2">
       {
-        blogCategories.map((item) => (
+        existingCategories.map((item) => (
           <a
             href={`/blog/category/${item.slug}/`}
-            class:list={[
-              'badge',
-              item.slug === category.slug ? 'badge-primary' : '',
-            ]}
+            class:list={['badge', item.slug === category.slug ? 'badge-primary' : '']}
           >
             {item.name}
           </a>
@@ -61,15 +70,5 @@ const posts = (
         ))
       }
     </div>
-
-    {
-      posts.length === 0 && (
-        <p class="card p-6 text-sm text-muted">
-          这个分类还没有文章。想投稿或者建议选题，欢迎在
-          <a href="/contact" class="text-primary hover:opacity-80">联系页</a>
-          找到我们。
-        </p>
-      )
-    }
   </section>
 </BaseLayout>

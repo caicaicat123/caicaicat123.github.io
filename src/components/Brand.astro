@@ -1,0 +1,21 @@
+---
+import { site } from '../data/site';
+
+/**
+ * 品牌标记（图标 + 中英文名）。页头与页脚共用一份，避免两处 HTML 各改一遍。
+ * 图标单一来源是 public/icon.png，改图标只需要换那一个文件。
+ */
+---
+
+<img
+  src="/icon.png"
+  alt=""
+  width="295"
+  height="349"
+  class="h-9 w-auto shrink-0"
+  aria-hidden="true"
+/>
+<span class="flex flex-col leading-none">
+  <strong class="text-[14.5px] font-bold tracking-[0.14em] text-strong">{site.name}</strong>
+  <span class="label-latin mt-1 text-[11px] text-muted">{site.nameEn}</span>
+</span>

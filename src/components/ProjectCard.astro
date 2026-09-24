@@ -12,10 +12,11 @@ const { name, tag, status, desc, links } = Astro.props;
 
 <article class="card flex h-full flex-col p-5">
   <div class="mb-3 flex items-center gap-2">
-    <span class="badge badge-primary font-pixel">{tag}</span>
+    <!-- tag 是分类标签，不是强调内容：用中性 badge，把朱砂留给真正要抓眼的地方 -->
+    <span class="badge label-latin">{tag}</span>
     <span class="badge">{status}</span>
   </div>
-  <h3 class="text-base font-semibold text-strong">{name}</h3>
+  <h3 class="text-base font-medium text-strong">{name}</h3>
   <p class="mt-2 flex-1 text-base leading-relaxed text-muted">{desc}</p>
   {
     links.length > 0 && (

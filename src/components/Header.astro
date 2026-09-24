@@ -1,5 +1,6 @@
 ---
 import { nav, site } from '../data/site';
+import Brand from './Brand.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
 const path = Astro.url.pathname;
@@ -9,23 +10,11 @@ const menu = nav;
 
 <header
   id="site-nav"
-  class="sticky top-0 z-50 border-b border-transparent transition-colors duration-300"
-  style="background: var(--acrylic); backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%);"
+  class="site-nav sticky top-0 z-50 border-b border-transparent transition-colors duration-300"
 >
   <div class="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4">
     <a href="/" class="flex flex-none items-center gap-3" aria-label={`${site.name} 首页`}>
-      <img
-        src="/icon.png"
-        alt=""
-        width="295"
-        height="349"
-        class="h-9 w-auto shrink-0"
-        aria-hidden="true"
-      />
-      <span class="flex flex-col leading-none">
-        <strong class="text-[14.5px] font-bold tracking-[0.14em] text-strong">{site.name}</strong>
-        <span class="font-pixel mt-1 text-[9.5px] text-muted">{site.nameEn}</span>
-      </span>
+      <Brand />
     </a>
 
     <nav class="ml-auto hidden items-center gap-0.5 lg:flex" aria-label="主导航">
@@ -35,10 +24,8 @@ const menu = nav;
             href={item.href}
             aria-current={isActive(item.href) ? 'page' : undefined}
             class:list={[
-              'rounded-md px-3 py-2 text-[13.5px] tracking-[0.08em] transition-colors',
-              isActive(item.href)
-                ? 'bg-soft text-strong'
-                : 'text-muted hover:bg-soft hover:text-ink',
+              'nav-link rounded-md px-3 py-2 text-[13.5px] tracking-[0.08em] transition-colors',
+              isActive(item.href) ? 'bg-soft' : 'text-muted hover:bg-soft hover:text-ink',
             ]}
           >
             {item.label}
@@ -48,7 +35,7 @@ const menu = nav;
     </nav>
 
     <div class="ml-auto flex items-center gap-2 lg:ml-4">
-      <a href="/minecraft" class="btn btn-accent btn-sm hidden sm:inline-flex">进入服务器</a>
+      <a href="/minecraft/" class="btn btn-accent btn-sm hidden sm:inline-flex">进入服务器</a>
       <ThemeToggle />
       <button
         id="nav-toggle"
@@ -70,7 +57,7 @@ const menu = nav;
             href={item.href}
             aria-current={isActive(item.href) ? 'page' : undefined}
             class:list={[
-              'rounded-md px-3 py-2 text-sm',
+              'flex min-h-11 items-center rounded-md px-3 text-sm',
               isActive(item.href) ? 'bg-soft text-strong' : 'text-muted',
             ]}
           >
@@ -110,6 +97,14 @@ const menu = nav;
       if (event.target instanceof Element && event.target.closest('a')) {
         panel.classList.add('hidden');
         toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+    // Esc 收起菜单
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panel.classList.contains('hidden')) {
+        panel.classList.add('hidden');
+        toggle.setAttribute('aria-expanded', 'false');
+        (toggle as HTMLElement).focus();
       }
     });
   }

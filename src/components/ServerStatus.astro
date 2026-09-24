@@ -30,7 +30,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     >
       <span class="status-dot" data-dot aria-hidden="true" />
       <div>
-        <p class="font-pixel text-[10.5px] text-muted">
+        <p class="label-cjk text-[11px] text-muted">
           {site.server.name} · {site.server.shortName}
         </p>
         <p class="mt-2 font-mono text-[26px] font-semibold leading-none text-strong">
@@ -60,7 +60,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
       </div>
 
       <div class="mt-5 flex items-end gap-2">
-        <span class="font-pixel text-3xl leading-none text-ink" data-online>—</span>
+        <span class="font-mono text-3xl leading-none text-ink" data-online>—</span>
         <span class="pb-0.5 text-xs text-muted">
           / <span data-max>—</span> 人在线
         </span>
@@ -110,6 +110,12 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     serverName: string | null;
     uptimeMs: number | null;
   };
+
+  /** 查询接口没有超时保护，卡住会让卡片永远停在「查询中…」 */
+  const TIMEOUT_MS = 5000;
+  /** 结果缓存 60 秒：同一浏览器来回切页面不必重复打外部接口 */
+  const CACHE_KEY = 'nwn-server-status';
+  const CACHE_TTL = 60_000;
 
   /** 接口字段类型不统一（duration 返回的是字符串），统一转成数字。 */
   function toNumber(value: unknown): number | null {
@@ -170,6 +176,30 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     return `${minutes} 分`;
   }
 
+  function readCache(ip: string, port: string): Status | null {
+    try {
+      const raw = sessionStorage.getItem(CACHE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as { key: string; at: number; status: Status };
+      if (parsed.key !== `${ip}:${port}`) return null;
+      if (Date.now() - parsed.at > CACHE_TTL) return null;
+      return parsed.status;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeCache(ip: string, port: string, status: Status) {
+    try {
+      sessionStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ key: `${ip}:${port}`, at: Date.now(), status }),
+      );
+    } catch {
+      /* 隐私模式下 sessionStorage 可能不可用，忽略即可 */
+    }
+  }
+
   async function fetchStatus(
     ip: string,
     port: string,
@@ -179,7 +209,10 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     for (const source of SOURCES) {
       const started = performance.now();
       try {
-        const res = await fetch(source.url(ip, port), { cache: 'no-store' });
+        const res = await fetch(source.url(ip, port), {
+          cache: 'no-store',
+          signal: AbortSignal.timeout(TIMEOUT_MS),
+        });
         if (!res.ok) throw new Error(`${source.name} ${res.status}`);
         const data = await res.json();
         const status = source.parse(data);
@@ -196,14 +229,51 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     throw lastError ?? new Error('all sources failed');
   }
 
-  async function queryStatus(root: Element) {
+  function render(root: Element, status: Status, latency: number | null) {
+    const dot = root.querySelector('[data-dot]');
+    const note = root.querySelector('[data-note]');
+
+    if (latency !== null) setText(root, '[data-latency]', `${Math.round(latency)} ms`);
+    setText(root, '[data-checked]', new Date().toLocaleTimeString('zh-CN', { hour12: false }));
+    if (status.serverName) setText(root, '[data-server-name]', status.serverName);
+    const uptime = formatUptime(status.uptimeMs);
+    if (uptime) setText(root, '[data-uptime]', uptime);
+
+    if (status.online) {
+      dot?.classList.remove('status-offline');
+      dot?.classList.add('status-online');
+      setText(root, '[data-status-text]', '在线');
+      setText(root, '[data-online]', String(status.now ?? 0));
+      setText(root, '[data-max]', String(status.max ?? '—'));
+      note?.classList.add('hidden');
+    } else {
+      dot?.classList.remove('status-online');
+      dot?.classList.add('status-offline');
+      setText(root, '[data-status-text]', '未响应');
+      setText(root, '[data-online]', '—');
+      setText(root, '[data-max]', '—');
+      if (note) {
+        note.textContent = '查询服务没有拿到服务器响应：可能未开服，也可能只对特定网络开放。';
+        note.classList.remove('hidden');
+      }
+    }
+  }
+
+  async function queryStatus(root: Element, skipCache = false) {
     const ip = root.getAttribute('data-ip');
     if (!ip) return;
 
     const port = root.getAttribute('data-port') || '';
-    const dot = root.querySelector('[data-dot]');
     const note = root.querySelector('[data-note]');
     const button = root.querySelector('[data-refresh]');
+
+    if (!skipCache) {
+      const cached = readCache(ip, port);
+      if (cached) {
+        render(root, cached, null);
+        return;
+      }
+    }
 
     setText(root, '[data-status-text]', '查询中…');
     note?.classList.add('hidden');
@@ -211,31 +281,10 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 
     try {
       const { status, latency } = await fetchStatus(ip, port);
-
-      setText(root, '[data-latency]', `${Math.round(latency)} ms`);
-      setText(root, '[data-checked]', new Date().toLocaleTimeString('zh-CN', { hour12: false }));
-      if (status.serverName) setText(root, '[data-server-name]', status.serverName);
-      const uptime = formatUptime(status.uptimeMs);
-      if (uptime) setText(root, '[data-uptime]', uptime);
-
-      if (status.online) {
-        dot?.classList.remove('status-offline');
-        dot?.classList.add('status-online');
-        setText(root, '[data-status-text]', '在线');
-        setText(root, '[data-online]', String(status.now ?? 0));
-        setText(root, '[data-max]', String(status.max ?? '—'));
-      } else {
-        dot?.classList.remove('status-online');
-        dot?.classList.add('status-offline');
-        setText(root, '[data-status-text]', '未响应');
-        setText(root, '[data-online]', '—');
-        setText(root, '[data-max]', '—');
-        if (note) {
-          note.textContent = '查询服务没有拿到服务器响应：可能未开服，也可能只对特定网络开放。';
-          note.classList.remove('hidden');
-        }
-      }
+      writeCache(ip, port, status);
+      render(root, status, latency);
     } catch {
+      const dot = root.querySelector('[data-dot]');
       dot?.classList.remove('status-online');
       dot?.classList.add('status-offline');
       setText(root, '[data-status-text]', '暂时无法查询');
@@ -252,6 +301,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 
   document.querySelectorAll('[data-server-status]').forEach((node) => {
     queryStatus(node);
-    node.querySelector('[data-refresh]')?.addEventListener('click', () => queryStatus(node));
+    // 手动刷新走一次真实查询，不吃缓存
+    node.querySelector('[data-refresh]')?.addEventListener('click', () => queryStatus(node, true));
   });
 </script>

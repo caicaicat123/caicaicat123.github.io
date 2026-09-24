@@ -8,12 +8,23 @@ interface Props {
   title: string;
   description?: string;
   ogType?: 'website' | 'article';
+  /** 404 这类页面不进索引 */
+  noindex?: boolean;
 }
 
-const { title, description = site.description, ogType = 'website' } = Astro.props;
+const {
+  title,
+  description = site.description,
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+
 const fullTitle = title === site.name ? `${site.name} · ${site.nameEn}` : `${title} · ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
 const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
+const ogImageAlt = `${site.name} · ${site.nameEn}`;
+// 背景网格只留在首屏：其它页面靠留白和晕染就够了，网格是偏「科技看板」的语汇
+const isHome = Astro.url.pathname === '/';
 ---
 
 <!doctype html>
@@ -25,6 +36,7 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
     <meta name="description" content={description} />
     <meta name="keywords" content={site.keywords.join(',')} />
     <meta name="author" content={site.name} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/png" href="/icon.png" />
     <link rel="apple-touch-icon" href="/icon.png" />
@@ -32,9 +44,10 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
     <meta name="theme-color" content="#F7F4ED" />
 
     <script is:inline>
-      // 在首屏渲染前定好主题，避免深色/浅色闪一下
+      // 在首屏渲染前定好主题，避免深浅色闪一下。
+      // 默认宣纸（浅色）是明确的设计基准：只有用户手动切过才沿用记忆值，
+      // 刻意不读系统偏好 —— 第一次来的访客看到的一定是宣纸。
       (function () {
-        // 默认宣纸（浅色）——这是设计基准；只有用户手动切过或系统偏好深色才用松烟
         var theme = 'light';
         try {
           var saved = localStorage.getItem('nwn-theme');
@@ -56,11 +69,15 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:locale" content="zh_CN" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <link rel="alternate" type="application/rss+xml" title={`${site.name} · 博客`} href="/rss.xml" />
     <script
@@ -93,12 +110,11 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
   </head>
 
   <body class="flex min-h-screen flex-col">
-    <!-- 背景层：56px 网格 + 三团光晕（径向模糊属于光效，不是装饰渐变） -->
+    <!-- 背景层：两层水墨晕染（首屏另有 56px 网格） -->
     <div class="bg" aria-hidden="true">
-      <div class="bg-grid"></div>
+      {isHome && <div class="bg-grid"></div>}
       <div class="bg-orb bg-orb-1"></div>
       <div class="bg-orb bg-orb-2"></div>
-      <div class="bg-orb bg-orb-3"></div>
     </div>
 
     <a
@@ -114,7 +130,8 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
     <Footer />
 
     <script>
-      // 光标柔光：只有精确指针 + 未开启「减少动效」时才启用
+      // 光标柔光：只有精确指针 + 未开启「减少动效」时才启用。
+      // 位置只写 transform（见 .bg-cursor），不碰 left/top —— 避免每帧触发布局。
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const finePointer = window.matchMedia('(pointer: fine)').matches;
       const bgLayer = document.querySelector('.bg');
@@ -130,13 +147,24 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
         let cy = y;
         let raf = 0;
 
+        const draw = () => {
+          orb.style.setProperty('--cursor-x', `${cx}px`);
+          orb.style.setProperty('--cursor-y', `${cy}px`);
+        };
+
         const tick = () => {
           cx += (x - cx) * 0.08;
           cy += (y - cy) * 0.08;
-          orb.style.left = `${cx}px`;
-          orb.style.top = `${cy}px`;
+          draw();
           raf = requestAnimationFrame(tick);
         };
+
+        const stop = () => {
+          if (raf) cancelAnimationFrame(raf);
+          raf = 0;
+        };
+
+        draw();
 
         window.addEventListener(
           'mousemove',
@@ -148,8 +176,15 @@ const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
           { passive: true },
         );
 
-        document.addEventListener('mouseleave', () => (orb.style.opacity = '0'));
-        document.addEventListener('mouseenter', () => (orb.style.opacity = '0.3'));
+        // 指针离开页面就停下来，别让 rAF 空转
+        document.addEventListener('mouseleave', () => {
+          stop();
+          orb.style.opacity = '0';
+        });
+        document.addEventListener('mouseenter', () => {
+          orb.style.opacity = '0.3';
+          if (!raf) raf = requestAnimationFrame(tick);
+        });
       }
     </script>
   </body>

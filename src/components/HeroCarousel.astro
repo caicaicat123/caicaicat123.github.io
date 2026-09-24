@@ -8,7 +8,7 @@ const slides = [
     eyebrow: '新世界服务器 · NWM',
     title: ['新的世界，', '梦开始的地方'],
     desc: '新增 26.1.2 版本支持，服务器幽灵已上线',
-    primary: { label: '进入服务器', href: '/minecraft' },
+    primary: { label: '进入服务器', href: '/minecraft/' },
     secondary: { label: '查看实时状态', href: '#server-status' },
     art: 'grass',
     theme: 'mc',
@@ -19,8 +19,8 @@ const slides = [
     eyebrow: 'The Fire Rises · Add-on',
     title: ['2026，', '燃起柴薪'],
     desc: '正在为钢铁雄心4：TFR 制作附加内容，更新重庆模式的债务相关国策与决议。',
-    primary: { label: '了解内容', href: '/mod' },
-    secondary: { label: '看看项目', href: '/projects' },
+    primary: { label: '了解内容', href: '/mod/' },
+    secondary: { label: '看看项目', href: '/projects/' },
     art: 'flag',
     theme: 'mod',
   },
@@ -37,8 +37,40 @@ const slides = [
 
   <div class="relative mx-auto max-w-6xl px-4 pt-7">
     <div class="flex items-center justify-end gap-3">
-      <span class="font-pixel text-xs text-muted" data-hero-counter>01 / 02</span>
+      <span class="label-latin text-xs text-muted" data-hero-counter>01 / 02</span>
       <div class="flex gap-1.5">
+        <button
+          class="hero-arrow"
+          type="button"
+          data-hero-pause
+          aria-label="暂停自动播放"
+          aria-pressed="false"
+        >
+          <svg
+            class="hero-pause-icon"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="M9.5 5v14M14.5 5v14"></path>
+          </svg>
+          <svg
+            class="hero-play-icon"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="currentColor"
+            stroke="none"
+            aria-hidden="true"
+          >
+            <path d="M8 5.2l10.5 6.8L8 18.8z"></path>
+          </svg>
+        </button>
         <button class="hero-arrow" type="button" data-hero-prev aria-label="上一页">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -67,13 +99,14 @@ const slides = [
           aria-label={`${index + 1} / ${slides.length}：${slide.eyebrow}`}
         >
           <div class="relative mx-auto flex max-w-6xl items-center gap-12 px-4 pb-10 pt-10 sm:pb-14 sm:pt-12">
-            <div class="relative max-w-3xl flex-1">
-              <p class="hero-item font-pixel text-[11px] text-primary-2" style="--i:0">
-                {slide.tag} · {slide.eyebrow}
+            <div class="relative z-10 max-w-3xl flex-1">
+              <p class="hero-item label-latin text-[11px] text-primary-2" style="--i:0">
+                {slide.tag}
+                <span class="label-cjk"> · {slide.eyebrow}</span>
               </p>
 
               <h2
-                class="hero-item mt-5 text-[clamp(34px,5.4vw,58px)] font-extrabold leading-[1.06] tracking-[-0.04em] text-strong"
+                class="hero-item mt-5 text-[clamp(34px,5.4vw,58px)] font-medium leading-[1.06] tracking-[-0.04em] text-strong"
                 style="--i:1"
               >
                 {slide.title[0]}
@@ -97,11 +130,19 @@ const slides = [
 
             </div>
 
-            <!-- 右侧图示：Minecraft 用草方块，钢铁雄心 4 用方形国旗 -->
-            <div class="hero-item hidden shrink-0 lg:block" style="--i:5">
+            <!--
+              右侧图示：Minecraft 用草方块，钢铁雄心 4 用方形国旗。
+              窄屏没有空间并排，改成右上角的淡水印；桌面端回到正常位置与不透明度。
+              边长取 96 / 128px —— 草方块是 16 格的像素网格，必须是 16 的整数倍，
+              否则叠加 shape-rendering="crispEdges" 后每格宽窄不一。
+            -->
+            <div
+              class="hero-item pointer-events-none absolute right-1 top-3 opacity-[0.14] lg:static lg:opacity-100"
+              style="--i:5"
+            >
               {slide.art === 'grass' ? (
                 <svg
-                  class="h-[124px] w-[124px] drop-shadow-[0_10px_24px_rgba(31,29,26,0.18)]"
+                  class="h-24 w-24 drop-shadow-[0_10px_24px_rgba(31,29,26,0.18)] lg:h-32 lg:w-32"
                   viewBox="0 0 16 16"
                   shape-rendering="crispEdges"
                   role="img"
@@ -128,7 +169,7 @@ const slides = [
                 </svg>
               ) : (
                 <svg
-                  class="h-[124px] w-[124px] rounded-[2px] drop-shadow-[0_10px_24px_rgba(31,29,26,0.24)]"
+                  class="h-24 w-24 rounded-[2px] drop-shadow-[0_10px_24px_rgba(31,29,26,0.24)] lg:h-32 lg:w-32"
                   viewBox="0 0 30 30"
                   role="img"
                   aria-label="方形国旗"
@@ -150,11 +191,18 @@ const slides = [
     }
   </div>
 
-  <!-- 进度条：左下角一条简单色条 -->
+  <!-- 进度条：3px 圆头色条，点击可跳转到第 n 屏 -->
   <div class="relative mx-auto max-w-6xl px-4 pb-10">
-    <div class="h-px w-28 overflow-hidden bg-line">
-      <span class="hero-progress__bar block h-full w-0 bg-primary"></span>
-    </div>
+    <button
+      class="hero-progress"
+      type="button"
+      data-hero-progress
+      aria-label="轮播进度，点击可切换页面"
+    >
+      <span class="hero-progress__track">
+        <span class="hero-progress__bar" data-hero-bar></span>
+      </span>
+    </button>
   </div>
 </section>
 
@@ -172,11 +220,6 @@ const slides = [
 
   .hero-track::-webkit-scrollbar {
     display: none;
-  }
-
-  .hero-track:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: -2px;
   }
 
   .hero-slide {
@@ -228,8 +271,48 @@ const slides = [
     background: var(--color-soft);
   }
 
+  /* 暂停 / 播放图标按 aria-pressed 切换 */
+  .hero-pause-icon {
+    display: block;
+  }
+
+  .hero-play-icon {
+    display: none;
+  }
+
+  .hero-arrow[aria-pressed='true'] .hero-pause-icon {
+    display: none;
+  }
+
+  .hero-arrow[aria-pressed='true'] .hero-play-icon {
+    display: block;
+  }
+
+  /* 3px 色条 + 上下 8px 透明内边距，点得到 */
+  .hero-progress {
+    display: block;
+    width: 112px;
+    padding: 8px 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .hero-progress__track {
+    display: block;
+    height: 3px;
+    border-radius: 999px;
+    background: var(--color-line);
+    overflow: hidden;
+  }
+
   .hero-progress__bar {
-    transition: width 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: 999px;
+    background: var(--color-primary);
+    transition: width 0.5s var(--ease);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -252,13 +335,16 @@ const slides = [
     const track = hero.querySelector<HTMLElement>('[data-hero-track]');
     const slides = Array.from(hero.querySelectorAll<HTMLElement>('[data-hero-slide]'));
     const counter = hero.querySelector<HTMLElement>('[data-hero-counter]');
-    const progress = hero.querySelector<HTMLElement>('.hero-progress__bar');
+    const bar = hero.querySelector<HTMLElement>('[data-hero-bar]');
+    const pauseButton = hero.querySelector<HTMLButtonElement>('[data-hero-pause]');
+    const progressButton = hero.querySelector<HTMLButtonElement>('[data-hero-progress]');
     if (!track || slides.length < 2) return;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let current = 0;
     let timer: number | undefined;
-    let paused = false;
+    let hoverPaused = false;
+    let userPaused = false;
 
     const setActive = (index: number) => {
       current = index;
@@ -266,7 +352,7 @@ const slides = [
       if (counter) {
         counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
       }
-      if (progress) progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+      if (bar) bar.style.width = `${((index + 1) / slides.length) * 100}%`;
     };
 
     const goTo = (index: number) => {
@@ -280,24 +366,48 @@ const slides = [
 
     const startAutoplay = () => {
       if (reduceMotion) return;
-      stopAutoplay();
+      if (timer) window.clearInterval(timer);
       timer = window.setInterval(() => {
-        if (!paused && !document.hidden) goTo(current + 1);
+        if (!hoverPaused && !userPaused && !document.hidden) goTo(current + 1);
       }, AUTOPLAY_MS);
     };
-    const stopAutoplay = () => {
-      if (timer) window.clearInterval(timer);
-      timer = undefined;
+
+    /**
+     * 手动暂停：WCAG 2.2.2 要求自动播放的内容可以暂停。
+     * 一旦用户自己按了暂停、或手动翻过页，就不再自动继续。
+     */
+    const setUserPaused = (value: boolean) => {
+      userPaused = value;
+      pauseButton?.setAttribute('aria-pressed', String(value));
+      pauseButton?.setAttribute('aria-label', value ? '继续自动播放' : '暂停自动播放');
     };
+
+    if (reduceMotion && pauseButton) {
+      // 减少动效时本来就不自动播放，暂停按钮没有意义
+      pauseButton.hidden = true;
+    }
+
+    pauseButton?.addEventListener('click', () => {
+      setUserPaused(!userPaused);
+      if (!userPaused) startAutoplay();
+    });
 
     hero.querySelector('[data-hero-prev]')?.addEventListener('click', () => {
       goTo(current - 1);
-      startAutoplay();
+      setUserPaused(true);
     });
     hero.querySelector('[data-hero-next]')?.addEventListener('click', () => {
       goTo(current + 1);
-      startAutoplay();
+      setUserPaused(true);
     });
+
+    progressButton?.addEventListener('click', (event) => {
+      const rect = progressButton.getBoundingClientRect();
+      const ratio = (event.clientX - rect.left) / rect.width;
+      goTo(Math.floor(ratio * slides.length));
+      setUserPaused(true);
+    });
+
     let scrollTimer: number | undefined;
     track.addEventListener('scroll', () => {
       if (scrollTimer) window.clearTimeout(scrollTimer);
@@ -317,8 +427,12 @@ const slides = [
       }
     });
 
-    ['pointerenter', 'focusin'].forEach((type) => hero.addEventListener(type, () => (paused = true)));
-    ['pointerleave', 'focusout'].forEach((type) => hero.addEventListener(type, () => (paused = false)));
+    ['pointerenter', 'focusin'].forEach((type) =>
+      hero.addEventListener(type, () => (hoverPaused = true)),
+    );
+    ['pointerleave', 'focusout'].forEach((type) =>
+      hero.addEventListener(type, () => (hoverPaused = false)),
+    );
 
     window.addEventListener('resize', () =>
       track.scrollTo({ left: current * track.clientWidth, behavior: 'auto' }),

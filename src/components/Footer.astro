@@ -1,9 +1,9 @@
 ---
-import { extraNav, nav, site } from '../data/site';
+import Brand from './Brand.astro';
+import { footerNav, site } from '../data/site';
 
 const year = new Date().getFullYear();
 const yearRange = String(year) === site.startedAt ? site.startedAt : `${site.startedAt}–${year}`;
-const related = [...nav.slice(4), ...extraNav];
 ---
 
 <footer class="relative mt-24 border-t border-line">
@@ -11,27 +11,16 @@ const related = [...nav.slice(4), ...extraNav];
     <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
       <div class="sm:col-span-2">
         <div class="flex items-center gap-3">
-          <img
-            src="/icon.png"
-            alt=""
-            width="295"
-            height="349"
-            class="h-9 w-auto shrink-0"
-            aria-hidden="true"
-          />
-          <span class="flex flex-col leading-none">
-            <strong class="text-[14.5px] font-bold tracking-[0.14em] text-strong">{site.name}</strong>
-            <span class="font-pixel mt-1 text-[9.5px] text-muted">{site.nameEn}</span>
-          </span>
+          <Brand />
         </div>
         <p class="mt-5 max-w-md text-sm leading-[1.85] text-muted">{site.vision}</p>
       </div>
 
       <div>
-        <p class="font-pixel mb-4 text-[11px] text-muted">导航</p>
+        <p class="label-cjk mb-4 text-[12px] text-muted">导航</p>
         <ul class="space-y-2.5 text-sm">
           {
-            nav.slice(0, 4).map((item) => (
+            footerNav.main.map((item) => (
               <li>
                 <a href={item.href} class="text-muted transition-colors hover:text-ink">
                   {item.label}
@@ -43,10 +32,10 @@ const related = [...nav.slice(4), ...extraNav];
       </div>
 
       <div>
-        <p class="font-pixel mb-4 text-[11px] text-muted">相关</p>
+        <p class="label-cjk mb-4 text-[12px] text-muted">相关</p>
         <ul class="space-y-2.5 text-sm">
           {
-            related.map((item) => (
+            footerNav.related.map((item) => (
               <li>
                 <a href={item.href} class="text-muted transition-colors hover:text-ink">
                   {item.label}
@@ -75,7 +64,7 @@ const related = [...nav.slice(4), ...extraNav];
       class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between"
     >
       <p>Copyright © {yearRange} {site.nameEn}, All Rights Reserved.</p>
-      <p class="font-pixel text-[10px]">{site.slogan}</p>
+      <p class="font-serif text-[12px] tracking-[0.18em]">{site.slogan}</p>
     </div>
   </div>
 </footer>

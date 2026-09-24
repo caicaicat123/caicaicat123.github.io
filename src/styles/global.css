@@ -12,11 +12,18 @@
  * 国风改写：
  *   中国色命名（宣纸 / 月白 / 墨 / 淡墨 / 朱砂 / 竹青 / 缃色 / 胭脂）
  *   宋体做标题、黑体做正文；朱砂是唯一强调色
- *   印章（红底白字 + 内嵌白线 + 倾斜）、竖排题跋、菱纹分隔、水墨晕染
- *   圆角偏方正（4 / 8 / 12 / 16px），阴影用暖色而非中性黑
+ *   菱纹与菱形标记、水墨晕染；印章元素已弃用（2026-09-24 移除）
+ *   圆角偏方正（4 / 8 / 12px），阴影用暖色而非中性黑
  *
- * 注意：Tailwind 会把带透明度的类（bg-surface/30 之类）编译成固定色值，
- * 深色模式的例外统一放在文件末尾补偿。
+ * 动效约定：交互反馈 160ms（--dur-fast），场景动效 700ms（--dur）。
+ *
+ * 字体在 Windows 上的现实：本机没有思源宋体，--font-serif 会落到 SimSun（宋体），
+ * 而宋体只有一个字重 —— 所以标题统一 500 并禁止合成字重（见 h1–h3），
+ * 否则 40px 以上的大标题会出现糊掉的假粗体。要彻底改善只能自托管子集化思源宋体。
+ *
+ * 关于透明度工具类：Tailwind v4 把 bg-primary/80 这类编译成「静态兜底值 +
+ * @supports 里基于 var(--color-*) 的 color-mix」，现代浏览器走动态分支，
+ * 深浅主题会自动跟随，因此不需要再手写深色补偿。
  */
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
@@ -25,7 +32,6 @@
   /* 纸 */
   --color-bg: #f7f4ed; /* 宣纸 */
   --color-surface: #fffdf8; /* 素笺 */
-  --color-surface-2: #faf7f0;
   --color-soft: rgba(31, 29, 26, 0.04);
   --color-line: #dcd4c6; /* 界 */
   --color-line-2: #c4baa8;
@@ -45,46 +51,41 @@
   --color-accent: #9a6b00;
 
   /* 宋体标题 · 黑体正文 · 等宽数字 */
-  --font-serif: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC",
+  --font-serif: "Songti SC", "STSong", "Source Han Serif SC", "Noto Serif SC",
     "SimSun", Georgia, serif;
   --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue",
     Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, Menlo,
     monospace;
-  --font-pixel: ui-monospace, "SF Mono", "Cascadia Code", Consolas, Menlo,
-    monospace;
 }
 
 :root {
-  /* 月白：交替区块的底色 */
-  --paper-alt: #efeae0;
+  /* 月白：交替区块的底色。比宣纸深一档 —— 色差太小等于没分层 */
+  --paper-alt: #eae4d8;
   --surface-alt: #faf7f0;
 
   --cinnabar-soft: #f6e4e0;
   --cinnabar-line: #e3bdb7;
-  --jade: #4a7c59;
-  --jade-soft: #e4ede5;
-  --amber: #9a6b00;
-  --amber-soft: #f7eed6;
-  --rouge: #a62b2b;
-  --rouge-soft: #f5e2e0;
 
-  /* 水墨晕染：三层极淡的径向 */
-  --wash-1: rgba(185, 58, 50, 0.045);
-  --wash-2: rgba(31, 29, 26, 0.035);
-  --wash-3: rgba(74, 124, 89, 0.03);
+  /* 竹青：已完成 / 在线这类「好」状态的底与描边 */
+  --jade: #4a7c59;
+  --jade-line: #a9c3b0;
+  --jade-soft: #e4ede5;
+
+  /* 水墨晕染：两层（朱砂 / 竹青），透明度要够才看得见 */
+  --wash-1: rgba(185, 58, 50, 0.07);
+  --wash-2: rgba(74, 124, 89, 0.05);
 
   /* 亚克力 */
-  --acrylic: rgba(247, 244, 237, 0.72);
+  --acrylic: rgba(247, 244, 237, 0.82);
   --acrylic-line: rgba(31, 29, 26, 0.07);
 
   /* 阴影：暖色，极轻 */
   --shadow-1: 0 1px 2px rgba(31, 29, 26, 0.06);
-  --shadow-2: 0 2px 6px rgba(31, 29, 26, 0.07);
-  --card-shadow: var(--shadow-1);
+  --shadow-hover: 0 4px 14px rgba(31, 29, 26, 0.09);
 
-  /* 动效：Apple 式的慢 */
+  /* 动效：Apple 式的慢；交互反馈走 --dur-fast */
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   --dur: 700ms;
   --dur-fast: 160ms;
@@ -96,7 +97,6 @@
 [data-theme='dark'] {
   --color-bg: #14120f;
   --color-surface: #1e1b17;
-  --color-surface-2: #232019;
   --color-soft: rgba(237, 232, 222, 0.06);
   --color-line: #2e2a24;
   --color-line-2: #443e35;
@@ -117,22 +117,19 @@
 
   --cinnabar-soft: #3a1f1c;
   --cinnabar-line: #5a2e29;
+
   --jade: #7fb08c;
+  --jade-line: #3c5a46;
   --jade-soft: #1c2a20;
-  --amber: #d9ae55;
-  --amber-soft: #2e2616;
-  --rouge: #e08b86;
-  --rouge-soft: #331c1b;
 
-  --wash-1: rgba(224, 104, 90, 0.05);
-  --wash-2: rgba(237, 232, 222, 0.03);
-  --wash-3: rgba(127, 176, 140, 0.03);
+  --wash-1: rgba(224, 104, 90, 0.06);
+  --wash-2: rgba(127, 176, 140, 0.05);
 
-  --acrylic: rgba(20, 18, 15, 0.72);
+  --acrylic: rgba(20, 18, 15, 0.82);
   --acrylic-line: rgba(237, 232, 222, 0.08);
 
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --card-shadow: var(--shadow-1);
+  --shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.5);
 
   color-scheme: dark;
 }
@@ -142,6 +139,11 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* 吸顶导航高 64px：站内锚点跳转要留出这段，否则标题被盖住 */
+[id] {
+  scroll-margin-top: 5rem;
 }
 
 body {
@@ -154,11 +156,14 @@ body {
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 
-/* 宋体做标题 */
+/* 宋体做标题。关掉合成字重：宋体只有一个字重，浏览器「加粗」出来的
+   是糊的假粗体，40px 以上的标题尤其明显。 */
 h1,
 h2,
 h3 {
   font-family: var(--font-serif);
+  font-weight: 500;
+  font-synthesis: none;
 }
 
 ::selection {
@@ -179,10 +184,17 @@ kbd {
   font-family: var(--font-mono);
 }
 
-.font-pixel {
+/* 拉丁文标签：等宽 + 大写 + 宽字距 */
+.label-latin {
   font-family: var(--font-mono);
   letter-spacing: 0.28em;
   text-transform: uppercase;
+}
+
+/* 中文标签：等宽字体与 uppercase 对中文都无效，改用宋体 + 适度字距 */
+.label-cjk {
+  font-family: var(--font-serif);
+  letter-spacing: 0.18em;
 }
 
 .font-serif {
@@ -209,10 +221,10 @@ kbd {
   opacity: 0.35;
 }
 
+/* 两层晕染，不做 blur：本身是软边径向渐变，再套 120px 模糊只是白烧 GPU */
 .bg-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(120px);
 }
 
 .bg-orb-1 {
@@ -220,7 +232,7 @@ kbd {
   height: 640px;
   top: -200px;
   left: -180px;
-  background: radial-gradient(circle, var(--wash-1), transparent 70%);
+  background: radial-gradient(circle, var(--wash-1), transparent 62%);
   animation: drift 18s ease-in-out infinite alternate;
 }
 
@@ -229,17 +241,8 @@ kbd {
   height: 760px;
   top: 8%;
   right: -280px;
-  background: radial-gradient(circle, var(--wash-2), transparent 70%);
+  background: radial-gradient(circle, var(--wash-2), transparent 62%);
   animation: drift 24s ease-in-out infinite alternate-reverse;
-}
-
-.bg-orb-3 {
-  width: 560px;
-  height: 560px;
-  bottom: -200px;
-  left: 34%;
-  background: radial-gradient(circle, var(--wash-3), transparent 70%);
-  animation: drift 30s ease-in-out infinite alternate;
 }
 
 @keyframes drift {
@@ -253,29 +256,34 @@ kbd {
   }
 }
 
+/* 光标柔光：只改 transform，不动 left/top，避免每帧触发布局 */
 .bg-cursor {
   position: absolute;
+  left: 0;
+  top: 0;
   width: 420px;
   height: 420px;
   border-radius: 50%;
   background: radial-gradient(circle, var(--wash-1), transparent 65%);
-  filter: blur(90px);
   opacity: 0.5;
-  transform: translate(-50%, -50%);
+  transform: translate3d(var(--cursor-x, 50vw), var(--cursor-y, 50vh), 0)
+    translate(-50%, -50%);
   transition: opacity var(--dur) var(--ease);
+  will-change: transform;
   pointer-events: none;
 }
 
-/* 旧装饰类：收敛为极淡底纹与单色光晕 */
+/* 单色光晕（/mod 首屏装饰用） */
+.glow-primary {
+  background: radial-gradient(closest-side, var(--wash-1), transparent 70%);
+}
+
+/* 局部像素网格：区块内的装饰底纹（/mod 首屏、404 标记）。
+   与首屏那层 .bg-grid 是两回事 —— 后者固定铺满视口且带径向遮罩，这个只在局部用。 */
 .pixel-grid {
   background-image: linear-gradient(var(--color-line) 1px, transparent 1px),
     linear-gradient(90deg, var(--color-line) 1px, transparent 1px);
   background-size: 56px 56px;
-}
-
-.glow-primary,
-.glow-secondary {
-  background: radial-gradient(closest-side, var(--wash-1), transparent 70%);
 }
 
 /* ── 组件（放进 components 层，让工具类能覆盖） ─────────────── */
@@ -286,16 +294,13 @@ kbd {
     border-radius: 8px;
     box-shadow: var(--shadow-1);
     transition: border-color var(--dur-fast) var(--ease),
-      box-shadow var(--dur) var(--ease), background-color var(--dur) var(--ease);
+      box-shadow var(--dur-fast) var(--ease),
+      background-color var(--dur-fast) var(--ease);
   }
 
   .card:hover {
     border-color: var(--color-line-2);
-    box-shadow: 0 4px 14px rgba(31, 29, 26, 0.09);
-  }
-
-  [data-theme='dark'] .card:hover {
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-hover);
   }
 
   .badge {
@@ -316,6 +321,13 @@ kbd {
     color: var(--color-primary);
     border-color: var(--cinnabar-line);
     background: var(--cinnabar-soft);
+  }
+
+  /* 竹青徽章：用于「已完成」这类完成态，与朱砂的「进行中」区分开 */
+  .badge-jade {
+    color: var(--jade);
+    border-color: var(--jade-line);
+    background: var(--jade-soft);
   }
 
   /* 章节标签：菱形 + 等宽大写 */
@@ -406,84 +418,45 @@ kbd {
   .band {
     background-color: var(--paper-alt);
   }
+
+  /* 页头：亚克力。写成类而不是内联样式，窄屏才能降模糊 */
+  .site-nav {
+    background: var(--acrylic);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+  }
+
+  @media (max-width: 1023px) {
+    .site-nav {
+      backdrop-filter: blur(12px) saturate(140%);
+      -webkit-backdrop-filter: blur(12px) saturate(140%);
+    }
+  }
+
+  /* 当前页导航项：朱砂短下划线（焦点必须可见） */
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link[aria-current='page'] {
+    color: var(--color-strong);
+  }
+
+  .nav-link[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 1px;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--color-primary);
+  }
 }
 
 /* ── 国风细节 ─────────────────────────────────────────────── */
 
-/* 菱纹分隔线：一条细线中间嵌一个旋转 45° 的小方块 */
-.rule {
-  position: relative;
-  height: 1px;
-  background: var(--color-line);
-}
-
-.rule::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 7px;
-  height: 7px;
-  transform: translate(-50%, -50%) rotate(45deg);
-  background: var(--color-bg);
-  border: 1px solid var(--color-line-2);
-}
-
-/* 菱形标记：替代圆点 */
-.diamond::before {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 8px;
-  transform: rotate(45deg) translateY(-1px);
-  background: var(--color-primary);
-}
-
-/* 竖排题跋 */
-.vertical {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
-  letter-spacing: 0.42em;
-  font-family: var(--font-serif);
-  color: var(--color-muted);
-}
-
-/* 印章：红底白字 + 内嵌 2px 白线 + 倾斜，hover 回正 */
-.seal {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 132px;
-  height: 132px;
-  border-radius: 10px;
-  background: var(--color-primary);
-  box-shadow: 0 10px 30px rgba(31, 29, 26, 0.18);
-  transform: rotate(-2.5deg);
-  transition: transform var(--dur) var(--ease);
-}
-
-.seal:hover {
-  transform: rotate(0deg);
-}
-
-.seal::before {
-  content: '';
-  position: absolute;
-  inset: 9px;
-  border: 2px solid rgba(255, 253, 248, 0.62);
-  border-radius: 6px;
-  pointer-events: none;
-}
-
-.seal span {
-  font-family: var(--font-serif);
-  font-size: 62px;
-  line-height: 1;
-  color: #fffdf8;
-}
-
-/* ── 状态 ─────────────────────────────────────────────────── */
+/* 状态 */
 .status-dot {
   width: 8px;
   height: 8px;
@@ -493,13 +466,13 @@ kbd {
 }
 
 .status-online {
-  background: var(--jade);
-  box-shadow: 0 0 10px var(--jade);
+  background: var(--color-cyan);
   animation: pulse 2.4s ease-in-out infinite;
 }
 
+/* 未响应不是错误，用中性淡墨 —— 胭脂和朱砂几乎同色，会和强调色打架 */
 .status-offline {
-  background: var(--rouge);
+  background: var(--color-muted);
 }
 
 @keyframes pulse {
@@ -556,7 +529,6 @@ kbd {
   margin-top: 2.5rem;
   margin-bottom: 0.9rem;
   font-size: 1.4rem;
-  font-weight: 700;
   letter-spacing: 0.01em;
   color: var(--color-strong);
 }
@@ -565,7 +537,6 @@ kbd {
   margin-top: 2rem;
   margin-bottom: 0.7rem;
   font-size: 1.15rem;
-  font-weight: 700;
   color: var(--color-strong);
 }
 
@@ -644,40 +615,7 @@ kbd {
   }
   .bg-orb,
   .fade-up,
-  .status-online,
-  .seal {
+  .status-online {
     animation: none;
   }
-}
-
-/* ── 深色模式补偿 ────────────────────────────────────────────
- * Tailwind 会把 bg-surface/30 这类带透明度的类按浅色令牌编译成固定色值，
- * 深色下需要重新计算。
- */
-[data-theme='dark'] .bg-surface\/30 {
-  background-color: color-mix(in srgb, var(--color-surface) 55%, transparent);
-}
-
-[data-theme='dark'] .bg-surface\/40 {
-  background-color: color-mix(in srgb, var(--color-surface) 70%, transparent);
-}
-
-[data-theme='dark'] .bg-bg\/85 {
-  background-color: color-mix(in srgb, var(--color-bg) 88%, transparent);
-}
-
-[data-theme='dark'] .bg-primary\/10 {
-  background-color: color-mix(in srgb, var(--color-primary) 14%, transparent);
-}
-
-[data-theme='dark'] .bg-primary\/20 {
-  background-color: color-mix(in srgb, var(--color-primary) 22%, transparent);
-}
-
-[data-theme='dark'] .border-primary\/40 {
-  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
-}
-
-[data-theme='dark'] .border-secondary\/50 {
-  border-color: color-mix(in srgb, var(--color-secondary) 45%, transparent);
 }

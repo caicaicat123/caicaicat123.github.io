@@ -3,17 +3,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { nav } from '../data/site';
 ---
 
-<BaseLayout title="页面未找到" description="你访问的页面不存在，或者已经被移动到别处。">
+<BaseLayout
+  title="页面未找到"
+  description="你访问的页面不存在，或者已经被移动到别处。"
+  noindex
+>
   <section class="mx-auto flex max-w-3xl flex-col items-center px-4 py-24 text-center">
+    <!-- 装饰方块：用页头品牌标记的国风四色（朱砂 / 竹青 / 缃色 / 墨） -->
     <div class="pixel-grid card mb-8 grid h-24 w-24 grid-cols-2 grid-rows-2 gap-2 p-4">
       <i class="rounded bg-primary/80"></i>
-      <i class="rounded bg-cyan/50"></i>
-      <i class="rounded bg-secondary/50"></i>
-      <i class="rounded bg-accent/70"></i>
+      <i class="rounded bg-cyan/60"></i>
+      <i class="rounded bg-accent/75"></i>
+      <i class="rounded bg-strong/75"></i>
     </div>
 
-    <p class="font-pixel text-xs tracking-wider text-primary">ERROR 404</p>
-    <h1 class="mt-3 text-2xl font-semibold text-strong">这个区块还没被生成</h1>
+    <p class="label-latin text-xs text-primary">ERROR 404</p>
+    <h1 class="mt-3 text-2xl font-medium text-strong">这个区块还没被生成</h1>
     <p class="mt-4 text-base leading-relaxed text-muted">
       你访问的页面不存在，或者已经被移动到别处。可以试试下面的入口。
     </p>

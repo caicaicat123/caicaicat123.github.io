@@ -10,13 +10,19 @@ interface Props {
   updatedDate?: Date;
   category: string;
   tags: readonly string[];
+  headings?: readonly { depth: number; slug: string; text: string }[];
   prev?: { title: string; href: string } | null;
   next?: { title: string; href: string } | null;
 }
 
-const { title, description, pubDate, updatedDate, category, tags, prev, next } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags, headings = [], prev, next } =
+  Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
+
+// 目录只收 h2 / h3，且条目太少时不出（一两个标题的目录没有意义）
+const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -36,7 +42,7 @@ const articleSchema = {
 <BaseLayout title={title} description={description} ogType="article">
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <article class="mx-auto max-w-2xl px-4 py-12">
-    <a href="/blog" class="text-sm text-muted transition-colors hover:text-primary">← 返回博客</a>
+    <a href="/blog/" class="text-sm text-muted transition-colors hover:text-primary">← 返回博客</a>
 
     <header class="mt-6 border-b border-line pb-6">
       <div class="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted">
@@ -48,7 +54,7 @@ const articleSchema = {
           )
         }
       </div>
-      <h1 class="text-[clamp(28px,3.6vw,40px)] font-extrabold leading-[1.16] tracking-[-0.03em] text-strong">
+      <h1 class="text-[clamp(28px,3.6vw,40px)] font-medium leading-[1.16] tracking-[-0.03em] text-strong">
         {title}
       </h1>
       <p class="mt-4 text-base leading-[1.85] tracking-[0.02em] text-muted">{description}</p>
@@ -62,6 +68,26 @@ const articleSchema = {
         )
       }
     </header>
+
+    {
+      toc.length > 2 && (
+        <nav class="card mt-8 p-5" aria-label="文章目录">
+          <p class="label-cjk mb-3 text-[12px] text-muted">目录</p>
+          <ul class="space-y-2 text-sm">
+            {toc.map((heading) => (
+              <li class:list={[heading.depth === 3 && 'pl-4']}>
+                <a
+                  href={`#${heading.slug}`}
+                  class="text-muted transition-colors hover:text-primary"
+                >
+                  {heading.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )
+    }
 
     <div class="prose-nwn mt-8">
       <slot />
