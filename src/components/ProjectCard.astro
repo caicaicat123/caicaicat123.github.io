@@ -16,7 +16,7 @@ const { name, tag, status, desc, links } = Astro.props;
     <span class="badge label-latin">{tag}</span>
     <span class="badge">{status}</span>
   </div>
-  <h3 class="text-base font-medium text-strong">{name}</h3>
+  <h3 class="text-base font-semibold text-strong">{name}</h3>
   <p class="mt-2 flex-1 text-base leading-relaxed text-muted">{desc}</p>
   {
     links.length > 0 && (

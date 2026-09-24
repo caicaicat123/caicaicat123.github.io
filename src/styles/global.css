@@ -156,14 +156,15 @@ body {
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 
-/* 宋体做标题。关掉合成字重：宋体只有一个字重，浏览器「加粗」出来的
-   是糊的假粗体，40px 以上的标题尤其明显。 */
+/* 宋体做标题。字重交给各元素上的 font-* 工具类去定 ——
+   本机没有思源宋体，--font-serif 会落到 SimSun，而宋体只有一个字重，
+   所以 700 / 800 是浏览器合成出来的。合成粗体边缘略糊，但比纯宋体细体
+   更符合本站气质（2026-09-24 用户明确要求保留这个观感）。
+   想要「真粗体且不糊」只能自托管子集化思源宋体。 */
 h1,
 h2,
 h3 {
   font-family: var(--font-serif);
-  font-weight: 500;
-  font-synthesis: none;
 }
 
 ::selection {
@@ -529,6 +530,7 @@ kbd {
   margin-top: 2.5rem;
   margin-bottom: 0.9rem;
   font-size: 1.4rem;
+  font-weight: 700;
   letter-spacing: 0.01em;
   color: var(--color-strong);
 }
@@ -537,6 +539,7 @@ kbd {
   margin-top: 2rem;
   margin-bottom: 0.7rem;
   font-size: 1.15rem;
+  font-weight: 700;
   color: var(--color-strong);
 }
 

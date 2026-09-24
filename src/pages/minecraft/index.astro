@@ -19,7 +19,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
       <p class="label-latin mb-3 text-xs text-primary">
         {site.server.nameEn} · {site.server.shortName}
       </p>
-      <h1 class="text-2xl font-medium text-strong sm:text-3xl">{site.server.name}</h1>
+      <h1 class="text-2xl font-semibold text-strong sm:text-3xl">{site.server.name}</h1>
       <p class="mt-4 max-w-2xl text-base leading-relaxed text-muted">
         一台持续运营的《我的世界》Java 版插件生存服，{openedAt}。当前版本 {version}，
         1.7 到 26.1 的任何客户端都能直接进入，离线模式也能玩。原版生存基础上加了实用插件，
@@ -38,7 +38,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     <div class="grid gap-4 lg:grid-cols-2">
       <div class="card p-5">
         <div class="flex items-center justify-between gap-3">
-          <h2 class="text-base font-medium text-ink">连接方式</h2>
+          <h2 class="text-sm font-semibold text-ink">连接方式</h2>
           <CopyButton value={address} label="复制地址" tone="ghost" />
         </div>
         <dl class="mt-4 space-y-3 text-sm">
@@ -75,7 +75,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
             <span class="label-latin text-xs text-primary">
               STEP {String(index + 1).padStart(2, '0')}
             </span>
-            <h3 class="mt-3 text-base font-medium text-strong">{step.title}</h3>
+            <h3 class="mt-3 text-sm font-semibold text-strong">{step.title}</h3>
             <p class="mt-2 text-base leading-relaxed text-muted">{step.desc}</p>
           </li>
         ))
