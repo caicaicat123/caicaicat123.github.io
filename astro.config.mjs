@@ -49,6 +49,11 @@ export default defineConfig({
   // 产物是 about/index.html，正式地址本来就带尾斜杠（canonical 也是）。
   // 设成 always 后站内链接同样带尾斜杠，可省掉 GitHub Pages 每次点击的那次 301。
   trailingSlash: 'always',
+  // 旧的「项目」板块已被「MC插件」取代（2026-09-26）。老地址继续可用：
+  // 静态产物会生成 /projects/index.html 的跳转页，不浪费已有的外链与收录。
+  redirects: {
+    '/projects': '/plugins/',
+  },
   integrations: [
     mdx(),
     sitemap({

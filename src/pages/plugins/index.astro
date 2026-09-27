@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PluginCard from '../../components/PluginCard.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { plugins } from '../../data/plugins';
+import { site } from '../../data/site';
+---
+
+<BaseLayout
+  title="MC插件"
+  description="新世界网络自研的《我的世界》服务端插件：随机副本（NWNDungeon）与幽灵（TheGhost），均可直接下载 jar，MIT 开源。"
+>
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <SectionHeading
+      as="h1"
+      eyebrow="MINECRAFT PLUGINS"
+      title="MC插件"
+      desc="我们自己写、自己也在用的服务端插件。下载即用，MIT 开源。"
+    />
+    <div class="grid gap-5 md:grid-cols-2">
+      {
+        plugins.map((plugin) => (
+          <PluginCard
+            name={plugin.name}
+            tag={plugin.tag}
+            version={plugin.version}
+            platform={plugin.platform}
+            status={plugin.status}
+            desc={plugin.desc}
+            download={plugin.download}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="band border-t border-line">
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <SectionHeading
+        eyebrow="OPEN SOURCE"
+        title="都是开源的"
+        desc="两个插件都按 MIT 许可公开，可以自由使用、修改与二次开发。"
+      />
+      <div class="card p-6">
+        <p class="text-base leading-relaxed text-muted">
+          上面的「下载 jar」始终指向各自仓库的最新 Release 资产，发新版本后无需回到本站更新链接。
+          安装方式都是丢进服务器的 <code>plugins/</code> 目录后重启；完整说明、指令表与更新记录在仓库里。
+        </p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a href={site.github} target="_blank" rel="noopener noreferrer" class="btn btn-accent">
+            访问 GitHub
+          </a>
+          <a href="/mod/" class="btn btn-standard">查看 Mod 计划</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

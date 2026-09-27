@@ -67,7 +67,7 @@ export const nav = [
   { href: '/', label: '首页' },
   { href: '/minecraft/', label: 'Minecraft' },
   { href: '/mod/', label: '钢铁雄心4' },
-  { href: '/projects/', label: '项目' },
+  { href: '/plugins/', label: 'MC插件' },
   { href: '/blog/', label: '博客' },
   { href: '/about/', label: '关于' },
 ] as const;

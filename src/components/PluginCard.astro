@@ -1,0 +1,40 @@
+---
+interface Props {
+  name: string;
+  tag: string;
+  version: string;
+  platform: string;
+  status: string;
+  desc: string;
+  download: { label: string; href: string };
+}
+
+const { name, tag, version, platform, status, desc, download } = Astro.props;
+
+// 完成态用竹青，与全站的状态语义保持一致（见 global.css 的 .badge-jade）
+const statusClass = status === '长期维护' ? 'badge badge-jade' : 'badge badge-primary';
+---
+
+<article class="card flex h-full flex-col p-6">
+  <div class="mb-3 flex flex-wrap items-center gap-2">
+    <!-- 插件标识是分类，不是强调内容：用中性 badge，把朱砂留给真正要抓眼的地方 -->
+    <span class="badge label-latin">{tag}</span>
+    <span class={statusClass}>{status}</span>
+  </div>
+  <h2 class="text-lg font-semibold text-strong">{name}</h2>
+  <p class="mt-3 flex-1 text-base leading-relaxed text-muted">{desc}</p>
+  <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-line pt-4 text-sm">
+    <div>
+      <dt class="text-xs text-muted">当前版本</dt>
+      <dd class="mt-0.5 font-mono text-ink">{version}</dd>
+    </div>
+    <div>
+      <dt class="text-xs text-muted">适用服务端</dt>
+      <dd class="mt-0.5 text-ink">{platform}</dd>
+    </div>
+  </dl>
+  <a href={download.href} class="btn btn-accent mt-5 w-full justify-center">
+    {download.label}
+    <span class="sr-only">（{name} {version}，jar 文件）</span>
+  </a>
+</article>
