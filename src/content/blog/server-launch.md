@@ -1,7 +1,7 @@
 ---
 title: 新世界服务器开服公告
-description: 新世界服务器（NewWorldMC，简称 NWM）于 2024 年 3 月 21 日正式开服。该服务器长期开放，世界未进行过重置。
-pubDate: 2024-03-21
+description: 新世界服务器（NewWorldMC，简称 NWM）于 2023 年 6 月 21 日正式开服。该服务器长期开放，世界未进行过重置。
+pubDate: 2023-06-21
 category: 服务器动态
 tags: [新世界服务器, NWM, 开服]
 draft: false
@@ -9,7 +9,7 @@ draft: false
 
 ## 开服时间
 
-新世界服务器（NewWorldMC，简称 NWM）于 **2024 年 3 月 21 日**正式开服。
+新世界服务器（NewWorldMC，简称 NWM）于 **2023 年 6 月 21 日**正式开服。
 
 本服务器的运营原则为：不对世界进行重置，建筑与游戏进度均长期保留。
 

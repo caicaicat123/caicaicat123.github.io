@@ -16,7 +16,7 @@ export const site = {
   slogan: '女士，我是亚当。',
   vision: '一边运营《我的世界》服务器，一边开发《钢铁雄心 4》Mod。',
   description:
-    '新世界网络（New World Network，简称 NWN）是一家独立工作室：运营一台 2024 年开服的《我的世界》插件生存服「新世界服务器」（NewWorldMC，简称 NWM），同时正在筹备《钢铁雄心 4》Mod 开发。',
+    '新世界网络（New World Network，简称 NWN）是一家独立工作室：运营一台 2023 年 6 月 21 日开服的《我的世界》插件生存服「新世界服务器」（NewWorldMC，简称 NWM），同时正在筹备《钢铁雄心 4》Mod 开发。',
   keywords: [
     'Minecraft',
     '我的世界',
@@ -33,7 +33,7 @@ export const site = {
   github: 'https://github.com/caicaicat123',
   email: 'caicaicat123@gmail.com',
   author: '断了一只爪子的招财猫',
-  startedAt: '2024',
+  startedAt: '2023',
 
   // 服务器命名：新世界服务器 · NewWorldMC · NWM
   server: {
@@ -49,7 +49,7 @@ export const site = {
     version: '26.1.2',
     clients: '1.7 至 26.1 均可进入',
     mode: '离线模式 · 带登录插件',
-    openedAt: '2024 年开服，长期运营至今',
+    openedAt: '2023 年 6 月 21 日开服，长期运营至今',
   },
 
   // 社区入口

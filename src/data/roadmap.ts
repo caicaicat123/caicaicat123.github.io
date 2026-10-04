@@ -3,7 +3,7 @@
 export const roadmap = [
   {
     phase: '阶段一',
-    period: '2024 年',
+    period: '2023 年 6 月',
     title: '服务器开起来',
     status: 'done',
     items: ['Java 版插件生存服上线', '社区群建立', '世界长期运营'],
