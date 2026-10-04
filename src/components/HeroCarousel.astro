@@ -315,7 +315,10 @@ const slides = [
   .hero-progress__bar {
     display: block;
     height: 100%;
-    width: 0;
+    /* 必须是 100%：进度靠 scaleX 表达，而缩放一个 0 宽的元素画不出任何东西。
+       2026-10-04 从 width 改成 scaleX 时漏了这一步，导致进度条只剩灰色轨道
+       （barRect.w = 0）—— 这是那次「性能优化」引入的真实回归，已修正。 */
+    width: 100%;
     border-radius: 999px;
     background: var(--color-primary);
     /* 用 scaleX 而非 width：width 触发布局，transform 走 GPU。
