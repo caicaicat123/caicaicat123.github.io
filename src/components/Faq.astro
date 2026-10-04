@@ -1,0 +1,54 @@
+---
+import SectionHeading from './SectionHeading.astro';
+
+interface Props {
+  /** 区块英文标签（如 FAQ） */
+  eyebrow?: string;
+  /** 区块标题 */
+  title?: string;
+  /** 区块导语：一句话给结论 */
+  desc?: string;
+  items: readonly { q: string; a: string }[];
+}
+
+const {
+  eyebrow = 'FAQ',
+  title = '常见问题',
+  desc = undefined,
+  items,
+} = Astro.props;
+
+/**
+ * FAQPage 结构化数据：与下方正文同源，避免两处文案漂移。
+ * 转义 `<` 是防止答案里出现 `</script>` 之类内容截断脚本块。
+ */
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+---
+
+<section class="band border-y border-line">
+  <div class="mx-auto max-w-6xl px-4 py-14">
+    <SectionHeading eyebrow={eyebrow} title={title} desc={desc} descAs="p" />
+    <div class="space-y-4">
+      {
+        items.map((item) => (
+          <article class="card p-5">
+            <h2 class="text-base font-semibold text-strong">{item.q}</h2>
+            <p class="mt-2 text-base leading-[1.85] text-muted">{item.a}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(faqSchema).replace(/</g, '\\u003c')}
+  />
+</section>

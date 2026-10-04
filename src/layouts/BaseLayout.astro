@@ -19,12 +19,51 @@ const {
   noindex = false,
 } = Astro.props;
 
-const fullTitle = title === site.name ? `${site.name} · ${site.nameEn}` : `${title} · ${site.name}`;
+/**
+ * 标题统一格式：`新世界网络|New World Network - 页面名`
+ * 首页不带后缀，直接用品牌全称（首个词就是品牌，最利于摘要与站点识别）。
+ * 说明：这里刻意不做「页面名在前」的写法 —— 品牌置前是全站统一的识别口径。
+ */
+const brand = `${site.name}|${site.nameEn}`;
+const fullTitle = title === site.name ? brand : `${brand} - ${title}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
 const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
 const ogImageAlt = `${site.name} · ${site.nameEn}`;
+// 品牌写法统一（结构化数据 / OG 图 / 标题同源）
+const brandText = `${site.name}（${site.nameEn}）`;
 // 背景网格只留在首屏：其它页面靠留白和晕染就够了，网格是偏「科技看板」的语汇
 const isHome = Astro.url.pathname === '/';
+// 面包屑：给生成式搜索与搜索引擎一个「这页在站点里的位置」的确定性信号。
+// 中间层级用固定名称表（目前只有 /blog、/plugins 这类两级路径）。
+const SECTION_NAMES: Record<string, string> = {
+  blog: '博客',
+  plugins: 'MC插件',
+  minecraft: 'Minecraft',
+  mod: '钢铁雄心4',
+  about: '关于',
+  contact: '联系',
+  roadmap: '路线图',
+  privacy: '隐私政策',
+};
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const breadcrumb =
+  segments.length > 0
+    ? {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: '首页', item: `${site.url}/` },
+          ...segments.map((segment, index) => {
+            const isLast = index === segments.length - 1;
+            return {
+              '@type': 'ListItem',
+              position: index + 2,
+              name: isLast ? title : (SECTION_NAMES[segment] ?? segment),
+              item: `${site.url}/${segments.slice(0, index + 1).join('/')}/`,
+            };
+          }),
+        ],
+      }
+    : null;
 ---
 
 <!doctype html>
@@ -90,6 +129,7 @@ const isHome = Astro.url.pathname === '/';
             '@id': `${site.url}/#organization`,
             name: site.name,
             alternateName: [site.nameEn, site.shortName],
+            description: site.description,
             url: site.url,
             logo: ogImage,
             email: site.email,
@@ -98,11 +138,14 @@ const isHome = Astro.url.pathname === '/';
           {
             '@type': 'WebSite',
             '@id': `${site.url}/#website`,
-            name: `${site.name} · ${site.nameEn}`,
+            name: brandText,
+            alternateName: `${site.name}|${site.nameEn}`,
             url: site.url,
+            description: site.description,
             inLanguage: 'zh-CN',
             publisher: { '@id': `${site.url}/#organization` },
           },
+          ...(breadcrumb ? [breadcrumb] : []),
         ],
       })}
     />

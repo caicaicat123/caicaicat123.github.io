@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { site } from '../../data/site';
+
+const updatedAt = '2026-10-04';
+
+/** 政策正文分节。每节先给结论，再展开细节，便于摘取。 */
+const sections = [
+  {
+    id: 'summary',
+    title: '一句话说明',
+    lead: '我们只收集运营服务器和本网站所必需的最少信息，不出售、不出租、不交易任何玩家数据，也不把数据用于广告投放。',
+    body: [
+      '新世界网络（New World Network，简称 NWN）运营《我的世界》服务器「新世界服务器（NewWorldMC / NWM）」与本站点 nwbbs.cn。本政策说明我们收集什么、为什么收集、保存多久，以及你可以要求我们做什么。',
+      '使用本网站或进入服务器游玩，即表示你已阅读并理解本政策。若你不同意，请不要继续使用我们的服务。',
+    ],
+  },
+  {
+    id: 'collect',
+    title: '我们收集哪些信息',
+    lead: '游戏侧收集账号名、登录凭据（加密存储）、IP 地址与游戏内行为记录；网站侧不设置任何跟踪型 Cookie。',
+    body: [
+      '**你在游戏中提供的信息**：进入服务器时必须用 `/register` 注册账号，我们因此保存你的游戏 ID 与经过加密处理的登录凭据；为保障账号安全，登录时会记录 IP 地址与登录时间。',
+      '**你的游戏内行为记录**：服务器安装了领地保护与方块记录插件（Residence、CoreProtect）。为了让被破坏的建筑可以回滚、让纠纷可以查证，这些插件会记录方块放置与破坏、容器访问等操作及其时间、坐标与操作者。这是服务器秩序的基础数据，不是行为画像。',
+      '**你主动提供给我们的信息**：当你通过 QQ 群、邮箱或 GitHub 联系我们时，我们会收到你主动发送的内容（如 QQ 号、邮箱地址、截图与描述），仅用于回应你的问题。',
+      '**网站侧**：本站是静态站点，不设置任何跟踪型或广告型 Cookie，不使用第三方统计脚本。网站只在你的浏览器本地保存一项偏好——你手动选择的浅色 / 深色主题（localStorage 键名 `nwn-theme`），它不会发送到服务器。',
+      '**服务器日志**：服务器运行日志与备份中会包含玩家上线记录、聊天内容与指令执行记录，用于故障排查、安全审计与数据恢复。',
+    ],
+  },
+  {
+    id: 'why',
+    title: '我们为什么使用这些信息',
+    lead: '只用于四件事：让你能登录游玩、维护服务器秩序、处理纠纷与找回损失、以及保障服务器安全。',
+    body: [
+      '**提供游戏服务**：账号与登录凭据用于确认「你就是你的角色」，防止他人冒用；这也是你离线账号模式下的唯一身份保护。',
+      '**维护秩序**：方块记录与操作日志用于查证破坏、作弊与刷物品行为，并据此作出处罚或回滚。',
+      '**处理纠纷与找回**：当你反馈物品丢失、领地纠纷或误操作时，我们用相关记录定位问题并尽力恢复。',
+      '**安全与稳定**：IP 与登录记录用于识别异常登录、批量注册与攻击行为，保护服务器与其他玩家。',
+      '我们不会将上述信息用于广告、用户画像、信用评估，也不会基于这些信息向你推销任何内容。',
+    ],
+  },
+  {
+    id: 'retention',
+    title: '保存多久',
+    lead: '账号信息在你持续游玩期间保留；日志与备份定期清理；你可以要求删除自己的数据。',
+    body: [
+      '**账号信息**：在你使用服务器期间保留；若你申请注销，我们会在核实身份后删除账号与关联的登录记录。',
+      '**方块与操作记录**：为支持回滚与查证，保留时间通常为数月至一年，随后随日志滚动清理；如果你申请删除，我们会在不破坏他人权益与追责需要的前提下处理。',
+      '**网站偏好**：仅保存在你自己的浏览器里，清除浏览器数据即消失，我们这边不保存副本。',
+      '**备份**：服务器定期生成整机备份用于灾难恢复，备份中的旧数据会随备份轮换自然过期。',
+    ],
+  },
+  {
+    id: 'sharing',
+    title: '与谁共享',
+    lead: '我们不向任何第三方出售或出租数据；仅在必要的服务链路中由基础设施方处理，且不作为独立用途使用。',
+    body: [
+      '**服务器托管平台**：服务器运行在公益托管平台上，平台方为提供计算与网络服务会接触到底层数据。',
+      '**网站托管**：本站点托管在 GitHub Pages，页面访问由该平台的技术基础设施提供，其可能按自身政策处理访问日志。',
+      '**AI 插件**：服务器内的 AI 插件「幽灵」在被点名时，会把当次的聊天内容与必要上下文发送给模型服务商以生成回复。请勿在与它对话时提供真实姓名、住址、联系方式等个人敏感信息。',
+      '**服务器状态查询**：页面上的「实时状态」由浏览器直接向第三方服务器状态接口发起查询，用于展示在线人数等信息；该请求不携带你的身份信息。',
+      '**法律要求**：仅在收到有管辖权的机关依法提出的要求时，我们才会在必要范围内提供数据。',
+    ],
+  },
+  {
+    id: 'rights',
+    title: '你的权利',
+    lead: '你可以查询、更正、导出或要求删除我们持有的关于你的数据，也可以随时要求注销账号。',
+    body: [
+      '**查询与更正**：想确认我们保存了哪些与你相关的信息，或发现信息有误，可以联系我们。',
+      '**删除与注销**：可以申请删除账号及关联记录。为避免他人冒名删除你的数据，我们会先做必要的身份核验。',
+      '**撤回同意**：你可以随时停止游玩并申请删除数据；在此之前的处理不因此失效。',
+      '**申诉**：如果你对处罚或数据处理的处理方式有异议，可以在 QQ 群内提出，我们会说明依据。',
+      '提出上述请求的方式见文末「如何联系我们」。',
+    ],
+  },
+  {
+    id: 'minors',
+    title: '未成年人',
+    lead: '如果你未满 18 周岁，请在监护人知情并同意的前提下使用本服务器与网站。',
+    body: [
+      '我们不面向儿童设计服务，也不会主动收集未成年人的额外个人信息。',
+      '若监护人发现未成年人未经同意向我们提供了个人信息，可联系我们要求删除。',
+    ],
+  },
+  {
+    id: 'security',
+    title: '我们如何保护数据',
+    lead: '我们采取访问控制、凭据加密与定期备份等措施，但没有任何系统能保证绝对安全。',
+    body: [
+      '登录凭据以不可逆的方式加密存储；管理权限仅限必要人员持有。',
+      '站点全站启用 HTTPS；服务器管理通道使用独立凭据。',
+      '请配合保护好自己的账号：不要与他人共享密码，也不要使用与其他平台相同的密码。',
+    ],
+  },
+  {
+    id: 'changes',
+    title: '政策更新',
+    lead: '本政策如发生重大变更，我们会在本页与 QQ 群公告中说明，并更新页面顶部的「最后更新」日期。',
+    body: [
+      '继续使用本网站或服务器，即视为接受更新后的政策。建议你在重要变更后重新阅读本页。',
+    ],
+  },
+] as const;
+---
+
+<BaseLayout
+  title="隐私政策"
+  description={`新世界网络（NewWorldMC 服务器与 nwbbs.cn 站点）的隐私政策：说明我们收集哪些玩家与访客信息、如何使用与保存、与谁共享，以及你可以查询、更正或删除自己数据的途径。最后更新 ${updatedAt}。`}
+>
+  <section class="border-b border-line">
+    <div class="mx-auto max-w-3xl px-4 py-14">
+      <p class="label-latin mb-3 text-xs text-primary">PRIVACY POLICY</p>
+      <h1 class="text-2xl font-semibold text-strong sm:text-3xl">隐私政策</h1>
+      <p class="mt-4 text-base leading-[1.85] text-muted">
+        本政策适用于新世界网络（New World Network，简称 NWN）运营的
+        《我的世界》服务器「{site.server.name}（{site.server.nameEn}）」以及本站点 {site.domain}。
+        我们只收集运营所必需的最少信息，不出售、不出租、不交易任何玩家数据。
+      </p>
+      <dl class="mt-6 grid gap-x-8 gap-y-2 text-sm sm:grid-cols-2">
+        <div class="flex gap-3">
+          <dt class="w-24 shrink-0 text-muted">适用服务</dt>
+          <dd class="text-ink">{site.domain} 与「{site.server.name}」</dd>
+        </div>
+        <div class="flex gap-3">
+          <dt class="w-24 shrink-0 text-muted">最后更新</dt>
+          <dd class="text-ink">{updatedAt}</dd>
+        </div>
+        <div class="flex gap-3">
+          <dt class="w-24 shrink-0 text-muted">责任主体</dt>
+          <dd class="text-ink">{site.name}（{site.nameEn}）</dd>
+        </div>
+        <div class="flex gap-3">
+          <dt class="w-24 shrink-0 text-muted">联系方式</dt>
+          <dd class="text-ink">QQ 群 {site.community.qq} · {site.email}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-3xl px-4 py-14">
+    <!-- 目录：政策较长，给一份可跳转的清单 -->
+    <nav class="card mb-10 p-5" aria-label="政策目录">
+      <p class="label-cjk mb-3 text-[12px] text-muted">目录</p>
+      <ul class="grid gap-2 text-sm sm:grid-cols-2">
+        {
+          sections.map((section, index) => (
+            <li>
+              <a href={`#${section.id}`} class="text-muted transition-colors hover:text-primary">
+                {index + 1}. {section.title}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="space-y-12">
+      {
+        sections.map((section, index) => (
+          <section id={section.id}>
+            <SectionHeading
+              title={`${index + 1}. ${section.title}`}
+              desc={section.lead}
+              descAs="p"
+            />
+            <div class="space-y-4">
+              {
+                section.body.map((paragraph) => (
+                  <p
+                    class="text-base leading-[1.85] text-muted"
+                    set:html={paragraph
+                      .replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-ink">$1</strong>')}
+                  />
+                ))
+              }
+            </div>
+          </section>
+        ))
+      }
+    </div>
+
+    <section id="contact" class="mt-14">
+      <div class="card p-6">
+        <h2 class="text-base font-semibold text-strong">如何联系我们</h2>
+        <p class="mt-3 text-base leading-[1.85] text-muted">
+          涉及数据查询、更正、删除或注销账号的请求，请通过下列任一渠道联系我们，并说明你的游戏 ID 与请求内容。
+          为避免他人冒名操作，我们会先做必要的身份核验，通常在 7 个工作日内答复。
+        </p>
+        <ul class="mt-4 space-y-2 text-sm text-ink">
+          <li>QQ 群：{site.community.qq}</li>
+          <li>邮箱：{site.email}</li>
+          <li>GitHub：{site.github}</li>
+        </ul>
+      </div>
+    </section>
+
+    <p class="mt-10 text-sm leading-relaxed text-muted">
+      本页为中文版本，如与其他语言版本存在歧义，以中文版本为准。若你不同意本政策，请停止使用我们的服务。
+    </p>
+  </section>
+</BaseLayout>

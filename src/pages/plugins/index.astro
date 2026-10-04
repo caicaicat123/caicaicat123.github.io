@@ -2,20 +2,63 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PluginCard from '../../components/PluginCard.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
-import { plugins } from '../../data/plugins';
+import Faq from '../../components/Faq.astro';
+import {
+  pluginFaqs,
+  pluginRequirements,
+  plugins,
+  pluginsSummary,
+  serverPluginCategories,
+} from '../../data/plugins';
 import { site } from '../../data/site';
+
+const description =
+  '新世界网络（NWN）自研的《我的世界》服务端插件：随机副本（NWNDungeon 1.4.11）与幽灵（TheGhost 1.5.2）。均可直接下载 jar，Paper / Purpur 1.21+ 可用，MIT 开源。含安装要求、服务器在用插件概述与常见问题。';
+
+/** 速查表：插件页的核心事实 */
+const facts = [
+  { label: '自研插件', value: '2 个：随机副本（NWNDungeon）、幽灵（TheGhost）' },
+  { label: '当前版本', value: '随机副本 1.4.11 · 幽灵 1.5.2' },
+  { label: '适用服务端', value: 'Paper / Purpur 1.21 及以上（JDK 21+）' },
+  { label: '下载方式', value: '本页「下载 jar」，指向 GitHub Release 最新资产' },
+  { label: '开源许可', value: 'MIT License（可自用、可修改、可商用）' },
+  { label: '源码仓库', value: `${site.github}/nwndungeon · ${site.github}/theghost` },
+  { label: '问题反馈', value: `GitHub Issue 或 QQ 群 ${site.community.qq}` },
+];
 ---
 
-<BaseLayout
-  title="MC插件"
-  description="新世界网络自研的《我的世界》服务端插件：随机副本（NWNDungeon）与幽灵（TheGhost），均可直接下载 jar，MIT 开源。"
->
+<BaseLayout title="MC插件" description={description}>
+  <!-- 首屏：先回答「这里有什么插件」，再给速查表 -->
+  <section class="border-b border-line">
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <p class="label-latin mb-3 text-xs text-primary">MINECRAFT PLUGINS</p>
+      <h1 class="text-2xl font-semibold text-strong sm:text-3xl">MC插件</h1>
+      <p class="mt-4 max-w-3xl text-base leading-[1.85] text-muted">{pluginsSummary}</p>
+
+      <div class="card mt-8 p-5">
+        <h2 class="text-sm font-semibold text-ink">插件速查</h2>
+        <dl class="mt-4 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
+          {
+            facts.map((fact) => (
+              <div class="flex gap-3 border-b border-line pb-2.5 last:border-0">
+                <dt class="w-24 shrink-0 text-muted">{fact.label}</dt>
+                <dd class="break-all text-ink">{fact.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- 有哪些插件 -->
   <section class="mx-auto max-w-6xl px-4 py-14">
     <SectionHeading
-      as="h1"
-      eyebrow="MINECRAFT PLUGINS"
-      title="MC插件"
-      desc="我们自己写、自己也在用的服务端插件。下载即用，MIT 开源。"
+      as="h2"
+      eyebrow="OUR PLUGINS"
+      title="有哪些插件可以下载？"
+      desc="两个都是我们自己写、自己服务器上在跑的插件，下载即用，MIT 开源。"
+      descAs="p"
     />
     <div class="grid gap-5 md:grid-cols-2">
       {
@@ -34,25 +77,82 @@ import { site } from '../../data/site';
     </div>
   </section>
 
-  <section class="band border-t border-line">
+  <!-- 安装要求 -->
+  <section class="band border-y border-line">
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <SectionHeading
+        eyebrow="REQUIREMENTS"
+        title="装这两个插件需要什么？"
+        desc="一句话：Paper 或 Purpur 1.21 以上、JDK 21 以上的服务端，把 jar 丢进 plugins/ 目录后重启即可。"
+        descAs="p"
+      />
+      <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          pluginRequirements.map((item) => (
+            <li class="card p-5 text-base leading-relaxed text-ink">{item}</li>
+          ))
+        }
+      </ul>
+      <p class="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
+        两个插件都不依赖付费服务，也不需要额外的前置插件；幽灵需要自行配置一个大模型 API Key，否则只会静默不动。
+      </p>
+    </div>
+  </section>
+
+  <!-- 服务器上还在用什么插件 -->
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <SectionHeading
+      eyebrow="ON OUR SERVER"
+      title="我们的服务器还在用哪些插件？"
+      desc="除了上面两个自研插件，服务器上还装着约 30 个第三方插件，按用途分成四类：保护与回滚、经济与交易、成长与奖励、体验与兼容。"
+      descAs="p"
+    />
+    <div class="grid gap-5 md:grid-cols-2">
+      {
+        serverPluginCategories.map((category) => (
+          <article class="card p-6">
+            <h3 class="text-base font-semibold text-strong">{category.title}</h3>
+            <p class="mt-3 text-base leading-[1.85] text-muted">{category.desc}</p>
+          </article>
+        ))
+      }
+    </div>
+    <p class="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
+      想了解这些玩法怎么玩，见
+      <a href="/minecraft/" class="text-primary transition-opacity hover:opacity-80">服务器页</a>
+      的「玩法特色」与「新手指南」。
+    </p>
+  </section>
+
+  <!-- 开源 -->
+  <section class="band border-y border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
       <SectionHeading
         eyebrow="OPEN SOURCE"
-        title="都是开源的"
-        desc="两个插件都按 MIT 许可公开，可以自由使用、修改与二次开发。"
+        title="这些插件开源吗？"
+        desc="是。两个插件都按 MIT 许可公开，可以自由使用、修改与二次开发，商用也行，保留版权声明即可。"
+        descAs="p"
       />
       <div class="card p-6">
-        <p class="text-base leading-relaxed text-muted">
+        <p class="text-base leading-[1.85] text-muted">
           上面的「下载 jar」始终指向各自仓库的最新 Release 资产，发新版本后无需回到本站更新链接。
-          安装方式都是丢进服务器的 <code>plugins/</code> 目录后重启；完整说明、指令表与更新记录在仓库里。
+          完整的指令表、权限节点与更新记录在仓库里；遇到问题可以在 GitHub 上提 Issue，或到 QQ 群反馈。
         </p>
         <div class="mt-5 flex flex-wrap gap-3">
           <a href={site.github} target="_blank" rel="noopener noreferrer" class="btn btn-accent">
             访问 GitHub
           </a>
           <a href="/mod/" class="btn btn-standard">查看 Mod 计划</a>
+          <a href="/minecraft/" class="btn btn-subtle">服务器详情</a>
         </div>
       </div>
     </div>
   </section>
+
+  <Faq
+    eyebrow="FAQ"
+    title="插件常见问题"
+    desc="下载、安装、兼容、授权与反馈渠道的常见问题与直接答案。"
+    items={pluginFaqs}
+  />
 </BaseLayout>

@@ -5,10 +5,16 @@ interface Props {
   desc?: string;
   /** 标题标签：页面主标题传 h1，区块标题保持默认 h2 */
   as?: 'h1' | 'h2';
+  /**
+   * 副标题的标签。默认 p；当区块下还有并列子项（如 FAQ 的问答小节）时传 h3，
+   * 这样副标题才能作为「该区块首个答案」被生成式搜索与读屏正确切分。
+   */
+  descAs?: 'p' | 'h3';
 }
 
-const { eyebrow, title, desc, as = 'h2' } = Astro.props;
+const { eyebrow, title, desc, as = 'h2', descAs = 'p' } = Astro.props;
 const Heading = as;
+const Desc = descAs;
 ---
 
 <div class="mb-14 max-w-2xl">
@@ -20,5 +26,5 @@ const Heading = as;
   <Heading class="text-[clamp(28px,3.6vw,40px)] font-extrabold leading-[1.16] tracking-[-0.03em] text-strong">
     {title}
   </Heading>
-  {desc && <p class="mt-4 text-base leading-[1.85] tracking-[0.02em] text-muted">{desc}</p>}
+  {desc && <Desc class="mt-4 text-base leading-[1.85] tracking-[0.02em] text-muted">{desc}</Desc>}
 </div>

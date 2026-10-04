@@ -21,7 +21,8 @@ const statusClass = status === '长期维护' ? 'badge badge-jade' : 'badge badg
     <span class="badge label-latin">{tag}</span>
     <span class={statusClass}>{status}</span>
   </div>
-  <h2 class="text-lg font-semibold text-strong">{name}</h2>
+  <!-- 每张卡是一个插件（独立主题），在区块 h2 之下用 h3 才有无歧义的层级 -->
+  <h3 class="text-lg font-semibold text-strong">{name}</h3>
   <p class="mt-3 flex-1 text-base leading-relaxed text-muted">{desc}</p>
   <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-line pt-4 text-sm">
     <div>

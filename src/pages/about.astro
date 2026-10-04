@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import { site } from '../data/site';
+import { positioning } from '../data/minecraft';
 ---
 
 <BaseLayout
@@ -21,6 +22,19 @@ import { site } from '../data/site';
       <p class="mt-4 text-sm text-muted">
         Slogan：{site.slogan}
       </p>
+    </div>
+
+    <!-- 服务器定位：与服务器页、插件页共用同一份文案（来自 data/minecraft.ts 的 positioning） -->
+    <div class="mt-8">
+      <SectionHeading
+        title="我们在运营一台什么样的服务器？"
+        desc={positioning}
+        descAs="p"
+      />
+      <div class="flex flex-wrap gap-3">
+        <a href="/minecraft/" class="btn btn-accent">服务器详情</a>
+        <a href="/plugins/" class="btn btn-standard">我们的插件</a>
+      </div>
     </div>
 
     <div class="mt-12">

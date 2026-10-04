@@ -63,8 +63,14 @@ const yearRange = String(year) === site.startedAt ? site.startedAt : `${site.sta
     <div
       class="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between"
     >
-      <p>Copyright © {yearRange} {site.nameEn}, All Rights Reserved.</p>
-      <p class="font-serif text-[12px] tracking-[0.18em]">{site.slogan}</p>
+      <p>Copyright © {yearRange} {site.name}（{site.nameEn}）· {site.domain} · All Rights Reserved.</p>
+      <p class="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <!-- 隐私政策放在版权行旁：与常见做法一致的位置，全站每页都能到达 -->
+        <a href="/privacy/" class="transition-colors hover:text-ink">隐私政策</a>
+        <span aria-hidden="true" class="text-line-2">·</span>
+        <a href={`mailto:${site.email}`} class="transition-colors hover:text-ink">{site.email}</a>
+        <span class="font-serif text-[12px] tracking-[0.18em]">{site.slogan}</span>
+      </p>
     </div>
   </div>
 </footer>
