@@ -57,7 +57,7 @@ const facts = [
       as="h2"
       eyebrow="OUR PLUGINS"
       title="有哪些插件可以下载？"
-      desc="两个都是我们自己写、自己服务器上在跑的插件，下载即用，MIT 开源。"
+      desc="以下两个插件均由本工作室开发，并在自营服务器上实际运行；下载后可直接部署，均按 MIT 许可开源。"
       descAs="p"
     />
     <div class="grid gap-5 md:grid-cols-2">
@@ -82,8 +82,8 @@ const facts = [
     <div class="mx-auto max-w-6xl px-4 py-14">
       <SectionHeading
         eyebrow="REQUIREMENTS"
-        title="装这两个插件需要什么？"
-        desc="一句话：Paper 或 Purpur 1.21 以上、JDK 21 以上的服务端，把 jar 丢进 plugins/ 目录后重启即可。"
+        title="部署这两个插件需要什么条件？"
+        desc="两个插件均要求 Paper 或 Purpur 1.21 及以上、JDK 21 及以上的服务端；将 jar 放入 plugins/ 目录后重启服务器即可完成安装。"
         descAs="p"
       />
       <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -94,7 +94,7 @@ const facts = [
         }
       </ul>
       <p class="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
-        两个插件都不依赖付费服务，也不需要额外的前置插件；幽灵需要自行配置一个大模型 API Key，否则只会静默不动。
+        两个插件均不依赖付费服务，也不需要额外的前置插件。其中幽灵需要自行配置大模型 API Key，未配置时不会产生任何回应。
       </p>
     </div>
   </section>
@@ -104,7 +104,7 @@ const facts = [
     <SectionHeading
       eyebrow="ON OUR SERVER"
       title="我们的服务器还在用哪些插件？"
-      desc="除了上面两个自研插件，服务器上还装着约 30 个第三方插件，按用途分成四类：保护与回滚、经济与交易、成长与奖励、体验与兼容。"
+      desc="除上述两个自研插件外，服务器还部署了约 30 个第三方插件，按用途分为四类：保护与回滚、经济与交易、成长与奖励、体验与兼容。"
       descAs="p"
     />
     <div class="grid gap-5 md:grid-cols-2">
@@ -130,13 +130,13 @@ const facts = [
       <SectionHeading
         eyebrow="OPEN SOURCE"
         title="这些插件开源吗？"
-        desc="是。两个插件都按 MIT 许可公开，可以自由使用、修改与二次开发，商用也行，保留版权声明即可。"
+        desc="两个插件均按 MIT 许可公开，允许自由使用、修改与二次开发，亦可用于商业用途，仅需保留版权声明。"
         descAs="p"
       />
       <div class="card p-6">
         <p class="text-base leading-[1.85] text-muted">
-          上面的「下载 jar」始终指向各自仓库的最新 Release 资产，发新版本后无需回到本站更新链接。
-          完整的指令表、权限节点与更新记录在仓库里；遇到问题可以在 GitHub 上提 Issue，或到 QQ 群反馈。
+          上述「下载 jar」链接始终指向各仓库的最新 Release 资产，发布新版本后无需回站更新链接。
+          完整的指令表、权限节点与更新记录均收录于仓库中；如需反馈问题，可在 GitHub 提交 Issue，或在 QQ 群中告知我们。
         </p>
         <div class="mt-5 flex flex-wrap gap-3">
           <a href={site.github} target="_blank" rel="noopener noreferrer" class="btn btn-accent">

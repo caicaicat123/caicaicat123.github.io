@@ -72,7 +72,7 @@ const facts = [
     <SectionHeading
       eyebrow="WHAT IT IS"
       title="这是个什么服务器？"
-      desc="一句话：以原版生存为底子的《我的世界》Java 版插件生存服，用插件补齐保护、交易与目标感，不重置世界。"
+      desc="新世界服务器是一台以原版生存规则为基础的《我的世界》Java 版插件生存服：通过插件提供领地保护、玩家交易与长期目标，世界不重置。"
       descAs="p"
     />
     <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -85,9 +85,7 @@ const facts = [
         ))
       }
     </div>
-    <p class="mt-8 max-w-3xl text-base leading-[1.85] text-ink">
-      <strong class="font-semibold">对外统一口径：</strong>{positioning}
-    </p>
+    <p class="mt-8 max-w-3xl text-base leading-[1.85] text-ink">{positioning}</p>
   </section>
 
   <!-- 支持哪些版本 / 怎么加入 -->
@@ -144,7 +142,7 @@ const facts = [
     <SectionHeading
       eyebrow="HOW TO JOIN"
       title="怎么加入服务器？"
-      desc={`在《我的世界》Java 版客户端里添加服务器地址 ${address} 即可；第一次进入用 /register 注册，之后每次用 /login 登录。四步就能开始玩。`}
+      desc={`在《我的世界》Java 版客户端中添加服务器地址 ${address} 即可接入；首次进入使用 /register 注册账号，此后每次进入使用 /login 登录。按以下四个步骤操作即可开始游戏。`}
       descAs="p"
     />
     <ol class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -196,8 +194,8 @@ const facts = [
   <section class="mx-auto max-w-6xl px-4 py-14">
     <SectionHeading
       eyebrow="NEW PLAYER GUIDE"
-      title="新手指南：第一次进服该做什么？"
-      desc="照着下面 12 步走，十分钟内就能安顿下来：先是能进服、能登录，然后是安家、圈地、解决吃喝，最后是挣钱、签到和组队打副本。"
+      title="新手指南：首次进入服务器应完成的事项"
+      desc="以下 12 项按建议顺序排列：先完成客户端配置与账号注册，再进行选址、圈地与物资准备，最后参与每日签到、交易与副本挑战。"
       descAs="p"
     />
     <ol class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -221,7 +219,7 @@ const facts = [
       <SectionHeading
         eyebrow="RULES"
         title="服务器规则有哪些？"
-        desc="核心只有一句：不要破坏别人的游戏体验。下面按账号、行为、建筑、交易、聊天五组列出完整规则，进服即视为同意。"
+        desc="服务器规则以维护公共游戏环境为目的，按账号、行为、建筑、交易、聊天五组列出如下。进入服务器即视为已知悉并同意本规则。"
         descAs="p"
       />
       <div class="grid gap-5 lg:grid-cols-2">
@@ -242,7 +240,7 @@ const facts = [
         }
       </div>
       <p class="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
-        规则可能会随版本与玩法调整，最新版本以游戏内告示与 QQ 群公告为准。对处罚有异议可在群里提出申诉。
+        本规则可能随版本与玩法调整，最新版本以游戏内告示与 QQ 群公告为准。如对处理结果有异议，可在 QQ 群内提出申诉。
       </p>
     </div>
   </section>
@@ -252,14 +250,14 @@ const facts = [
     <SectionHeading
       eyebrow="SERVER"
       title="服务器现在开着吗？"
-      desc="服务器长期开放。下面是实时状态查询；页面数据由浏览器实时获取，因此脚本未执行时可能显示为空——这不代表服务器离线。"
+      desc="服务器长期开放。以下为实时状态查询；相关数据由浏览器在页面加载后获取，若脚本未执行则可能显示为空，此情况不代表服务器离线。"
       descAs="p"
     />
     <ServerStatus compact />
     <noscript>
       <p class="card mt-4 p-5 text-sm leading-relaxed text-muted">
-        当前为无脚本环境，实时状态无法显示。服务器地址固定为 {address}，是否在线可在《我的世界》客户端服务器列表中查看，
-        或到 QQ 群 {site.community.qq} 询问。
+        当前环境未执行脚本，实时状态无法显示。服务器地址固定为 {address}；如需确认是否在线，可在《我的世界》客户端的服务器列表中查看，
+        或在 QQ 群 {site.community.qq} 中咨询。
       </p>
     </noscript>
   </section>
