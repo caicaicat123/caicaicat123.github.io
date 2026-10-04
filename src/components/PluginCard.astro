@@ -13,9 +13,13 @@ const { name, tag, version, platform, status, desc, download } = Astro.props;
 
 // 完成态用竹青，与全站的状态语义保持一致（见 global.css 的 .badge-jade）
 const statusClass = status === '长期维护' ? 'badge badge-jade' : 'badge badge-primary';
+// 卡片顶部 3px 的状态条用材质色：这是与「插件在服务器上的状态」绑定的位置，
+// 属于材质色被允许出现的场景（见 global.css 的 --m-* 令牌说明）。
+const barColor = status === '长期维护' ? 'var(--m-grass)' : 'var(--m-copper)';
 ---
 
-<article class="card flex h-full flex-col p-6">
+<article class="card flex h-full flex-col overflow-hidden p-6" style={`--status-bar: ${barColor}`}>
+  <span aria-hidden="true" class="plugin-status-bar"></span>
   <div class="mb-3 flex flex-wrap items-center gap-2">
     <!-- 插件标识是分类，不是强调内容：用中性 badge，把朱砂留给真正要抓眼的地方 -->
     <span class="badge label-latin">{tag}</span>
@@ -39,3 +43,18 @@ const statusClass = status === '长期维护' ? 'badge badge-jade' : 'badge badg
     <span class="sr-only">（{name} {version}，jar 文件）</span>
   </a>
 </article>
+
+<style>
+  /* 顶部状态条：唯一在卡片上出现的材质色。
+     它不是装饰 —— 颜色对应插件在服务器上的实际状态（长期维护 = 草绿 / 进行中 = 铜橙）。 */
+  .plugin-status-bar {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--status-bar, var(--m-stone));
+  }
+
+  article {
+    position: relative;
+  }
+</style>

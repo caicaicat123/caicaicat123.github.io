@@ -49,7 +49,15 @@ const menu = nav;
     </div>
   </div>
 
-  <div id="mobile-nav" class="hidden border-t border-line lg:hidden">
+  <!--
+    移动端菜单：**不用 `hidden`（display）**，因为 display 不可过渡，展开/收起会硬切。
+    改为 opacity + visibility + translateY 三者过渡：可过渡、可被键盘与读屏正确忽略
+    （visibility: hidden 会把子树移出可达性树），并且不需要在 close 时监听 transitionend。
+  -->
+  <div
+    id="mobile-nav"
+    class="invisible -translate-y-2 border-t border-line opacity-0 transition-[opacity,transform,visibility] ease-[var(--ease-drawer)] lg:hidden"
+  >
     <nav class="mx-auto grid max-w-6xl grid-cols-2 gap-1 px-4 py-3" aria-label="移动端导航">
       {
         menu.map((item) => (
@@ -89,21 +97,24 @@ const menu = nav;
   const toggle = document.getElementById('nav-toggle');
   const panel = document.getElementById('mobile-nav');
   if (toggle && panel) {
-    toggle.addEventListener('click', () => {
-      const open = panel.classList.toggle('hidden') === false;
+    const setOpen = (open: boolean) => {
+      // 非对称时长：展开 220ms（内容呈现），收起 140ms（系统响应更快）
+      panel.style.transitionDuration = open ? 'var(--dur-enter)' : 'var(--dur-exit)';
+      panel.classList.toggle('invisible', !open);
+      panel.classList.toggle('opacity-0', !open);
+      panel.classList.toggle('-translate-y-2', !open);
       toggle.setAttribute('aria-expanded', String(open));
-    });
+    };
+    const isOpen = () => !panel.classList.contains('invisible');
+
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
     panel.addEventListener('click', (event) => {
-      if (event.target instanceof Element && event.target.closest('a')) {
-        panel.classList.add('hidden');
-        toggle.setAttribute('aria-expanded', 'false');
-      }
+      if (event.target instanceof Element && event.target.closest('a')) setOpen(false);
     });
     // Esc 收起菜单
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && !panel.classList.contains('hidden')) {
-        panel.classList.add('hidden');
-        toggle.setAttribute('aria-expanded', 'false');
+      if (event.key === 'Escape' && isOpen()) {
+        setOpen(false);
         (toggle as HTMLElement).focus();
       }
     });

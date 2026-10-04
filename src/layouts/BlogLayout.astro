@@ -41,8 +41,14 @@ const articleSchema = {
 
 <BaseLayout title={title} description={description} ogType="article">
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
-  <article class="mx-auto max-w-2xl px-4 py-12">
-    <a href="/blog/" class="text-sm text-muted transition-colors hover:text-primary">← 返回博客</a>
+  <!--
+    版心统一：外层一律 max-w-6xl（与导航、页脚同一条左边缘），
+    长文本的行宽用内层 --reading 限制 —— 版心管版式，行宽管阅读。
+    2026-10-04 之前这里直接 mx-auto max-w-2xl，导致文章页左边缘比导航缩进约 183px。
+  -->
+  <div class="mx-auto max-w-6xl px-4 py-12">
+    <article class="max-w-reading">
+      <a href="/blog/" class="text-sm text-muted transition-colors hover:text-primary">← 返回博客</a>
 
     <header class="mt-6 border-b border-line pb-6">
       <div class="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted">
@@ -120,5 +126,6 @@ const articleSchema = {
         ) : null
       }
     </nav>
-  </article>
+    </article>
+  </div>
 </BaseLayout>

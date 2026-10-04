@@ -242,6 +242,8 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     if (status.online) {
       dot?.classList.remove('status-offline');
       dot?.classList.add('status-online');
+      // 材质色钩子：在线时人数与状态点转草绿（见 global.css 的 --m-grass）
+      root.setAttribute('data-material', 'online');
       setText(root, '[data-status-text]', '在线');
       setText(root, '[data-online]', String(status.now ?? 0));
       setText(root, '[data-max]', String(status.max ?? '—'));
@@ -249,6 +251,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
     } else {
       dot?.classList.remove('status-online');
       dot?.classList.add('status-offline');
+      root.setAttribute('data-material', 'offline');
       setText(root, '[data-status-text]', '未响应');
       setText(root, '[data-online]', '—');
       setText(root, '[data-max]', '—');
@@ -287,6 +290,7 @@ const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
       const dot = root.querySelector('[data-dot]');
       dot?.classList.remove('status-online');
       dot?.classList.add('status-offline');
+      root.setAttribute('data-material', 'offline');
       setText(root, '[data-status-text]', '暂时无法查询');
       setText(root, '[data-online]', '—');
       setText(root, '[data-max]', '—');

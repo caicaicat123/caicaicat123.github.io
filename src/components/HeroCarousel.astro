@@ -230,24 +230,25 @@ const slides = [
     scroll-snap-stop: always;
   }
 
-  /* 进场：只有当前页播放，逐条错开 */
+  /* 进场：**整块一次性落位**（220ms），不做逐条错开。
+     逐条错开（每条 +80ms）是生成式页面最典型的入场手法；
+     首屏是每次都看的东西，越简单越好。
+     用 transition + @starting-style 而非 keyframes —— keyframes 被中断会从 0 重播。 */
   .hero-item {
     opacity: 1;
+    transform: none;
+    transition: opacity var(--dur-enter) var(--ease-out),
+      transform var(--dur-enter) var(--ease-out);
   }
 
-  .hero-slide.is-active .hero-item {
-    animation: heroIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(var(--i, 0) * 80ms);
+  .hero-slide:not(.is-active) .hero-item {
+    opacity: 0;
   }
 
-  @keyframes heroIn {
-    from {
+  @starting-style {
+    .hero-slide.is-active .hero-item {
       opacity: 0;
-      transform: translateY(14px);
-    }
-    to {
-      opacity: 1;
-      transform: none;
+      transform: translateY(6px);
     }
   }
 
@@ -261,14 +262,18 @@ const slides = [
     border: 1px solid var(--color-line);
     color: var(--color-muted);
     background: transparent;
-    transition: color 0.2s var(--ease), border-color 0.2s var(--ease),
-      background-color 0.2s var(--ease);
+    transition: color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
   }
 
-  .hero-arrow:hover {
-    color: var(--color-ink);
-    border-color: var(--color-line-2);
-    background: var(--color-soft);
+  /* 悬停锁在精确指针设备后面（触屏点按会误触发） */
+  @media (hover: hover) and (pointer: fine) {
+    .hero-arrow:hover {
+      color: var(--color-ink);
+      border-color: var(--color-line-2);
+      background: var(--color-soft);
+    }
   }
 
   /* 暂停 / 播放图标按 aria-pressed 切换 */
@@ -312,15 +317,19 @@ const slides = [
     width: 0;
     border-radius: 999px;
     background: var(--color-primary);
-    transition: width 0.5s var(--ease);
+    /* 用 scaleX 而非 width：width 触发布局，transform 走 GPU。
+       transform-origin 在左端，进度从左侧长出来。 */
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 300ms var(--ease-out);
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hero-track {
       scroll-behavior: auto;
     }
-    .hero-slide.is-active .hero-item {
-      animation: none;
+    .hero-item {
+      transform: none;
     }
     .hero-progress__bar {
       transition: none;
@@ -352,15 +361,39 @@ const slides = [
       if (counter) {
         counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
       }
-      if (bar) bar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      // 进度条走 transform（scaleX），与 CSS 里声明的一致：不触发布局
+      if (bar) bar.style.transform = `scaleX(${(index + 1) / slides.length})`;
     };
 
+    /**
+     * 翻屏滚动。浏览器默认的 smooth 曲线不可控且偏慢，这里用 WAAPI 指定曲线：
+     * 与 CSS 同性能（合成线程）、可被打断、可指定缓动。
+     *
+     * 做法：先把 scrollLeft 立即设为目标（保证 scroll-snap 与无障碍读屏的位置正确），
+     * 再用 transform 把视觉位置「拉回」到起点，并以 ease-in-out 放回 0。
+     * 动画只碰 transform，不触发布局；用户中途再点一次，会从当前位置改向。
+     */
+    let scrollAnim: Animation | undefined;
     const goTo = (index: number) => {
       const target = (index + slides.length) % slides.length;
-      track.scrollTo({
-        left: target * track.clientWidth,
-        behavior: reduceMotion ? 'auto' : 'smooth',
-      });
+      const targetLeft = target * track.clientWidth;
+      const startLeft = track.scrollLeft;
+
+      scrollAnim?.cancel();
+      track.scrollLeft = targetLeft;
+
+      if (!reduceMotion && typeof track.animate === 'function') {
+        const shift = startLeft - targetLeft;
+        if (shift !== 0) {
+          scrollAnim = track.animate(
+            [{ transform: `translateX(${shift}px)` }, { transform: 'translateX(0)' }],
+            { duration: 300, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'none' },
+          );
+          scrollAnim.addEventListener('finish', () => {
+            track.style.transform = '';
+          });
+        }
+      }
       setActive(target);
     };
 

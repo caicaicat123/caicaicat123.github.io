@@ -31,6 +31,27 @@ const toneClass =
   )
 }
 
+<style>
+  /* 确认时刻：文字与描边一起转竹青，160ms 缓慢过渡（比别处的 120ms 慢一点）。
+     复制是「操作已成功」的确认 —— 瞬切看不出状态变化。
+     只过渡颜色，不做过场动画：过场动画在 1.6s 后回退时会再演一遍，反而啰嗦。 */
+  [data-copy] {
+    transition: background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  }
+
+  [data-copy][data-copied='true'] {
+    color: var(--jade);
+    border-color: var(--jade-line);
+    background: var(--jade-soft);
+  }
+
+  /* 让文字在切换瞬间不跳动：文案长度接近，用等宽数字与固定内边距兜底 */
+  [data-copy] [data-copy-text] {
+    display: inline-block;
+  }
+</style>
+
 <script>
   document.addEventListener('click', async (event) => {
     const target = event.target;
@@ -59,10 +80,13 @@ const toneClass =
     }
 
     if (labelEl) {
+      // 文字先淡出，换成「已复制」再淡入（样式里的 120ms 交叉由 data-copied 驱动）
+      button.setAttribute('data-copied', 'true');
       labelEl.textContent = '已复制';
       window.setTimeout(() => {
+        button.removeAttribute('data-copied');
         labelEl.textContent = original ?? '复制';
-      }, 1500);
+      }, 1600);
     }
   });
 </script>

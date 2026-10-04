@@ -36,10 +36,15 @@ const faqSchema = {
 <section class="band border-y border-line">
   <div class="mx-auto max-w-6xl px-4 py-14">
     <SectionHeading eyebrow={eyebrow} title={title} desc={desc} descAs="p" />
-    <div class="space-y-4">
+    <!--
+      连续说明不用卡片：卡片是一种「同类并置项」的形状，
+      把十几条问答各自包进圆角盒，等于让形状不再携带信息。
+      这里改用「一条 1px 线 + 留白」分段 —— 与隐私政策的条款、规则清单同一种语汇。
+    -->
+    <div class="divide-y divide-line border-y border-line">
       {
         items.map((item) => (
-          <article class="card p-5">
+          <article class="py-6">
             <h2 class="text-base font-semibold text-strong">{item.q}</h2>
             <p class="mt-2 text-base leading-[1.85] text-muted">{item.a}</p>
           </article>

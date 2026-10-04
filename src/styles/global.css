@@ -2,6 +2,23 @@
 @source "../";
 
 /*
+ * 自托管中文衬线字体：Noto Serif SC（思源宋体的 Google 版本，SIL OFL 1.1）。
+ *
+ * 为什么必须自托管：本机与多数访客机器上 --font-serif 会落到 SimSun，
+ * 而宋体只有一个字重 —— 40px 以上的标题全靠浏览器合成粗体，边缘发糊。
+ * 这是本站视觉天花板的真实瓶颈（详见 internal\视觉改版方案-2026-10-04.md 的 2.2）。
+ *
+ * 怎么做的：取 Google Fonts 官方分片（每个分片带 unicode-range，
+ * 中文被切成 202 片），按站内实际用到的 1105 个码点筛出 **每档 28 片**，
+ * 下载到 public/fonts/ 并生成两份 CSS。浏览器只会请求页面里真正出现字符的那些分片。
+ * 体积：400 与 700 各约 1.9 MB（全量按需下载，不是首屏一次拉完）。
+ *
+ * 重新生成：见 internal\说明.md 的 2026-10-04 视觉改版条目（脚本为临时文件，命令已记录）。
+ */
+@import "../../public/fonts/noto-serif-sc-400.css";
+@import "../../public/fonts/noto-serif-sc-700.css";
+
+/*
  * 墨 · 国风设计系统
  *
  * 骨是三家，韵是中国：
@@ -15,7 +32,11 @@
  *   菱纹与菱形标记、水墨晕染；印章元素已弃用（2026-09-24 移除）
  *   圆角偏方正（4 / 8 / 12px），阴影用暖色而非中性黑
  *
- * 动效约定：交互反馈 160ms（--dur-fast），场景动效 700ms（--dur）。
+ * 动效约定（2026-10-04 更新，详见 internal\动效方案-2026-10-04.md）：
+ *   曲线三档 --ease-out（进场/反馈，永不用于 UI，不用 ease-in）/ --ease-in-out（屏内位移）/ --ease-drawer（面板）；
+ *   时长五档 --dur-press 120 / --dur-fast 160 / --dur-enter 220 / --dur-exit 140 / --dur-theme 260 / --dur-scene 700。
+ *   原则：只在 transform 与 opacity 上做文章；退场快于进场；同屏只允许一处动；
+ *   悬停动效一律锁在 @media (hover: hover) and (pointer: fine) 后面。
  *
  * 字体在 Windows 上的现实：本机没有思源宋体，--font-serif 会落到 SimSun（宋体），
  * 而宋体只有一个字重 —— 所以标题统一 500 并禁止合成字重（见 h1–h3），
@@ -29,6 +50,10 @@
 
 /* ── 令牌 ─────────────────────────────────────────────────── */
 @theme {
+  /* 长度：行宽（长文本用）。版心宽度走 max-w-6xl（1120px），保持 Tailwind 原语。
+     这样 max-w-reading 就是一个真实工具类，不用写 arbitrary value。 */
+  --container-reading: 680px;
+
   /* 纸 */
   --color-bg: #f7f4ed; /* 宣纸 */
   --color-surface: #fffdf8; /* 素笺 */
@@ -50,8 +75,20 @@
   --color-secondary: #a62b2b;
   --color-accent: #9a6b00;
 
-  /* 宋体标题 · 黑体正文 · 等宽数字 */
-  --font-serif: "Songti SC", "STSong", "Source Han Serif SC", "Noto Serif SC",
+  /* ── 材质色（2026-10-04 新增，用途**严格受限**）─────────────────
+     叙事：游戏里的材料本来就是高饱和、粗糙、像素化的，而「纸」是低饱和、
+     精细、连续的。让两种质感在同一界面上各守其位，比全站统一成纸色更有说服力。
+     **只允许出现在与游戏数据绑定的位置**：在线人数与状态点、插件卡状态条、
+     404 的像素块。不允许用作按钮底色、装饰渐变、区块背景。 */
+  --m-grass: #7cb342; /* 在线 / 正常 */
+  --m-copper: #c06a3a; /* 进行中 */
+  --m-stone: #8a8d8f; /* 无响应 / 中性 */
+  --m-water: #3f76b5; /* 备用（暂未使用，留给将来的吞吐类数据） */
+
+  /* 宋体标题 · 黑体正文 · 等宽数字
+     自托管的 Noto Serif SC 排在最前（两档真字重 400 / 700）；
+     后面的系统衬线只是兜底 —— 自托管字体加载失败时也不会掉成无衬线。 */
+  --font-serif: "Noto Serif SC", "Songti SC", "STSong", "Source Han Serif SC",
     "SimSun", Georgia, serif;
   --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue",
@@ -81,14 +118,36 @@
   --acrylic: rgba(247, 244, 237, 0.82);
   --acrylic-line: rgba(31, 29, 26, 0.07);
 
-  /* 阴影：暖色，极轻 */
+  /* 阴影：暖色，极轻。卡片只留 --shadow-1 ——
+     hover 不再抬阴影（满页卡片一起浮起等于没有反馈），阴影留给真正浮起的层。 */
   --shadow-1: 0 1px 2px rgba(31, 29, 26, 0.06);
-  --shadow-hover: 0 4px 14px rgba(31, 29, 26, 0.09);
 
-  /* 动效：Apple 式的慢；交互反馈走 --dur-fast */
+  /* 动效：Apple 式的慢；交互反馈走各自的语义时长（见下方「动效令牌」） */
   --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
   --dur: 700ms;
   --dur-fast: 160ms;
+
+  /* ── 动效令牌（2026-10-04 起，新代码一律用这些，别再用裸数值）─────
+     曲线三档：进场/反馈用 ease-out，屏内位移用 ease-in-out，面板用 drawer。
+     (0.25,0.1,0.25,1) 就是 CSS 默认 ease，等于没选曲线，所以不再用于交互反馈。 */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* 时长五档：按「用户看见的频率」定，不按好看定。
+     退场永远比进场快 —— 系统响应要快过内容呈现。 */
+  --dur-press: 120ms; /* 按压反馈 */
+  --dur-enter: 220ms; /* 元素进场、面板展开 */
+  --dur-exit: 140ms; /* 退场 */
+  --dur-theme: 260ms; /* 主题切换：必须发生，但不想被注意 */
+  --dur-scene: 700ms; /* 场景动效（背景晕染），等于原来的 --dur */
+
+  /* ── 版心令牌 ────────────────────────────────────────────────
+     两条宽度各有职责：版心管版式，行宽管阅读。
+     长文本与页面导语一律**左对齐到版心**，不再 mx-auto 居中 ——
+     否则会出现「顶部导航左对齐、下面文字居中」的视觉错位。 */
+  --content: 1120px; /* 导航 / 区块 / 卡片 / 表格 / 页脚 */
+  --reading: 680px; /* 博客正文、隐私政策等长文本 */
 
   color-scheme: light;
 }
@@ -129,7 +188,6 @@
   --acrylic-line: rgba(237, 232, 222, 0.08);
 
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-hover: 0 4px 14px rgba(0, 0, 0, 0.5);
 
   color-scheme: dark;
 }
@@ -153,7 +211,10 @@ body {
   font-size: 15px;
   line-height: 1.75;
   letter-spacing: 0.02em;
-  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  /* 主题切换属于「必须发生但不想被注意」的变化：260ms，且只过渡颜色。
+     原来用 700ms（场景动效时长）用在点击引发的切换上，会显得卡住。 */
+  transition: background-color var(--dur-theme) var(--ease-out),
+    color var(--dur-theme) var(--ease-out);
 }
 
 /* 宋体做标题。字重交给各元素上的 font-* 工具类去定 ——
@@ -185,10 +246,11 @@ kbd {
   font-family: var(--font-mono);
 }
 
-/* 拉丁文标签：等宽 + 大写 + 宽字距 */
+/* 拉丁文标签：等宽 + 字距（0.28em → 0.16em：过宽的字距是排版表演，不是可读性）
+   仍用于 ASCII 内容（如 404、计数），**不再用于章节小标**。 */
 .label-latin {
   font-family: var(--font-mono);
-  letter-spacing: 0.28em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -257,23 +319,6 @@ kbd {
   }
 }
 
-/* 光标柔光：只改 transform，不动 left/top，避免每帧触发布局 */
-.bg-cursor {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--wash-1), transparent 65%);
-  opacity: 0.5;
-  transform: translate3d(var(--cursor-x, 50vw), var(--cursor-y, 50vh), 0)
-    translate(-50%, -50%);
-  transition: opacity var(--dur) var(--ease);
-  will-change: transform;
-  pointer-events: none;
-}
-
 /* 单色光晕（/mod 首屏装饰用） */
 .glow-primary {
   background: radial-gradient(closest-side, var(--wash-1), transparent 70%);
@@ -294,14 +339,19 @@ kbd {
     border: 1px solid var(--color-line);
     border-radius: 8px;
     box-shadow: var(--shadow-1);
-    transition: border-color var(--dur-fast) var(--ease),
-      box-shadow var(--dur-fast) var(--ease),
-      background-color var(--dur-fast) var(--ease);
+    /* 只过渡描边与底色：阴影变化会触发重绘，而且满页卡片一起浮起等于没有反馈。
+       阴影留给真正浮起的层（移动端菜单、将来的模态）。 */
+    transition: border-color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out);
   }
 
-  .card:hover {
-    border-color: var(--color-line-2);
-    box-shadow: var(--shadow-hover);
+  /* 悬停只给「可交互的卡」（链接卡、插件卡）。纯信息卡不响应，
+     且一律锁在精确指针设备后面 —— 触屏上 :hover 会在点按时误触发。 */
+  @media (hover: hover) and (pointer: fine) {
+    a.card:hover,
+    .card-interactive:hover {
+      border-color: var(--color-line-2);
+    }
   }
 
   .badge {
@@ -331,25 +381,27 @@ kbd {
     background: var(--jade-soft);
   }
 
-  /* 章节标签：菱形 + 等宽大写 */
+  /* 章节小标：中文宋体小字 + 一条 32px 朱砂短线。
+     2026-10-04 之前这里是「等宽大写 + 0.3em 字距」的英文标签（如 WHAT IT IS）——
+     那是当下生成式页面最典型的装饰之一：不携带任何信息，只是给标题戴个帽子。
+     现在改为**信息性**定位：写中文栏目名，短线承担「起始」的视觉职责。 */
   .section-label {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 16px;
-    font-family: var(--font-mono);
-    font-size: 11.5px;
+    margin-bottom: 14px;
+    font-family: var(--font-serif);
+    font-size: 13px;
     font-weight: 500;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
+    letter-spacing: 0.1em;
     color: var(--color-primary);
   }
 
   .section-label::before {
     content: '';
-    width: 6px;
-    height: 6px;
-    transform: rotate(45deg);
+    width: 32px;
+    height: 2px;
+    border-radius: 1px;
     background: var(--color-primary);
   }
 
@@ -368,9 +420,15 @@ kbd {
     letter-spacing: 0.06em;
     white-space: nowrap;
     cursor: pointer;
-    transition: background-color var(--dur-fast) var(--ease),
-      border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease),
-      box-shadow var(--dur-fast) var(--ease);
+    transition: background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out),
+      box-shadow var(--dur-fast) var(--ease-out), transform var(--dur-press) var(--ease-out);
+  }
+
+  /* 按压反馈：界面「听到你了」的最短回路。
+     缩放置 0.97（0.95–0.98 之间），比任何文案都直接。 */
+  .btn:active {
+    transform: scale(0.97);
   }
 
   .btn-accent {
@@ -401,6 +459,17 @@ kbd {
   .btn-subtle:hover {
     background: var(--color-soft);
     color: var(--color-ink);
+  }
+
+  /* 悬停效果锁在精确指针设备后面：触屏点按时 :hover 会先亮一次再响应 */
+  @media (hover: none) {
+    .btn-accent:hover,
+    .btn-standard:hover,
+    .btn-subtle:hover {
+      background: inherit;
+      border-color: inherit;
+      color: inherit;
+    }
   }
 
   .btn-sm {
@@ -466,9 +535,21 @@ kbd {
   background: var(--color-muted);
 }
 
+/* 状态点：在线 = 竹青，进视口时**呼吸一次**（1.2s 单次），之后保持静止。
+   原先是 2.4s 无限脉冲 —— 那会把注意力永久钉在一个静态事实上；
+   状态点需要的是「存在」，不是「一直动」。 */
 .status-online {
   background: var(--color-cyan);
-  animation: pulse 2.4s ease-in-out infinite;
+  animation: breathe 1.2s var(--ease-out) 1;
+}
+
+@keyframes breathe {
+  0% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* 未响应不是错误，用中性淡墨 —— 胭脂和朱砂几乎同色，会和强调色打架 */
@@ -476,46 +557,65 @@ kbd {
   background: var(--color-muted);
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.45;
-  }
+/* 在线状态用材质色（草绿），与 .status-online 的呼吸同步色相 ——
+   状态点在深色主题下沿用同一支材质色，不做暗调补偿（它本身就是高饱和色） */
+.status-online,
+[data-material='online'] .status-dot.status-online {
+  background: var(--m-grass);
 }
 
-.fade-up {
-  animation: fadeUp var(--dur) var(--ease) both;
+[data-material='offline'] .status-dot {
+  background: var(--m-stone);
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+/* 在线人数：全站唯一允许着色的「大数字」。
+   之前用 text-ink（纯墨色），现在按状态着色 —— 这是与游戏数据绑定的位置，
+   正好是材质色被允许出现的地方。行内样式里的 text-ink 会被这里的 !important 覆盖。 */
+[data-material='online'] [data-online] {
+  color: var(--m-grass) !important;
+}
+
+[data-material='offline'] [data-online] {
+  color: var(--m-stone) !important;
 }
 
 /* ── 主题图标 ─────────────────────────────────────────────── */
+/* 两个图标叠放在同一格，用 opacity + scale + rotate 交叉淡切。
+   原先用 display: none/block 硬切 —— display 不可过渡，切换瞬间会「闪一下」。
+   太阳↔月亮的旋转是自洽的映射，所以这里允许一点旋转（不是普通 UI 过渡）。 */
+.icon-sun,
+.icon-moon {
+  grid-area: 1 / 1;
+  transition: opacity var(--dur-enter) var(--ease-out),
+    transform var(--dur-enter) var(--ease-out);
+}
+
 .icon-sun {
-  display: block;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
 }
 
 .icon-moon {
-  display: none;
+  opacity: 0;
+  transform: rotate(-30deg) scale(0.92);
 }
 
 [data-theme='dark'] .icon-sun {
-  display: none;
+  opacity: 0;
+  transform: rotate(30deg) scale(0.92);
 }
 
 [data-theme='dark'] .icon-moon {
-  display: block;
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-sun,
+  .icon-moon {
+    transform: none;
+    transition: opacity 1ms linear;
+  }
 }
 
 /* ── 正文排版（文章） ─────────────────────────────────────── */
@@ -609,16 +709,26 @@ kbd {
   color: var(--color-muted);
 }
 
+/* 减少动效：保留透明度与颜色（它们帮助理解状态变化），去掉位移与循环。 */
 @media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-press: 0ms;
+    --dur-fast: 1ms;
+    --dur-enter: 1ms;
+    --dur-exit: 1ms;
+    --dur-theme: 1ms;
+    --dur-scene: 0ms;
+  }
   html {
     scroll-behavior: auto;
   }
-  body {
-    transition: none;
-  }
   .bg-orb,
-  .fade-up,
   .status-online {
     animation: none;
+  }
+  /* 位移类入场一律降为纯淡入 */
+  .hero-item,
+  .hero-item::before {
+    transform: none;
   }
 }

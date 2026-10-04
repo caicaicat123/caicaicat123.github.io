@@ -31,7 +31,7 @@ const facts = [
   <!-- 首屏：先回答「这里有什么插件」，再给速查表 -->
   <section class="border-b border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
-      <p class="label-latin mb-3 text-xs text-primary">MINECRAFT PLUGINS</p>
+      <p class="section-label">自研插件</p>
       <h1 class="text-2xl font-semibold text-strong sm:text-3xl">MC插件</h1>
       <p class="mt-4 max-w-3xl text-base leading-[1.85] text-muted">{pluginsSummary}</p>
 
@@ -55,7 +55,7 @@ const facts = [
   <section class="mx-auto max-w-6xl px-4 py-14">
     <SectionHeading
       as="h2"
-      eyebrow="OUR PLUGINS"
+      eyebrow="可下载插件"
       title="有哪些插件可以下载？"
       desc="以下两个插件均由本工作室开发，并在自营服务器上实际运行；下载后可直接部署，均按 MIT 许可开源。"
       descAs="p"
@@ -81,7 +81,7 @@ const facts = [
   <section class="band border-y border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
       <SectionHeading
-        eyebrow="REQUIREMENTS"
+        eyebrow="部署条件"
         title="部署这两个插件需要什么条件？"
         desc="两个插件均要求 Paper 或 Purpur 1.21 及以上、JDK 21 及以上的服务端；将 jar 放入 plugins/ 目录后重启服务器即可完成安装。"
         descAs="p"
@@ -102,7 +102,7 @@ const facts = [
   <!-- 服务器上还在用什么插件 -->
   <section class="mx-auto max-w-6xl px-4 py-14">
     <SectionHeading
-      eyebrow="ON OUR SERVER"
+      eyebrow="服务器在用插件"
       title="我们的服务器还在用哪些插件？"
       desc="除上述两个自研插件外，服务器还部署了约 30 个第三方插件，按用途分为四类：保护与回滚、经济与交易、成长与奖励、体验与兼容。"
       descAs="p"
@@ -128,7 +128,7 @@ const facts = [
   <section class="band border-y border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
       <SectionHeading
-        eyebrow="OPEN SOURCE"
+        eyebrow="开源许可"
         title="这些插件开源吗？"
         desc="两个插件均按 MIT 许可公开，允许自由使用、修改与二次开发，亦可用于商业用途，仅需保留版权声明。"
         descAs="p"
@@ -150,7 +150,7 @@ const facts = [
   </section>
 
   <Faq
-    eyebrow="FAQ"
+    eyebrow="常见问题"
     title="插件常见问题"
     desc="下载、安装、兼容、授权与反馈渠道的常见问题与直接答案。"
     items={pluginFaqs}

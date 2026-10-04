@@ -21,12 +21,12 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   <section id="server-status" class="mx-auto max-w-6xl px-4 py-20">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <SectionHeading
-        eyebrow="SERVER"
+        eyebrow="服务器状态"
         title="服务器状态"
         desc="Java 版 26.1.2，全版本客户端可进，离线模式。"
       />
-      <a href="/minecraft/" class="mb-14 text-sm text-primary transition-opacity hover:opacity-80">
-        服务器详情 →
+      <a href="/minecraft/" class="mb-14 text-sm text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80">
+        服务器详情
       </a>
     </div>
     <ServerStatus mini />
@@ -36,9 +36,9 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   <section class="band border-y border-line">
     <div class="mx-auto max-w-6xl px-4 py-20">
     <div class="flex flex-wrap items-end justify-between gap-4">
-      <SectionHeading eyebrow="BLOG" title="最新文章" />
-      <a href="/blog/" class="mb-8 text-sm text-primary transition-opacity hover:opacity-80">
-        全部文章 →
+      <SectionHeading eyebrow="博客" title="最新文章" />
+      <a href="/blog/" class="mb-8 text-sm text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80">
+        全部文章
       </a>
     </div>
     <div class="grid gap-5 md:grid-cols-3">
