@@ -57,18 +57,19 @@ const channels = [
       </div>
 
       <div class="card p-5">
-        <h2 class="text-sm font-semibold text-strong">Minecraft</h2>
-        <p class="mt-3 font-mono text-sm text-ink">
-          {site.minecraft.javaIp}:{site.minecraft.port}
-        </p>
-        <p class="mt-2 text-xs leading-relaxed text-muted">
-          Java 版 {site.minecraft.version}，离线可进。
+        <!--
+          这里原先还有一张 Minecraft 卡：地址 + 版本 + 「服务器详情」链接。
+          已删除 —— 服务器事实的唯一出处是服务器页的速查表，本页只指路，不再复述地址与版本。
+        -->
+        <h2 class="text-sm font-semibold text-strong">服务器</h2>
+        <p class="mt-3 text-sm leading-relaxed text-muted">
+          服务器地址、版本与连接方式见服务器页的速查表。
         </p>
         <a
           href="/minecraft/"
           class="mt-4 inline-block text-sm text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80"
         >
-          服务器详情
+          打开服务器页
         </a>
       </div>
     </div>

@@ -3,61 +3,34 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PluginCard from '../../components/PluginCard.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import Faq from '../../components/Faq.astro';
-import {
-  pluginFaqs,
-  pluginRequirements,
-  plugins,
-  pluginsSummary,
-  serverPluginCategories,
-} from '../../data/plugins';
+import { pluginFaqs, pluginRequirements, plugins, pluginsSummary, serverPluginCategories } from '../../data/plugins';
 import { site } from '../../data/site';
 
 const description =
-  '新世界网络（NWN）自研的《我的世界》服务端插件：随机副本（NWNDungeon 1.4.11）与幽灵（TheGhost 1.5.2）。均可直接下载 jar，Paper / Purpur 1.21+ 可用，MIT 开源。含安装要求、服务器在用插件概述与常见问题。';
-
-/** 速查表：插件页的核心事实 */
-const facts = [
-  { label: '自研插件', value: '2 个：随机副本（NWNDungeon）、幽灵（TheGhost）' },
-  { label: '当前版本', value: '随机副本 1.4.11 · 幽灵 1.5.2' },
-  { label: '适用服务端', value: 'Paper / Purpur 1.21 及以上（JDK 21+）' },
-  { label: '下载方式', value: '本页「下载 jar」，指向 GitHub Release 最新资产' },
-  { label: '开源许可', value: 'MIT License（可自用、可修改、可商用）' },
-  { label: '源码仓库', value: `${site.github}/nwndungeon · ${site.github}/theghost` },
-  { label: '问题反馈', value: `GitHub Issue 或 QQ 群 ${site.community.qq}` },
-];
+  '新世界网络（NWN）自研的《我的世界》服务端插件：随机副本（NWNDungeon）与幽灵（TheGhost）。可直接下载 jar，Paper / Purpur 1.21+ 可用，MIT 开源；含部署条件、开源许可与常见问题。';
 ---
 
 <BaseLayout title="MC插件" description={description}>
-  <!-- 首屏：先回答「这里有什么插件」，再给速查表 -->
+  <!--
+    冗余原则（2026-10-04 用户要求）：本页原先在首屏放了一张「插件速查」表，
+    但它与下方的插件卡片（名称 / 版本 / 适用服务端）、部署条件一节、开源许可一节
+    逐条重复 —— 已整块删除。**插件页的事实出处就是卡片本身**：
+    名称、标识、版本、适用服务端、下载链接都在卡片上，不再另列表格。
+  -->
   <section class="border-b border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
       <p class="section-label">自研插件</p>
       <h1 class="text-2xl font-semibold text-strong sm:text-3xl">MC插件</h1>
       <p class="mt-4 max-w-3xl text-base leading-[1.85] text-muted">{pluginsSummary}</p>
-
-      <div class="card mt-8 p-5">
-        <h2 class="text-sm font-semibold text-ink">插件速查</h2>
-        <dl class="mt-4 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
-          {
-            facts.map((fact) => (
-              <div class="flex gap-3 border-b border-line pb-2.5 last:border-0">
-                <dt class="w-24 shrink-0 text-muted">{fact.label}</dt>
-                <dd class="break-all text-ink">{fact.value}</dd>
-              </div>
-            ))
-          }
-        </dl>
-      </div>
     </div>
   </section>
 
   <!-- 有哪些插件 -->
   <section class="mx-auto max-w-6xl px-4 py-14">
     <SectionHeading
-      as="h2"
       eyebrow="可下载插件"
       title="有哪些插件可以下载？"
-      desc="以下两个插件均由本工作室开发，并在自营服务器上实际运行；下载后可直接部署，均按 MIT 许可开源。"
+      desc="以下两个插件均由本工作室开发，并在自营服务器上实际运行；本页只讲「怎么拿到、怎么装」，具体玩法见服务器页。"
       descAs="p"
     />
     <div class="grid gap-5 md:grid-cols-2">
@@ -88,7 +61,7 @@ const facts = [
       />
       <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {
-          pluginRequirements.map((item) => (
+          pluginRequirements.filter((item) => !item.startsWith('许可：')).map((item) => (
             <li class="card p-5 text-base leading-relaxed text-ink">{item}</li>
           ))
         }
@@ -101,9 +74,13 @@ const facts = [
 
   <!-- 服务器上还在用什么插件 -->
   <section class="mx-auto max-w-6xl px-4 py-14">
+    <!--
+      本页保留这一节的理由：它回答的是「下载来源」问题（在插件页），
+      而服务器页只列插件清单、不讲仓库与 Release。两边不重复。
+    -->
     <SectionHeading
       eyebrow="服务器在用插件"
-      title="我们的服务器还在用哪些插件？"
+      title="我们的服务器装了哪些插件？"
       desc="除上述两个自研插件外，服务器还部署了约 30 个第三方插件，按用途分为四类：保护与回滚、经济与交易、成长与奖励、体验与兼容。"
       descAs="p"
     />
@@ -118,9 +95,8 @@ const facts = [
       }
     </div>
     <p class="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
-      想了解这些玩法怎么玩，见
-      <a href="/minecraft/" class="text-primary transition-opacity hover:opacity-80">服务器页</a>
-      的「玩法特色」与「新手指南」。
+      这些插件对应的玩法说明与上手步骤，见
+      <a href="/minecraft/" class="text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80">服务器页</a>。
     </p>
   </section>
 
@@ -150,9 +126,9 @@ const facts = [
   </section>
 
   <Faq
-    eyebrow="常见问题"
-    title="插件常见问题"
-    desc="下载、安装、兼容、授权与反馈渠道的常见问题与直接答案。"
+    eyebrow="其他问题"
+    title="还有哪些常见问题？"
+    desc="卡片、部署条件与开源许可已覆盖的内容不在这里重复，只补充授权边界、版本跟进与文档位置。"
     items={pluginFaqs}
   />
 </BaseLayout>

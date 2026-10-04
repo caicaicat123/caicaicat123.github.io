@@ -5,33 +5,33 @@ import ServerStatus from '../../components/ServerStatus.astro';
 import CopyButton from '../../components/CopyButton.astro';
 import Faq from '../../components/Faq.astro';
 import { isPlaceholder, site } from '../../data/site';
-import {
-  faqs,
-  featureGroups,
-  guideSteps,
-  joinSteps,
-  positioning,
-  ruleGroups,
-  serverFeatures,
-  serverSummary,
-} from '../../data/minecraft';
+import { faqs, featureGroups, guideSteps, positioning, ruleGroups, serverSummary } from '../../data/minecraft';
 
 const { javaIp, port, version, clients, mode, openedAt } = site.minecraft;
 const address = isPlaceholder(port) ? javaIp : `${javaIp}:${port}`;
 const description = `新世界服务器（NewWorldMC，NWM）是新世界网络运营的《我的世界》Java 版插件生存服：地址 ${address}，Purpur ${version}，1.7 至 26.1 全版本可进，离线模式无需正版。含服务器规则、新手指南、玩法特色、插件清单与实时状态。`;
 
-/** 速查表：AI 与玩家都能一眼抄走的事实 */
+/**
+ * 速查表：本页（也是全站）服务器事实的**唯一出处**。
+ *
+ * 冗余原则（2026-10-04 用户要求「一件事一般情况下只出现一次」）：
+ * - 地址、版本、客户端范围、账号验证、开服时间、是否重置、基岩版这些事实，
+ *   **只在这张表里完整出现一次**；本页其余章节与 FAQ 不复述，必要时一句话指回本表。
+ * - 每个 label 之间也不重复：version 只出现在「服务端版本」一行，
+ *   「服务器类型」不再写「Purpur 服务端」（那是同一个事实的第二处）。
+ * - 「交流渠道」不写在这里 —— QQ 群的唯一出处是联系页，页脚只放导航入口。
+ * 改文案时请守住这三条。
+ */
 const facts = [
-  { label: '服务器类型', value: '《我的世界》Java 版 · 插件生存服（Purpur 服务端）' },
+  { label: '服务器类型', value: '《我的世界》Java 版 · 生存服（Purpur 服务端）' },
   { label: '服务器地址', value: address },
   { label: '服务端版本', value: `${version}（Purpur）` },
   { label: '支持的客户端', value: `Java 版 ${clients}` },
   { label: '账号验证', value: mode },
-  { label: '开服时间', value: `${openedAt}（世界从未重置）` },
+  { label: '开服时间', value: openedAt },
+  { label: '世界是否重置', value: '从不重置，建筑与进度长期保留' },
   { label: '在线人数上限', value: '30 人' },
-  { label: '玩法特色', value: '插件生存 · 轻 RPG · 圈地 · 经济 · 抽奖' },
   { label: '基岩版互通', value: '不支持，仅 Java 版客户端可进入' },
-  { label: '交流渠道', value: `QQ 群 ${site.community.qq}` },
 ];
 ---
 
@@ -39,12 +39,17 @@ const facts = [
   title="新世界服务器"
   description={description}
 >
-  <!-- 首屏：先给「这是什么服务器」的完整答案，再给速查表 -->
+  <!-- 首屏：一句话定位 + 玩法定位，然后是本页唯一的事实表 -->
   <section class="border-b border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
       <p class="section-label">服务器速查</p>
       <h1 class="text-2xl font-semibold text-strong sm:text-3xl">{site.server.name}</h1>
       <p class="mt-4 max-w-3xl text-base leading-[1.85] text-muted">{serverSummary}</p>
+      <!--
+        玩法定位句原本独占一个只有 7 行的独立区块，视觉上很空；
+        它和 serverSummary 是同一层信息（「这是什么服务器」），所以并到首屏。
+      -->
+      <p class="mt-3 max-w-3xl text-base leading-[1.85] text-muted">{positioning}</p>
 
       <div class="card mt-8 p-5">
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -65,106 +70,38 @@ const facts = [
     </div>
   </section>
 
-  <!-- 服务器是什么类型 -->
-  <section class="mx-auto max-w-6xl px-4 py-14">
-    <SectionHeading
-      eyebrow="服务器类型"
-      title="这是个什么服务器？"
-      desc="新世界服务器是一台以原版生存规则为基础的《我的世界》Java 版插件生存服：通过插件提供领地保护、玩家交易与长期目标，世界不重置。"
-      descAs="p"
-    />
-    <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-      {
-        serverFeatures.map((feature) => (
-          <article class="card p-5">
-            <h3 class="text-sm font-semibold text-strong">{feature.title}</h3>
-            <p class="mt-2 text-base leading-relaxed text-muted">{feature.desc}</p>
-          </article>
-        ))
-      }
-    </div>
-    <p class="mt-8 max-w-3xl text-base leading-[1.85] text-ink">{positioning}</p>
-  </section>
-
-  <!-- 支持哪些版本 / 怎么加入 -->
+  <!-- 怎么加入 -->
   <section class="band border-y border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
       <SectionHeading
-        eyebrow="版本兼容"
-        title="支持哪些游戏版本？"
-        desc="服务端版本为 Purpur 26.1.2，开启跨版本兼容：1.7 到 26.1 的任何 Java 版客户端都能直接进，不需要升级游戏，也不需要安装任何模组。"
+        eyebrow="加入方式"
+        title="怎么加入服务器？"
+        desc="在 Java 版客户端中添加本页顶部的服务器地址即可接入；首次进入须注册账号，此后每次进入须登录。以下 12 项按建议顺序排列，涵盖从接入到开始参与玩法。"
         descAs="p"
       />
-      <div class="overflow-x-auto">
-        <table class="w-full min-w-[36rem] border-collapse text-sm">
-          <caption class="sr-only">新世界服务器的版本与兼容性说明</caption>
-          <thead>
-            <tr class="border-b border-line text-left text-xs text-muted">
-              <th scope="col" class="py-3 pr-4 font-medium">项目</th>
-              <th scope="col" class="py-3 pr-4 font-medium">说明</th>
-            </tr>
-          </thead>
-          <tbody class="text-ink">
-            <tr class="border-b border-line">
-              <th scope="row" class="py-3 pr-4 text-left font-normal text-muted">服务端版本</th>
-              <td class="py-3 pr-4">Purpur {version}（基于 Paper，兼容 Bukkit / Spigot 插件）</td>
-            </tr>
-            <tr class="border-b border-line">
-              <th scope="row" class="py-3 pr-4 text-left font-normal text-muted">可进入的客户端</th>
-              <td class="py-3 pr-4">{clients}</td>
-            </tr>
-            <tr class="border-b border-line">
-              <th scope="row" class="py-3 pr-4 text-left font-normal text-muted">需要的模组</th>
-              <td class="py-3 pr-4">不需要任何模组或整合包，原版客户端即可</td>
-            </tr>
-            <tr class="border-b border-line">
-              <th scope="row" class="py-3 pr-4 text-left font-normal text-muted">正版要求</th>
-              <td class="py-3 pr-4">不要求正版账号（离线模式），但必须注册并登录服务器账号</td>
-            </tr>
-            <tr class="border-b border-line">
-              <th scope="row" class="py-3 pr-4 text-left font-normal text-muted">基岩版 / 手机版</th>
-              <td class="py-3 pr-4">不支持，仅 Java 版客户端可进入</td>
-            </tr>
-            <tr>
-              <th scope="row" class="py-3 pr-4 text-left font-normal text-muted">世界是否重置</th>
-              <td class="py-3 pr-4">不重置。自 {openedAt.replace('，长期运营至今', '')} 起持续运营</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ol class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          guideSteps.map((step, index) => (
+            <li class="card p-5">
+              <span class="label-latin text-xs text-primary">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <h3 class="mt-3 text-sm font-semibold text-strong">{step.title}</h3>
+              <p class="mt-2 text-base leading-relaxed text-muted">{step.desc}</p>
+            </li>
+          ))
+        }
+      </ol>
     </div>
-  </section>
-
-  <!-- 怎么加入 -->
-  <section class="mx-auto max-w-6xl px-4 py-14">
-    <SectionHeading
-      eyebrow="加入方式"
-      title="怎么加入服务器？"
-      desc={`在《我的世界》Java 版客户端中添加服务器地址 ${address} 即可接入；首次进入使用 /register 注册账号，此后每次进入使用 /login 登录。按以下四个步骤操作即可开始游戏。`}
-      descAs="p"
-    />
-    <ol class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {
-        joinSteps.map((step, index) => (
-          <li class="card p-5">
-            <span class="label-latin text-xs text-primary">
-              STEP {String(index + 1).padStart(2, '0')}
-            </span>
-            <h3 class="mt-3 text-sm font-semibold text-strong">{step.title}</h3>
-            <p class="mt-2 text-base leading-relaxed text-muted">{step.desc}</p>
-          </li>
-        ))
-      }
-    </ol>
   </section>
 
   <!-- 玩法特色 -->
-  <section class="band border-y border-line">
-    <div class="mx-auto max-w-6xl px-4 py-14">
+  <section class="mx-auto max-w-6xl px-4 py-14">
+    <div>
       <SectionHeading
         eyebrow="玩法特色"
         title="服务器有哪些玩法特色？"
-        desc={positioning}
+        desc="以下六项是本服务器的完整玩法内容，每一项都写明「玩家实际能做什么」。"
         descAs="p"
       />
       <div class="grid gap-5 lg:grid-cols-2">
@@ -186,29 +123,6 @@ const facts = [
         }
       </div>
     </div>
-  </section>
-
-  <!-- 新手指南 -->
-  <section class="mx-auto max-w-6xl px-4 py-14">
-    <SectionHeading
-      eyebrow="新手指南"
-      title="新手指南：首次进入服务器应完成的事项"
-      desc="以下 12 项按建议顺序排列：先完成客户端配置与账号注册，再进行选址、圈地与物资准备，最后参与每日签到、交易与副本挑战。"
-      descAs="p"
-    />
-    <ol class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {
-        guideSteps.map((step, index) => (
-          <li class="card p-5">
-            <span class="label-latin text-xs text-primary">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-            <h3 class="mt-3 text-sm font-semibold text-strong">{step.title}</h3>
-            <p class="mt-2 text-base leading-relaxed text-muted">{step.desc}</p>
-          </li>
-        ))
-      }
-    </ol>
   </section>
 
   <!-- 服务器规则 -->
@@ -267,9 +181,9 @@ const facts = [
   </section>
 
   <Faq
-    eyebrow="常见问题"
-    title="玩家常见问题"
-    desc="下面是玩家最常问的问题与直接答案，涵盖类型、地址、版本、加入方式、玩法、规则与故障排查。"
+    eyebrow="其他问题"
+    title="还有哪些常见问题？"
+    desc="以上未覆盖的少数问题：破坏防范、经济规则与故障排查路径。"
     items={faqs}
   />
 </BaseLayout>

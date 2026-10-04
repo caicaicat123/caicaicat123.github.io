@@ -23,12 +23,17 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
       <SectionHeading
         eyebrow="服务器状态"
         title="服务器状态"
-        desc="Java 版 26.1.2，全版本客户端可进，离线模式。"
+        desc="服务器长期开放，地址与版本等完整信息见服务器页速查表。"
       />
       <a href="/minecraft/" class="mb-14 text-sm text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80">
         服务器详情
       </a>
     </div>
+    <!--
+      首页状态卡用 mini 档：只给「在线 / 人数」。
+      版本号、客户端范围、离线模式这些事实**不在这里复述** ——
+      它们的主场是服务器页速查表（2026-10-04 冗余清理，原先还写了「Java 版 26.1.2，全版本可进，离线模式」）。
+    -->
     <ServerStatus mini />
   </section>
 

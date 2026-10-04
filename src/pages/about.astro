@@ -2,12 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import { site } from '../data/site';
-import { positioning } from '../data/minecraft';
 ---
 
 <BaseLayout
   title="关于"
-  description="新世界网络（New World Network）工作室介绍与愿景。"
+  description="新世界网络（New World Network）工作室介绍、成员与联系方式入口。"
 >
   <section class="mx-auto max-w-6xl px-4 py-14">
     <div class="max-w-reading">
@@ -18,39 +17,38 @@ import { positioning } from '../data/minecraft';
     </p>
 
     <div class="card mt-8 border-l-2 border-l-primary p-6">
-      <p class="section-label">定位与口号</p>
+      <p class="section-label">愿景与口号</p>
       <p class="text-base leading-relaxed text-ink">{site.vision}</p>
       <p class="mt-4 text-sm text-muted">
         Slogan：{site.slogan}
       </p>
     </div>
 
-    <!-- 服务器定位：与服务器页、插件页共用同一份文案（来自 data/minecraft.ts 的 positioning） -->
-    <div class="mt-8">
-      <SectionHeading
-        title="我们在运营一台什么样的服务器？"
-        desc={positioning}
-        descAs="p"
-      />
-      <div class="flex flex-wrap gap-3">
-        <a href="/minecraft/" class="btn btn-accent">服务器详情</a>
-        <a href="/plugins/" class="btn btn-standard">我们的插件</a>
-      </div>
-    </div>
-
+    <!--
+      这里原先还有一节「我们在运营一台什么样的服务器？」+ positioning 全文 + 两个按钮。
+      已删除：那段话在服务器页与插件页各出现一次，属于同一件事在第三处重复；
+      本页只需要指路，不需要把服务器的定位再讲一遍。
+    -->
     <div class="mt-12">
       <SectionHeading eyebrow="团队成员" title="成员" desc="工作室目前由一个人运营。" />
       <div class="card p-6">
         <p class="text-sm font-semibold text-strong">断了一只爪子的招财猫</p>
         <p class="label-cjk mt-1 text-xs text-muted">创始人 / 唯一成员</p>
         <p class="mt-3 text-base leading-relaxed text-muted">
-          工作室自 2023 年 6 月 21 日运营《我的世界》服务器起持续至今。
+          负责服务器运维、插件开发与网站维护。
         </p>
       </div>
     </div>
 
     <div class="mt-12">
-      <a href="/contact/" class="btn btn-accent">联系方式</a>
+      <p class="text-base leading-relaxed text-muted">
+        服务器与插件的具体情况见
+        <a href="/minecraft/" class="text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80">服务器页</a>
+        与
+        <a href="/plugins/" class="text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80">插件页</a>；
+        联系方式见
+        <a href="/contact/" class="text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80">联系页</a>。
+      </p>
     </div>
     </div>
   </section>
