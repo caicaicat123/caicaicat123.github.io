@@ -1,0 +1,277 @@
+---
+/**
+ * 文档版式（对标成熟文档站点的骨架：左侧常驻目录 + 窄栏正文 + 移动端横向目录）。
+ *
+ * 设计决定与理由：
+ * - **正文列宽用 --reading（680px）**：文档的行宽与博客一致，长句不跨屏；
+ *   左侧目录占 208px，整体仍在 1120px 版心内，与全站左边缘对齐。
+ * - **目录用 CSS 选中态，不用 JS**：锚点滚动高亮需要 IntersectionObserver，
+ *   会让首屏多一个监听器；文档是「查」的页面，目录只需要可点，不需要跟随高亮。
+ * - **移动端把目录变成横向可滚动的一条**，不折叠成抽屉：
+ *   文档的目录是导航而非内容，折叠起来反而要多一次点击。
+ * - 锚点偏移与全站一致（global.css 的 `[id] { scroll-margin-top: 5rem }`）。
+ * - 标题层级：页面 h1 → 各节 h2 → 节内 h3。目录只收 h2 与 h3。
+ */
+interface TocItem {
+  id: string;
+  label: string;
+  /** 次级条目（h3 级），缩进显示 */
+  sub?: boolean;
+}
+
+interface Props {
+  title: string;
+  /** 一句话说明这份文档是关于什么的 */
+  intro: string;
+  /** 版本徽章文字，如 1.5.0-M6 */
+  version?: string;
+  /** 版本状态：prerelease 会显示醒目提示条 */
+  status?: 'prerelease' | 'stable';
+  /** 状态提示条的正文 */
+  notice?: string;
+  /** 目录 */
+  toc: readonly TocItem[];
+}
+
+const { title, intro, version, status = 'stable', notice, toc } = Astro.props;
+---
+
+<div class="mx-auto max-w-6xl px-4 py-10 lg:py-14">
+  <div class="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-12">
+    <!-- 左侧目录：桌面端吸顶，移动端横向滚动 -->
+    <nav class="doc-nav mb-8 lg:mb-0" aria-label="文档目录">
+      <p class="section-label">目录</p>
+      <ul class="flex gap-x-5 overflow-x-auto pb-2 lg:flex-col lg:gap-y-1.5 lg:overflow-visible lg:pb-0">
+        {
+          toc.map((item) => (
+            <li class="shrink-0 lg:shrink">
+              <a
+                href={`#${item.id}`}
+                class:list={[
+                  'block whitespace-nowrap text-sm text-muted transition-colors hover:text-primary lg:whitespace-normal',
+                  item.sub && 'lg:pl-3 lg:text-[13px]',
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <!-- 正文 -->
+    <div class="min-w-0 max-w-reading">
+      <header class="border-b border-line pb-6">
+        <div class="flex flex-wrap items-center gap-3">
+          <p class="section-label mb-0">文档</p>
+          {
+            version && (
+              <span class:list={['badge', status === 'prerelease' ? 'badge-primary' : 'badge-jade']}>
+                {version}
+                {status === 'prerelease' ? ' · 预览版' : ''}
+              </span>
+            )
+          }
+        </div>
+        <h1 class="mt-4 text-[clamp(24px,3.2vw,32px)] font-semibold leading-tight tracking-[-0.02em] text-strong">
+          {title}
+        </h1>
+        <p class="mt-4 text-base leading-[1.85] text-muted">{intro}</p>
+      </header>
+
+      {
+        status === 'prerelease' && notice && (
+          <div class="card mt-6 border-l-2 border-l-primary p-5">
+            <p class="text-sm font-semibold text-strong">这是一个尚未发布的预览版本</p>
+            <p class="mt-2 text-sm leading-[1.8] text-muted">{notice}</p>
+          </div>
+        )
+      }
+
+      <div class="doc-body mt-10">
+        <slot />
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* 文档正文排版：与 .prose-nwn 同源，但标题层级更紧凑（文档小节比文章更多） */
+  .doc-body {
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--color-ink);
+  }
+
+  .doc-body :global(h2) {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    padding-top: 0.25rem;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--color-strong);
+    scroll-margin-top: 5rem;
+  }
+
+  .doc-body :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .doc-body :global(h3) {
+    margin-top: 2rem;
+    margin-bottom: 0.6rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-strong);
+    scroll-margin-top: 5rem;
+  }
+
+  .doc-body :global(p) {
+    margin-bottom: 1.1rem;
+  }
+
+  .doc-body :global(ul),
+  .doc-body :global(ol) {
+    margin-bottom: 1.1rem;
+    padding-left: 1.3rem;
+  }
+
+  .doc-body :global(ul) {
+    list-style: none;
+  }
+
+  .doc-body :global(ul > li) {
+    position: relative;
+    margin-bottom: 0.4rem;
+  }
+
+  /* 与全站一致的菱形标记，替代圆点 */
+  .doc-body :global(ul > li::before) {
+    content: '';
+    position: absolute;
+    left: -0.95rem;
+    top: 0.72em;
+    width: 5px;
+    height: 5px;
+    transform: rotate(45deg);
+    background: var(--color-primary);
+  }
+
+  .doc-body :global(ol) {
+    list-style: decimal;
+  }
+
+  .doc-body :global(ol > li) {
+    margin-bottom: 0.4rem;
+  }
+
+  .doc-body :global(a) {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  /* 表格：文档的主要事实载体。
+     用 table-layout: fixed —— 列宽按内容比例分配而不是让浏览器各列自己撑，
+     否则第一列（2–4 字的标签）会被压到 70px 以下、文字挤成一团。
+     窄屏交给外层容器的横向滚动，表格自身不设 display:block（那会破坏 fixed 布局）。 */
+  .doc-body :global(table) {
+    width: 100%;
+    table-layout: fixed;
+    margin: 1.2rem 0 1.6rem;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .doc-body :global(thead th) {
+    text-align: left;
+    font-weight: 500;
+    color: var(--color-muted);
+    font-size: 13px;
+    padding: 0 0.6rem 0.5rem 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .doc-body :global(tbody td) {
+    padding: 0.65rem 0.6rem 0.65rem 0;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: top;
+    /* 允许在任意位置断行：否则「服务器地址」「由谁生成」这类词会被挤到溢出 */
+    overflow-wrap: anywhere;
+  }
+
+  /* 表格里的行内代码允许折行 —— 命令串里有空格，优先在空格处断行 */
+  .doc-body :global(td code),
+  .doc-body :global(th code) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  /* 行内代码与代码块：等宽 + 软底，不用高亮（文档里多是命令，不是代码） */
+  .doc-body :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    background: var(--color-soft);
+    white-space: nowrap;
+  }
+
+  .doc-body :global(pre) {
+    margin: 1.2rem 0 1.6rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-line);
+    background: var(--surface-alt);
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .doc-body :global(pre code) {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+    white-space: pre;
+  }
+
+  /* 表格窄屏保底：文档里的表格最少需要约 480px，比这更窄就整体横滑 */
+  @media (max-width: 560px) {
+    .doc-body :global(table) {
+      display: block;
+      overflow-x: auto;
+      table-layout: auto;
+      min-width: 480px;
+    }
+  }
+
+  /* 提示块：文档里承担「注意 / 已知限制」 */
+  .doc-body :global(.callout) {
+    margin: 1.4rem 0;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid var(--color-line);
+    border-left-width: 2px;
+    border-left-color: var(--color-primary);
+    border-radius: 0 8px 8px 0;
+    background: var(--surface-alt);
+    font-size: 14px;
+    line-height: 1.85;
+    color: var(--color-muted);
+  }
+
+  .doc-body :global(.callout strong) {
+    color: var(--color-ink);
+  }
+
+  /* 桌面端目录吸顶（导航高 64px，留出 16px 余量） */
+  @media (min-width: 1024px) {
+    .doc-nav {
+      position: sticky;
+      top: 5rem;
+      align-self: start;
+    }
+  }
+</style>

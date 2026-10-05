@@ -1,0 +1,372 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DocsLayout from '../../layouts/DocsLayout.astro';
+
+/** 与插件 plugin.yml 的版本一致；改版本时同步这一处 */
+const version = '1.5.0-M6';
+
+const toc = [
+  { id: 'what', label: '这是什么' },
+  { id: 'commands', label: '命令与权限' },
+  { id: 'quickstart', label: '快速上手' },
+  { id: 'panels', label: '四个面板' },
+  { id: 'markers', label: '标记的语义' },
+  { id: 'entrance', label: '入口建筑' },
+  { id: 'files', label: '数据与文件' },
+  { id: 'limits', label: '已知限制' },
+  { id: 'faq', label: '常见问题' },
+];
+---
+
+<BaseLayout
+  title="随机副本 · 自建副本文档"
+  description="NWNDungeon 管理员自建副本的使用文档：命令与权限、快速上手、四个编辑面板、标记语义与规则、入口建筑、数据文件位置与已知限制。1.5.0 预览版。"
+>
+  <DocsLayout
+    title="管理员自建副本"
+    intro="1.5.0 新增的能力：由管理员在游戏内搭建副本模板，玩家按入口进入，一局一个独立世界。本文说明怎么搭、命令怎么写、有哪些规则与已知限制。"
+    version={version}
+    status="prerelease"
+    notice="本文描述的自建副本功能属于 1.5.0，仍在开发中，未随正式版本发布：插件下载页当前提供的是 1.4.12，其中尚无这部分功能。文档中的行为以本地测试服实测为准。"
+    toc={toc}
+  >
+    <h2 id="what">这是什么</h2>
+    <p>
+      1.5.0 的定位是<strong>在原有内置副本之外，增加一套「管理员自建副本」体系</strong>，而不是替换内置副本。
+      两套入口共用同一棵命令树，互不影响。
+    </p>
+    <table>
+      <thead>
+        <tr><th>对比项</th><th>内置副本</th><th>自建副本（1.5.0 新增）</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>由谁生成</td><td>插件程序按 iron / gold / diamond 三档生成</td><td>管理员在游戏内搭建</td></tr>
+        <tr><td>地形</td><td>程序按槽位生成</td><td>自建的模板世界，一局一个独立世界</td></tr>
+        <tr><td>入口</td><td>自然生成的遗迹</td><td>自建的门楼，或由命令贴出</td></tr>
+        <tr><td>命令</td><td><code>/dungeon ...</code></td><td>同一棵命令树（见下）</td></tr>
+      </tbody>
+    </table>
+
+    <h3>一局一个世界</h3>
+    <p>
+      开局时，插件把模板文件夹<strong>复制</strong>成 <code>nwndinst_&lt;slug&gt;_&lt;序号&gt;</code> 并加载，
+      结束时卸载并删除。因此同时开几局就会同时加载几个世界 —— 这也是并发上限
+      （<code>max-concurrent-runs</code>）存在的原因：限制的是内存与 tick 开销，而不是磁盘占用。
+    </p>
+
+    <h2 id="commands">命令与权限</h2>
+
+    <h3>三个命令名等价</h3>
+    <pre><code>/dungeon  =  /nwd  =  /nwmdungeon</code></pre>
+    <p>
+      只有一个根命令，按子命令名分发。<code>test</code>、<code>spawn</code>、<code>list</code> 等子命令两边同名，
+      因此按参数判断走哪一套：后面接内置难度名（<code>iron</code> / <code>gold</code> / <code>diamond</code>）走内置副本，
+      否则当作自建副本的名字。
+    </p>
+
+    <h3>权限节点</h3>
+    <table>
+      <thead>
+        <tr><th>节点</th><th>默认</th><th>可执行的命令</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>nwd.use</code></td><td>所有人</td><td>使用副本入口，<code>leave</code> / <code>locate</code> / <code>stamina</code></td></tr>
+        <tr><td><code>nwd.admin</code></td><td>op</td><td><code>spawn &lt;难度&gt;</code>、<code>test &lt;难度&gt;</code>、<code>list</code>、<code>tp</code>、<code>release</code>、<code>reload</code></td></tr>
+        <tr><td><code>nwd.dev</code></td><td>op</td><td>自建副本创作工具：<code>edit</code>、<code>new ...</code>、<code>test &lt;副本名&gt;</code>、<code>end</code>、<code>doctor</code> 等</td></tr>
+      </tbody>
+    </table>
+    <p>
+      旧的 <code>nwndungeon.use</code> / <code>nwndungeon.admin</code> / <code>nwndungeon.dev</code>
+      同样声明，代码里两套都认，已经发到玩家手上的权限组不需要改。
+    </p>
+
+    <h3>玩家命令</h3>
+    <table>
+      <thead>
+        <tr><th>命令</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>/dungeon leave</code></td><td>离开当前副本，回到进本前的位置。副本内禁用其它命令，这条始终可用</td></tr>
+        <tr><td><code>/dungeon stamina</code></td><td>查看自己的体力（即每日可进入的次数）</td></tr>
+        <tr><td><code>/dungeon locate [难度|any]</code></td><td>查找离你最近的副本入口，给出方向与坐标；不写难度即不限</td></tr>
+      </tbody>
+    </table>
+
+    <h3>管理员命令</h3>
+    <table>
+      <thead>
+        <tr><th>命令</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>/dungeon spawn &lt;难度&gt; [x y z [世界]]</code></td><td>在指定位置生成一座副本入口；不写坐标即在你面前。难度为 iron / gold / diamond</td></tr>
+        <tr><td><code>/dungeon test &lt;难度&gt;</code></td><td>生成一个内置副本槽位用于自测，打完自动释放</td></tr>
+        <tr><td><code>/dungeon list</code></td><td>查看内置副本的槽位占用情况</td></tr>
+        <tr><td><code>/dungeon tp &lt;槽位号&gt;</code></td><td>传送到指定槽位；槽位空着也能进，会送到它的原点</td></tr>
+        <tr><td><code>/dungeon release &lt;槽位号|all&gt;</code></td><td>强制回收槽位，里面的人会被送回入口</td></tr>
+        <tr><td><code>/dungeon reload</code></td><td>重载 <code>config.yml</code> / <code>loot.yml</code> / <code>party.yml</code> / <code>mobs.yml</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>创作命令（<code>nwd.dev</code>）</h3>
+    <table>
+      <thead>
+        <tr><th>命令</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>/nwd edit</code></td><td>打开编辑器面板：不在编辑态时是副本列表，在编辑态里是标记面板</td></tr>
+        <tr><td><code>/nwd new world create &lt;名字&gt; [void|flat|normal]</code></td><td>新建模板世界并进入编辑态（创造 + 飞行）。名字最多 24 字、不能含点号；生成器默认 void</td></tr>
+        <tr><td><code>/nwd new world save</code></td><td>保存当前模板：落盘、卸载、把编辑世界搬成模板；旧模板自动备份</td></tr>
+        <tr><td><code>/nwd new start</code></td><td>把「进本落点」记在脚下；未标则使用世界出生点</td></tr>
+        <tr><td><code>/nwd new stage &lt;关卡号&gt;</code></td><td>切换「当前关卡」，之后的刷怪点记到该关；不写即第 1 关</td></tr>
+        <tr><td><code>/nwd new wave &lt;波次号&gt;</code></td><td>切换「当前波次」</td></tr>
+        <tr><td><code>/nwd new spawner &lt;波次号&gt;</code></td><td>把脚下记成当前关卡第 N 波的刷怪点；不写波次即用面板里当前选择的。刷什么怪写在 <code>dungeons.yml</code></td></tr>
+        <tr><td><code>/nwd new gate [remove]</code></td><td>看着一扇门登记关卡门；<code>remove</code> 为删除看着的那道</td></tr>
+        <tr><td><code>/nwd new exit [remove]</code></td><td>看着一扇门登记出口门；<code>remove</code> 为清掉</td></tr>
+        <tr><td><code>/nwd new boss</code></td><td>记下首领登场的位置；属性写在 <code>dungeons.yml</code> 的 <code>boss:</code></td></tr>
+        <tr><td><code>/nwd new checkpoint</code></td><td>把脚下记成检查点，同时记录脚下 3×3 方块的签名</td></tr>
+        <tr><td><code>/nwd new reward [supply|reward]</code></td><td>看着一个箱子执行，记录位置并打开箱子界面放置物品，关闭界面即写入 <code>loot.yml</code></td></tr>
+        <tr><td><code>/nwd new undo</code></td><td>撤销最近打的一个标记（刷怪点 / 检查点 / 箱子）</td></tr>
+        <tr><td><code>/nwd new list</code></td><td>查看当前标了多少、分了几关</td></tr>
+        <tr><td><code>/nwd new door</code></td><td>搭入口时登记哪一格是门（材质照原样记录）</td></tr>
+        <tr><td><code>/nwd new trigger</code></td><td>搭入口时登记触发点；按钮、压力板、拉杆都可用</td></tr>
+        <tr><td><code>/nwd new entrance create &lt;副本名&gt;</code> / <code>save</code> / <code>cancel</code></td><td>进入入口搭建世界 / 保存入口结构 / 放弃本次搭建</td></tr>
+        <tr><td><code>/nwd list</code></td><td>列出所有自建副本（名字、世界名、模板体积、落点是否已标）</td></tr>
+        <tr><td><code>/nwd test &lt;名字&gt;</code></td><td>立刻开一局自建副本自测</td></tr>
+        <tr><td><code>/nwd spawn &lt;名字&gt;</code></td><td>在你面前贴一座该副本的入口</td></tr>
+        <tr><td><code>/nwd end [名字]</code></td><td>结束正在跑的自建副本；不写名字即结束全部</td></tr>
+        <tr><td><code>/nwd delete &lt;名字&gt;</code></td><td>删除一个自建副本；模板文件夹会挪进 <code>templates/_deleted/</code> 保留退路</td></tr>
+        <tr><td><code>/nwd doctor</code></td><td>自检：建临时世界 → 放标记方块 → 保存 → 复制成新世界 → 检查方块是否还在 → 清理</td></tr>
+        <tr><td><code>/nwd reload</code></td><td>重载 <code>dungeons.yml</code> / <code>registry.yml</code></td></tr>
+        <tr><td><code>/nwd help [页码|子命令]</code></td><td>查看帮助；<code>/nwd help new world create</code> 可查单条</td></tr>
+      </tbody>
+    </table>
+    <p class="callout">
+      <strong>以游戏内帮助为准。</strong>帮助文本由插件的命令登记表生成，不会与实现漂移；
+      本文的表格是同一份内容的整理版。用 <code>/nwd help &lt;子命令&gt;</code> 可以查单条命令的参数、权限、示例与易错点。
+    </p>
+
+    <h2 id="quickstart">快速上手</h2>
+    <pre><code>① /nwd edit                      → 打开副本列表面板
+② 点「新建副本」→ 在聊天里输入名字   → 进入虚空搭建世界（创造模式 + 飞行 + 自动发编辑时钟）
+③ 搭房间、放门、放箱子
+④ /nwd edit（或右键编辑时钟）      → 打开标记面板
+⑤ 依次标记：落点 → 刷怪点（选波次）→ 关卡门（看着门）→ 检查点 → 首领位 → 出口门（看着门）
+⑥ 点「保存」                      → 落盘并搬成模板
+⑦ /nwd test &lt;名字&gt;               → 自己进去打一局</code></pre>
+
+    <h3>编辑时钟</h3>
+    <p>
+      进入编辑态或入口搭建态时，插件会自动发一个时钟到快捷栏第一个空位，
+      <strong>右键即可打开对应面板</strong>，保存或放弃后自动收回。因此不必反复输入命令。
+    </p>
+
+    <h2 id="panels">四个面板</h2>
+
+    <h3>面板 A · 副本列表（<code>/nwd edit</code>）</h3>
+    <p>
+      界面大小按内容决定：没有副本时 9 格一行；不超过 18 个副本时 27 格；更多时用 45 或 54 格。
+      按钮居中排在最后一行：新建副本 · 新建入口建筑 · 这套怎么用 · 关闭。
+    </p>
+    <ul>
+      <li><strong>左键</strong>副本图标 = 进入编辑</li>
+      <li><strong>右键</strong>副本图标 = 删除（二次确认，模板挪进 <code>_deleted/</code>）</li>
+    </ul>
+
+    <h3>面板 B · 标记面板（编辑态下的 <code>/nwd edit</code>）</h3>
+    <p>一行一个主题，其余格子用黑玻璃板填满：</p>
+    <table>
+      <thead>
+        <tr><th>行</th><th>图标（槽位号）</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>位置</td><td>落点(1) · 首领位(3) · 传送到落点(5) · 传送到首领位(7)</td></tr>
+        <tr><td>关卡与波次</td><td>关卡◀(10) 第 N 关(11) 关卡▶(12) · 波次◀(14) 第 N 波(15) 波次▶(16)</td></tr>
+        <tr><td>点位与箱子</td><td>刷怪点(19) 检查点(20) 清本波(21) · 补给箱(23) 奖励箱(24) 撤销(26)</td></tr>
+        <tr><td>门</td><td>关卡门(28) 删除关卡门(30) · 出口门(32) 删除出口门(34)</td></tr>
+        <tr><td>状态与辅助</td><td>标记清单(37) 校验(39) 这个世界(41) 标记提示(43) 删除这个副本(44)</td></tr>
+        <tr><td>操作</td><td>清空全部标记(45) 保存(46) 放弃(48) 返回列表(50) 说明(52) 关闭(53)</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>标注「看着一扇门」的图标（关卡门、出口门、删除门），需要先用准星看着目标再点击</li>
+      <li>关卡门：左键登记，<strong>右键删除</strong>你看着的那一道</li>
+      <li>「删除这个副本」有二次确认；如果你正站在它的编辑世界里，会先按「放弃」把你送回主世界再删除</li>
+    </ul>
+
+    <h3>面板 C · 入口搭建（<code>/nwd new entrance create</code>）</h3>
+    <table>
+      <thead>
+        <tr><th>槽位</th><th>图标</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>10</td><td>入口门（看着门点击）</td></tr>
+        <tr><td>12</td><td>触发点（看着按钮 / 压力板 / 拉杆点击）</td></tr>
+        <tr><td>14</td><td>保存入口（自动框选范围 → 存为结构 → 离开）</td></tr>
+        <tr><td>16</td><td>放弃（删除本次搭建世界，已保存的结构不受影响）</td></tr>
+        <tr><td>22</td><td>提示</td></tr>
+        <tr><td>24</td><td>删除这份入口结构（二次确认，删除对应的 <code>.nbt</code>）</td></tr>
+      </tbody>
+    </table>
+
+    <h3>面板 D · 说明页（「这套怎么用」）</h3>
+    <p>27 格界面：返回(19) · 关闭(23)。「返回」会按你从哪个面板进入而回到对应面板。</p>
+
+    <h2 id="markers">标记的语义与规则</h2>
+    <table>
+      <thead>
+        <tr><th>标记</th><th>含义</th><th>规则</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>落点</td><td>进本后玩家出现的位置</td><td>未标则使用世界出生点</td></tr>
+        <tr><td>关卡门</td><td>本关的出口，清完场才会开启</td><td><strong>关卡数 = 关卡门数 + 1</strong>，最后一关是首领区</td></tr>
+        <tr><td>刷怪点</td><td>某一关某一波的刷怪位置</td><td>用 ◀▶ 选择关卡与波次；刷什么怪写在 <code>dungeons.yml</code> 的 <code>stages[].waves</code></td></tr>
+        <tr><td>检查点</td><td>死亡后的复活位置</td><td>记录坐标与脚下 3×3 方块签名；方块被拆则该检查点失效，照原样补回即恢复</td></tr>
+        <tr><td>首领位</td><td>首领登场的位置</td><td>属性写在 <code>dungeons.yml</code> 的 <code>boss:</code>；首领必须确认击杀，最多在标记处重生 3 次</td></tr>
+        <tr><td>出口门</td><td>通关后右键它离开副本</td><td>未标则在首领位放一扇默认木门兜底</td></tr>
+        <tr><td>补给箱</td><td>打怪途中的补给</td><td>看着箱子执行，在弹出的箱子界面中放置物品，关闭界面即写入 <code>loot.yml</code></td></tr>
+        <tr><td>奖励箱</td><td>通关奖励</td><td>同上</td></tr>
+      </tbody>
+    </table>
+
+    <h3>五条关键规则</h3>
+    <ol>
+      <li><strong>同一扇门不能既是关卡门又是出口门</strong>，两边都会拒绝并提示如何修改。</li>
+      <li><strong>删除关卡门会自动重排关卡</strong>：删掉第 i 道门后，原第 i 关与第 i+1 关合并，后续关卡的刷怪点与补给箱会自动前移一位（不前移就会挂到错误的关卡上）。</li>
+      <li><strong>门不记录材质</strong>：放的是什么门就存什么门，木门、铜门、铁门均可，命令里没有材质参数。</li>
+      <li><strong>未清场时关卡门打不开</strong>：插件每 5 tick 强制关门，同时取消右键与门附近 3 格内的压力板 / 按钮。</li>
+      <li>「标记清单」会把所有标记逐条输出到聊天栏，「校验」会挑出缺失或失效的项。</li>
+    </ol>
+
+    <h2 id="entrance">入口建筑</h2>
+
+    <h3>流程</h3>
+    <pre><code>/nwd new entrance create &lt;副本名&gt;     → 进入虚空搭建世界
+   搭一座门楼（放一扇门 + 一个按钮或压力板）
+   在面板中点击「入口门」（看着门）→ 点击「触发点」（看着按钮）
+   点击「保存入口」                     → 自动框选范围并保存为结构
+/nwd spawn &lt;名字&gt;                   → 在你面前贴出一座，门与触发点一并登记好</code></pre>
+
+    <h3>实测行为</h3>
+    <table>
+      <thead>
+        <tr><th>行为</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>结构粘贴不带门</td><td>当前服务端版本的结构粘贴不会带上门方块，插件会按记录的材质、朝向与铰链自行补摆回去</td></tr>
+        <tr><td>结构粘贴不带箱子内的物品</td><td>贴出来是空箱子。因此<strong>不要在入口结构的箱子里放东西</strong>，奖励与补给请用标记配合 <code>loot.yml</code></td></tr>
+        <tr><td>入口登记写在区块数据里</td><td>门是普通方块、无法存 NBT，因此记录挂在区块的持久化数据上</td></tr>
+        <tr><td>打掉那扇门 = 该入口永久失效</td><td>登记项会被标记为失效，踩踏或按压都不再传送；记录仍保留在 <code>entrances.yml</code> 中</td></tr>
+      </tbody>
+    </table>
+
+    <h3>删除入口</h3>
+    <table>
+      <thead>
+        <tr><th>目标</th><th>做法</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>让一个入口失效</td><td>把那扇门打掉</td></tr>
+        <tr><td>删除已保存的入口结构（重建一份干净的）</td><td>入口面板 → 「删除这份入口结构」，或手动删除 <code>templates/entrances/&lt;slug&gt;.nbt</code> 与同名 <code>.yml</code></td></tr>
+        <tr><td>删除入口登记记录</td><td>目前没有对应命令，需要手动编辑 <code>entrances.yml</code></td></tr>
+      </tbody>
+    </table>
+    <p class="callout">
+      <strong>已知问题：重复搭建会让入口越存越多。</strong>
+      重新进入入口搭建世界时，插件会把上次保存的入口贴回来供你修改。如果你在它旁边又搭了一座，
+      保存时自动框选会把两座一起框进去，之后每次 <code>/nwd spawn</code> 都会贴出两座。
+      处理办法：在入口面板点「删除这份入口结构」，再重新 <code>new entrance create</code> 搭一座并保存。
+    </p>
+
+    <h2 id="files">数据与文件</h2>
+    <pre><code>plugins/NWNDungeon/
+├── config.yml            全局配置：规则、槽位、体力、触发、生成、世界名单
+├── dungeons.yml          自建副本登记（含字段注释与示例）
+├── registry.yml          副本名 → 世界 slug 的映射
+├── loot.yml              掉落表（含 enchant-pool / enchant-levels）
+├── mobs.yml              怪物模板
+├── party.yml             组队相关
+├── entrances.yml         世界入口登记（world / x / y / z / tier / alive / created）
+├── pending-delete.txt    待删除清单（文件句柄释放后于下次启动删除）
+└── templates/
+    ├── worlds/&lt;slug&gt;/                    模板世界（平时不加载）
+    ├── entrances/&lt;slug&gt;.nbt + .yml       入口结构
+    ├── _recovered/                       临时世界（重启时保存在里面的人的改动）
+    ├── _deleted/                         已删除的副本模板（保留退路）
+    └── _backup/                          被覆盖的旧模板（保存时自动备份）</code></pre>
+
+    <h3>世界维度</h3>
+    <p>编辑与运行过程中的世界都以独立维度存在，命名如下：</p>
+    <ul>
+      <li><code>nwndtpl_&lt;slug&gt;</code> —— 正在编辑的临时模板世界</li>
+      <li><code>nwndinst_&lt;slug&gt;_&lt;n&gt;</code> —— 正在运行的副本实例，结束后删除</li>
+      <li><code>nwndent_&lt;slug&gt;</code> —— 入口搭建世界</li>
+    </ul>
+    <p>
+      当前的存档布局中，所有维度都在同一个存档里（<code>world/dimensions/minecraft/&lt;名字&gt;/</code>），
+      因此「复制一个世界」等于复制一个维度文件夹，通常不到 1 MB。维度名必须为 ASCII，
+      中文名只用于界面显示。
+    </p>
+
+    <h2 id="limits">已知限制与注意事项</h2>
+    <table>
+      <thead>
+        <tr><th>现象</th><th>原因与处理</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>保存模板时报错，提示搬成模板失败</td>
+          <td>卸载世界后文件句柄尚未释放，重命名会失败。插件已改为「重命名失败则递归复制，并把源目录记入待删清单，下次启动清理」</td>
+        </tr>
+        <tr>
+          <td>进入服务器后出现在地底</td>
+          <td>原因为虚空世界的落点过低（位于世界底部附近）叠加服务器重启。新建的虚空世界落点已抬高，且重启前会把仍在编辑器中的人送回主世界。自救方式：<code>/tp @s 0 120 0</code></td>
+        </tr>
+        <tr>
+          <td>结构里存了两座入口</td>
+          <td>见「入口建筑」一节的已知问题，用「删除这份入口结构」重建</td>
+        </tr>
+        <tr>
+          <td>人在编辑世界时服务器重启</td>
+          <td>该世界会被完整保留到 <code>templates/_recovered/</code>，数据不会丢失；目前没有界面可以恢复，需要手动把文件夹移回 <code>templates/worlds/&lt;slug&gt;/</code></td>
+        </tr>
+        <tr>
+          <td>开本后门推不开</td>
+          <td>正常行为：本关未清完时门是锁定的</td>
+        </tr>
+        <tr>
+          <td>怪物刷到了别的关卡</td>
+          <td>通常是删除关卡门后没有重排；现已自动重排。若仍出现，请记录关卡号上报</td>
+        </tr>
+        <tr>
+          <td>保存后的模板体积异常大</td>
+          <td>自动框选把多余的东西也框了进去（例如两座入口建筑）。用「删除这份入口结构」重建后再保存</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="faq">常见问题</h2>
+    <table>
+      <thead>
+        <tr><th>问题</th><th>回答</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/dungeon edit</code> 提示已退役？</td>
+          <td>正常。早期的半成品编辑器已被 <code>/nwd edit</code> 取代</td>
+        </tr>
+        <tr>
+          <td>原来的 <code>/dungeon</code> 还能用吗？</td>
+          <td>能用。内置副本（iron / gold / diamond）保留不变，自建副本是新增的一套</td>
+        </tr>
+        <tr>
+          <td>执行 <code>/nwd spawn A</code> 后出现两座建筑</td>
+          <td>保存的入口结构里包含不止一座，用「删除这份入口结构」重建</td>
+        </tr>
+        <tr>
+          <td>自建副本能给玩家用吗？</td>
+          <td>可以。玩家通过入口进入，与内置副本共用体力、结算等规则</td>
+        </tr>
+      </tbody>
+    </table>
+  </DocsLayout>
+</BaseLayout>
