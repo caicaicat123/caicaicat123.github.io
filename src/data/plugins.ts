@@ -80,13 +80,13 @@ export const plugins = [
   {
     name: '随机副本',
     tag: 'NWNDungeon',
-    version: '1.4.12',
+    version: '1.4.13',
     platform: 'Paper / Purpur 1.21+',
     status: '长期维护' as PluginStatus,
     desc: '在世界上随机生成按难度缩放的遗迹入口，供玩家组队进入独立副本世界挑战多波关卡与首领。',
     download: {
       label: '下载 jar',
-      href: 'https://github.com/caicaicat123/nwndungeon/releases/latest/download/nwndungeon-1.4.12.jar',
+      href: 'https://github.com/caicaicat123/nwndungeon/releases/latest/download/nwndungeon-1.4.13.jar',
     } as PluginLink,
   },
   {
