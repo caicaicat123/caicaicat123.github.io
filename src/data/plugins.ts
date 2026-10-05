@@ -16,7 +16,7 @@ export interface PluginLink {
 
 /** 插件页首屏摘要：先给出结论，便于直接摘取 */
 export const pluginsSummary =
-  '新世界网络（NWN）自研并公开了两个《我的世界》服务端插件：随机副本（NWNDungeon）与幽灵（TheGhost）。两者均按 MIT 许可开源，可下载 jar 后部署至 Paper / Purpur 1.21 及以上服务端；页面上每个「下载 jar」按钮均指向对应 GitHub 仓库的最新 Release 资产。';
+  '新世界网络（NWN）自研并公开了两个《我的世界》服务端插件：随机副本（NWNDungeon）与幽灵（TheGhost）。两者均按 MIT 许可开源，可下载 jar 后部署至 Paper / Purpur 1.21 及以上服务端。每张卡片提供「下载正式版」按钮（指向 GitHub 的最新正式发布）；随机副本另有 1.5.0 测试版可下载，为 GitHub 上的 pre-release，功能完整但仍在验证中。';
 
 /**
  * 两个自研插件共有的安装前提。
@@ -76,6 +76,17 @@ export const serverPluginCategories = [
  * 具体玩法（关卡结构、体力、签到发钥匙…）在**服务器页**的玩法特色里讲，
  * 本页不重复 —— 冗余原则见 data/minecraft.ts 里 faqs 上方的说明。
  */
+/**
+ * 卡片简介只写「这个插件是什么」一句话。
+ * 具体玩法（关卡结构、体力、签到发钥匙…）在**服务器页**的玩法特色里讲，
+ * 本页不重复 —— 冗余原则见 data/minecraft.ts 里 faqs 上方的说明。
+ *
+ * **两个版本并列的规则（2026-10-05 用户要求）**：
+ * - `version` + `download` = **正式版**（`releases/latest`，即当前 latest 正式发布）；
+ * - `beta` = **测试版**（GitHub 上的 prerelease，形如 `v1.5.0-M6`）。
+ *   因为 prerelease **不会**成为 `releases/latest`，所以测试版必须写死 tag —— 换 tag 时记得改这里。
+ * - 正式版走实色主按钮、测试版走玻璃次按钮：按钮层级本身就是「优先用哪个」的答案。
+ */
 export const plugins = [
   {
     name: '随机副本',
@@ -85,9 +96,15 @@ export const plugins = [
     status: '长期维护' as PluginStatus,
     desc: '在世界上随机生成按难度缩放的遗迹入口，供玩家组队进入独立副本世界挑战多波关卡与首领。',
     download: {
-      label: '下载 jar',
+      label: '下载正式版',
       href: 'https://github.com/caicaicat123/nwndungeon/releases/latest/download/nwndungeon-1.4.13.jar',
     } as PluginLink,
+    beta: {
+      version: '1.5.0-M6',
+      label: '下载测试版（1.5.0-M6）',
+      href: 'https://github.com/caicaicat123/nwndungeon/releases/download/v1.5.0-M6/nwndungeon-1.5.0-M6.jar',
+      note: '新增「管理员自建副本」，功能已完整但仍在验证中，不建议直接用于生产服。使用说明见插件页的文档。',
+    },
   },
   {
     name: '幽灵',

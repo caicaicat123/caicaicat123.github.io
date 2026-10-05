@@ -44,6 +44,7 @@ const description =
             status={plugin.status}
             desc={plugin.desc}
             download={plugin.download}
+            beta={'beta' in plugin ? plugin.beta : undefined}
           />
         ))
       }
@@ -138,7 +139,8 @@ const description =
       />
       <div class="card p-6">
         <p class="text-base leading-[1.85] text-muted">
-          上述「下载 jar」链接始终指向各仓库的最新 Release 资产，发布新版本后无需回站更新链接。
+          各卡片的「下载正式版」始终指向对应仓库的最新正式发布，发布新版本后无需回站更新链接；
+          随机副本的 1.5.0 测试版因是 GitHub pre-release，按 tag 固定链接，换 tag 时需要更新本站。
           完整的指令表、权限节点与更新记录均收录于仓库中；如需反馈问题，可在 GitHub 提交 Issue，或在 QQ 群中告知我们。
         </p>
         <div class="mt-5 flex flex-wrap gap-3">

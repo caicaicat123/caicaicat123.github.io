@@ -6,6 +6,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 const version = '1.5.0-M6';
 
 const toc = [
+  { id: 'download', label: '下载与版本' },
   { id: 'what', label: '这是什么' },
   { id: 'commands', label: '命令与权限' },
   { id: 'quickstart', label: '快速上手' },
@@ -27,9 +28,35 @@ const toc = [
     intro="1.5.0 新增的能力：由管理员在游戏内搭建副本模板，玩家按入口进入，一局一个独立世界。本文说明怎么搭、命令怎么写、有哪些规则与已知限制。"
     version={version}
     status="prerelease"
-    notice="本文描述的自建副本功能属于 1.5.0，仍在开发中，未随正式版本发布；插件下载页提供的是最新正式版，其中尚无这部分功能。文档中的行为以本地测试服实测为准。"
     toc={toc}
   >
+    <h2 id="download">下载与版本</h2>
+    <p>
+      自建副本属于 <strong>1.5.0</strong>，目前以<strong>测试版</strong>形式发布在 GitHub 上，
+      尚未进入正式版，也尚未部署到本工作室的正式服务器。因此下载页有两个版本：
+    </p>
+    <table>
+      <thead>
+        <tr><th>版本</th><th>包含自建副本</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>正式版 <code>1.4.13</code></td>
+          <td>否</td>
+          <td>稳定版，用于生产服。只有内置副本（iron / gold / diamond）那一套</td>
+        </tr>
+        <tr>
+          <td>测试版 <code>1.5.0-M6</code></td>
+          <td>是</td>
+          <td>本文描述的全部功能都在这一版里；仍在验证中，不建议直接用于生产服</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      下载入口见<a href="/plugins/">插件页</a>。测试版是 GitHub 上的 pre-release，
+      不会出现在 <code>releases/latest</code> 里，请在插件页选择对应按钮。
+    </p>
+
     <h2 id="what">这是什么</h2>
     <p>
       1.5.0 的定位是<strong>在原有内置副本之外，增加一套「管理员自建副本」体系</strong>，而不是替换内置副本。
