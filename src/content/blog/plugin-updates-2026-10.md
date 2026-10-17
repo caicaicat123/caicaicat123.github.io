@@ -79,6 +79,6 @@ new ItemStack(材质, 数量)
 两个插件均按 MIT 许可开源，可直接下载 jar 后部署到 Paper / Purpur 1.21 及以上的服务端：
 
 - 随机副本 **1.4.12** —— [下载 jar](https://github.com/caicaicat123/nwndungeon/releases/latest/download/nwndungeon-1.4.12.jar)
-- 幽灵 **1.5.2** —— [下载 jar](https://github.com/caicaicat123/theghost/releases/latest/download/theghost-1.5.2.jar)
+- 幽灵 **1.5.2** —— [下载 jar](https://github.com/caicaicat123/theghost/releases/download/v1.5.2/theghost-1.5.2.jar)
 
 完整的指令表、权限节点与配置说明在各仓库的 README 中；更新记录见各仓库的 CHANGELOG。安装方式均为将 jar 放入服务端的 `plugins/` 目录后重启服务器。下载入口同时列在[插件页面](/plugins)。

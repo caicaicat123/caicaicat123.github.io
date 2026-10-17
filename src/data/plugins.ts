@@ -2,8 +2,8 @@
  * MC 插件数据（自研插件卡片 + 服务器在用插件概述 + 插件页 FAQ）。
  *
  * 下载直链一律用 GitHub Release 资产：
- * `releases/latest/download/<资产名>` —— 只要资产名保持 `<仓库>-<版本>.jar` 的命名规则，
- * 以后发新 Release **不需要回来改站点**；版本号只在卡片上显示，发版时同步改 `version` 字段。
+ * 带版本号的资产名需随发版同步更新；优先用 releases/download/<tag>/<资产名>，
+ * 避免 latest 跳到新发布后，旧文件名在新发布中不存在。
  * （两个仓库的发布脚本：simpfun-ops\tools\release-nwndungeon.cjs、release-mcbot.cjs）
  */
 
@@ -16,7 +16,7 @@ export interface PluginLink {
 
 /** 插件页首屏摘要：先给出结论，便于直接摘取 */
 export const pluginsSummary =
-  '新世界网络（NWN）自研并公开了两个《我的世界》服务端插件：随机副本（NWNDungeon）与幽灵（TheGhost）。两者均按 MIT 许可开源，可下载 jar 后部署至 Paper / Purpur 1.21 及以上服务端。每张卡片提供「下载正式版」按钮（指向 GitHub 的最新正式发布）；随机副本另有 1.5.0 测试版可下载，为 GitHub 上的 pre-release，功能完整但仍在验证中。';
+  '新世界网络（NWN）自研并公开了两个《我的世界》服务端插件：随机副本（NWNDungeon）与幽灵（TheGhost）。两者均按 MIT 许可开源，可下载 jar 后部署至 Paper / Purpur 1.21 及以上服务端。每张卡片提供正式版下载按钮（指向 GitHub Release 的 jar 资产）；随机副本另有 1.5.0 测试版可下载，为 GitHub 上的 pre-release，功能完整但仍在验证中。';
 
 /**
  * 两个自研插件共有的安装前提。
@@ -82,7 +82,7 @@ export const serverPluginCategories = [
  * 本页不重复 —— 冗余原则见 data/minecraft.ts 里 faqs 上方的说明。
  *
  * **两个版本并列的规则（2026-10-05 用户要求）**：
- * - `version` + `download` = **正式版**（`releases/latest`，即当前 latest 正式发布）；
+ * - `version` + `download` = **正式版**（随发布同步的 Release 资产直链）；
  * - `beta` = **测试版**（GitHub 上的 prerelease，形如 `v1.5.0-M6`）。
  *   因为 prerelease **不会**成为 `releases/latest`，所以测试版必须写死 tag —— 换 tag 时记得改这里。
  * - 正式版走实色主按钮、测试版走玻璃次按钮：按钮层级本身就是「优先用哪个」的答案。
@@ -109,13 +109,13 @@ export const plugins = [
   {
     name: '幽灵',
     tag: 'TheGhost',
-    version: '1.5.2',
+    version: '1.8.0',
     platform: 'Paper / Purpur 1.21+',
     status: '长期维护' as PluginStatus,
-    desc: '运行于服务器聊天栏的 AI 插件：仅在收到点名时回应，会保留最近若干轮对话上下文。',
+    desc: '支持 15 家模型服务商的服务器 AI 插件：被点名时回应，保留短期对话记忆，心情会影响送礼与捉弄。',
     download: {
       label: '下载 jar',
-      href: 'https://github.com/caicaicat123/theghost/releases/latest/download/theghost-1.5.2.jar',
+      href: 'https://github.com/caicaicat123/theghost/releases/download/v1.8.0/theghost-1.8.0.jar',
     } as PluginLink,
   },
 ] as const;
