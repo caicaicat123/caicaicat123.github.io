@@ -4,7 +4,6 @@ import { getCollection } from 'astro:content';
 import HomePortal from '../components/HomePortal.astro';
 import PluginGlyph from '../components/PluginGlyph.astro';
 import ServerStatus from '../components/ServerStatus.astro';
-import { site } from '../data/site';
 import { plugins } from '../data/plugins';
 import { formatDate } from '../utils/format';
 import '../styles/home.css';
@@ -14,7 +13,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .slice(0, 3);
 ---
 
-<BaseLayout title={site.name}>
+<BaseLayout title="首页">
   <HomePortal />
 
   <section class="home-status" id="server-status" aria-labelledby="home-status-title">

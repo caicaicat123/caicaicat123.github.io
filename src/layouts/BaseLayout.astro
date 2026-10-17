@@ -20,13 +20,10 @@ const {
   noindex = false,
 } = Astro.props;
 
-/**
- * 标题统一格式：`新世界网络|New World Network - 页面名`
- * 首页不带后缀，直接用品牌全称（首个词就是品牌，最利于摘要与站点识别）。
- * 说明：这里刻意不做「页面名在前」的写法 —— 品牌置前是全站统一的识别口径。
- */
-const brand = `${site.name}|${site.nameEn}`;
-const fullTitle = title === site.name ? brand : `${brand} - ${title}`;
+// 页面与分享标题共用格式；博客文章保留文章名在前。
+const fullTitle = ogType === 'article'
+  ? `${title} - 博客 - ${site.name}`
+  : `${site.name} - ${title}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).href;
 const ogImage = new URL('/og-default.png', Astro.site ?? site.url).href;
 const ogImageAlt = `${site.name} · ${site.nameEn}`;
