@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import { site } from '../data/site';
 import { formatDate } from '../utils/format';
+import '../styles/blog.css';
 
 interface Props {
   title: string;
@@ -41,16 +42,11 @@ const articleSchema = {
 
 <BaseLayout title={title} description={description} ogType="article">
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
-  <!--
-    版心统一：外层一律 max-w-6xl（与导航、页脚同一条左边缘），
-    长文本的行宽用内层 --reading 限制 —— 版心管版式，行宽管阅读。
-    2026-10-04 之前这里直接 mx-auto max-w-2xl，导致文章页左边缘比导航缩进约 183px。
-  -->
-  <div class="mx-auto max-w-6xl px-4 py-12">
-    <article class="max-w-reading">
+  <div class="blog-article-shell mx-auto max-w-6xl px-4 py-12">
+    <article class:list={['blog-article', toc.length <= 2 && 'blog-article--no-toc']}>
       <a href="/blog/" class="text-sm text-muted transition-colors hover:text-primary">← 返回博客</a>
 
-    <header class="mt-6 border-b border-line pb-6">
+    <header class="blog-article__header mt-6 border-b border-line pb-6">
       <div class="mb-3 flex flex-wrap items-center gap-2 text-xs text-muted">
         <span class="badge badge-primary">{category}</span>
         <time datetime={formatDate(pubDate)}>{formatDate(pubDate)}</time>
@@ -75,11 +71,14 @@ const articleSchema = {
       }
     </header>
 
+    <div class="blog-article__grid">
     {
       toc.length > 2 && (
-        <nav class="card mt-8 p-5" aria-label="文章目录">
-          <p class="label-cjk mb-3 text-[12px] text-muted">目录</p>
-          <ul class="space-y-2 text-sm">
+        <aside class="blog-article__aside">
+        <nav aria-label="文章目录">
+          <details class="blog-article__toc" open>
+          <summary>本文目录</summary>
+          <ul class="text-sm">
             {toc.map((heading) => (
               <li class:list={[heading.depth === 3 && 'pl-4']}>
                 <a
@@ -91,15 +90,18 @@ const articleSchema = {
               </li>
             ))}
           </ul>
+          </details>
         </nav>
+        </aside>
       )
     }
 
-    <div class="prose-nwn mt-8">
+    <div class="blog-article__content">
+    <div class="blog-article__prose prose-nwn">
       <slot />
     </div>
 
-    <footer class="mt-12 border-t border-line pt-6 text-sm text-muted">
+    <footer class="blog-article__footer mt-12 border-t border-line pt-6 text-sm text-muted">
       <p>
         本文由 {site.author} 发布，转载请注明出处。
         <a href="/rss.xml" class="text-primary hover:opacity-80">RSS 订阅</a>
@@ -126,6 +128,18 @@ const articleSchema = {
         ) : null
       }
     </nav>
+    </div>
+    </div>
     </article>
   </div>
 </BaseLayout>
+
+<script>
+  const articleToc = document.querySelector<HTMLDetailsElement>('.blog-article__toc');
+  if (articleToc) {
+    const wideScreen = window.matchMedia('(min-width: 1024px)');
+    const syncToc = () => { articleToc.open = wideScreen.matches; };
+    syncToc();
+    wideScreen.addEventListener('change', syncToc);
+  }
+</script>

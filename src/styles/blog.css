@@ -1,0 +1,46 @@
+/* 文章沿用全站版心：宽标题、舒适的正文行宽，以及有用途的右侧目录。 */
+.blog-article-shell { padding-block: clamp(40px, 5vw, 72px); }
+.blog-article__header { padding-bottom: 32px; }
+body.page-blog .blog-article > .blog-article__header h1 {
+  max-width: 1040px;
+  font-size: clamp(34px, 4.2vw, 58px);
+  line-height: 1.22;
+  overflow-wrap: anywhere;
+}
+.blog-article__header > p { max-width: 880px; }
+.blog-article__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 248px;
+  align-items: start;
+  gap: clamp(36px, 4vw, 64px);
+  margin-top: 40px;
+}
+.blog-article__content { grid-column: 1; grid-row: 1; min-width: 0; }
+.blog-article__aside { grid-column: 2; grid-row: 1; position: sticky; top: 96px; min-width: 0; }
+.blog-article__toc { border-top: 3px solid var(--color-primary); padding-top: 17px; }
+.blog-article__toc summary { color: var(--color-strong); font-size: 14px; font-weight: 800; cursor: pointer; }
+.blog-article__toc ul { max-height: calc(100dvh - 190px); overflow-y: auto; margin-top: 14px; padding-right: 10px; scrollbar-width: thin; }
+.blog-article__toc li { border-left: 1px solid var(--color-line); }
+.blog-article__toc a { display: block; padding: 7px 0 7px 14px; line-height: 1.65; overflow-wrap: anywhere; text-decoration: none; }
+.blog-article__toc a:hover { color: var(--color-primary); }
+.blog-article__toc summary:focus-visible, .blog-article__toc a:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+.blog-article__prose { font-size: 17px; line-height: 1.95; overflow-wrap: anywhere; }
+.blog-article__prose > :first-child { margin-top: 0; }
+.blog-article__prose img { max-width: 100%; height: auto; }
+.blog-article__prose table { width: 100%; border-collapse: collapse; margin-block: 24px; font-size: 15px; }
+.blog-article__prose th, .blog-article__prose td { padding: 11px 14px; border: 1px solid var(--color-line); text-align: left; }
+.blog-article__prose th { background: var(--color-soft); }
+body.site-redesign .blog-article__footer { margin-top: 48px; background: transparent; }
+.blog-article--no-toc .blog-article__grid { display: block; max-width: 880px; margin-inline: auto; }
+@media (max-width: 1023px) {
+  .blog-article__grid { grid-template-columns: minmax(0, 1fr); gap: 30px; }
+  .blog-article__aside { position: static; grid-column: 1; grid-row: 1; }
+  .blog-article__content { grid-row: 2; }
+  .blog-article__toc ul { max-height: 220px; }
+}
+@media (max-width: 640px) {
+  .blog-article-shell { padding-top: 32px; }
+  .blog-article__header { padding-bottom: 24px; }
+  .blog-article__grid { margin-top: 28px; }
+  .blog-article__prose { font-size: 16px; line-height: 1.9; }
+}
