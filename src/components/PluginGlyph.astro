@@ -1,0 +1,18 @@
+---
+interface Props { tag: string }
+const { tag } = Astro.props;
+---
+
+{tag === 'NWNDungeon' ? (
+  <svg viewBox="0 0 48 48" fill="none" focusable="false" aria-hidden="true">
+    <path d="M8 39V14h6V9h7v5h6V9h7v5h6v25H8Z" stroke="currentColor" stroke-width="2.8" stroke-linejoin="round" />
+    <path d="M18 39V27a6 6 0 0 1 12 0v12" fill="#174ae6" stroke="currentColor" stroke-width="2.8" />
+    <path d="M14 20h5m10 0h5M21 32h6" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" />
+  </svg>
+) : tag === 'TheGhost' ? (
+  <svg viewBox="0 0 48 48" fill="none" focusable="false" aria-hidden="true">
+    <path d="M13 36V22c0-7 4.5-11 11-11s11 4 11 11v14l-5.5-3.5L24 36l-5.5-3.5L13 36Z" fill="#fffdf6" stroke="currentColor" stroke-width="2.7" stroke-linejoin="round" />
+    <path d="M20 22v3m8-3v3" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+    <path d="M22 30h4" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" />
+  </svg>
+) : null}

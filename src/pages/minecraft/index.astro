@@ -40,9 +40,11 @@ const facts = [
   description={description}
 >
   <!-- 首屏：一句话定位 + 玩法定位，然后是本页唯一的事实表 -->
-  <section class="border-b border-line">
+  <section class="site-hero site-hero--minecraft border-b border-line">
     <div class="mx-auto max-w-6xl px-4 py-14">
-      <p class="section-label">服务器速查</p>
+      <div class="site-hero__split">
+      <div class="site-hero__copy">
+      <p class="section-label">服务器速查 / Minecraft</p>
       <h1 class="text-2xl font-semibold text-strong sm:text-3xl">{site.server.name}</h1>
       <p class="mt-4 max-w-3xl text-base leading-[1.85] text-muted">{serverSummary}</p>
       <!--
@@ -50,8 +52,11 @@ const facts = [
         它和 serverSummary 是同一层信息（「这是什么服务器」），所以并到首屏。
       -->
       <p class="mt-3 max-w-3xl text-base leading-[1.85] text-muted">{positioning}</p>
+      </div>
+      <div class="site-hero__art site-hero__art--minecraft" aria-hidden="true"><span>NEW WORLD<br />MINECRAFT</span><i></i></div>
+      </div>
 
-      <div class="card mt-8 p-5">
+      <div class="card site-facts mt-8 p-5">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <h2 class="text-sm font-semibold text-ink">连接与基本信息</h2>
           <CopyButton value={address} label="复制地址" tone="ghost" />

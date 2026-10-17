@@ -17,6 +17,8 @@ interface Props {
   beta?: { version: string; label: string; href: string; note?: string };
 }
 
+import PluginGlyph from './PluginGlyph.astro';
+
 const { name, tag, version, platform, status, desc, download, beta } = Astro.props;
 
 // 完成态用竹青，与全站的状态语义保持一致（见 global.css 的 .badge-jade）
@@ -28,6 +30,7 @@ const barColor = status === '长期维护' ? 'var(--m-grass)' : 'var(--m-copper)
 
 <article class="card flex h-full flex-col overflow-hidden p-6" style={`--status-bar: ${barColor}`}>
   <span aria-hidden="true" class="plugin-status-bar"></span>
+  <span class:list={['plugin-card-glyph', tag === 'NWNDungeon' ? 'plugin-card-glyph--dungeon' : 'plugin-card-glyph--ghost']} aria-hidden="true"><PluginGlyph tag={tag} /></span>
   <div class="mb-3 flex flex-wrap items-center gap-2">
     <!-- 插件标识是分类，不是强调内容：用中性 badge，把朱砂留给真正要抓眼的地方 -->
     <span class="badge label-latin">{tag}</span>

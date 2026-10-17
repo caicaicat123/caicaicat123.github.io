@@ -1,0 +1,69 @@
+---
+import { site } from '../data/site';
+---
+
+<section class="home-portal" aria-labelledby="home-title">
+  <div class="home-portal__intro">
+    <div class="home-portal__headline">
+      <p class="home-portal__identity"><span aria-hidden="true"></span>New World Network / 新世界网络</p>
+      <h1 id="home-title"><span class="home-portal__line"><span>把世界，</span></span><span class="home-portal__line"><span>继续写下去。</span></span></h1>
+    </div>
+    <div class="home-portal__side">
+      <span class="home-portal__side-rule" aria-hidden="true"></span>
+      <p>一座持续运行的《我的世界》服务器，<br class="hidden lg:block" />一段正在开发的《钢铁雄心 4》附加内容。</p>
+      <span class="home-portal__side-index">选择一个世界，开始探索 ↓</span>
+    </div>
+  </div>
+
+  <div class="home-worlds" aria-label="探索新世界网络的两个项目">
+    <a class="home-world home-world--minecraft" href="/minecraft/" aria-label="了解新世界 Minecraft 服务器">
+      <span class="home-world__image" aria-hidden="true"></span>
+      <span class="home-world__texture" aria-hidden="true"></span>
+      <span class="home-world__top"><span class="home-world__sigil" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 2.5 29 9.5v13L16 29.5 3 22.5v-13L16 2.5Z" fill="#D5EBD7" stroke="#F2FFF1" stroke-width="1.5" stroke-linejoin="bevel"/><path d="M16 3.5 28 10 16 16.5 4 10 16 3.5Z" fill="#7BCB79"/><path d="M4 11.5 15 17.5v10L4 21.5v-10Z" fill="#315E61"/><path d="M17 17.5 28 11.5v10L17 27.5v-10Z" fill="#A6C8A6"/><path d="m4 10 12 6.5L28 10M16 16.5v12" stroke="#F2FFF1" stroke-width="1.4"/></svg></span>Minecraft / 生存服务器</span>
+      <span class="home-world__body">
+        <strong class="home-world__name">{site.server.name}</strong>
+        <span class="home-world__description">和朋友一起，在长期开放的世界里创造。</span>
+        <span class="home-world__action">进入服务器页面 <span aria-hidden="true">↗</span></span>
+      </span>
+    </a>
+    <a class="home-world home-world--strategy" href="/mod/" aria-label="了解 The Fire Rises 钢铁雄心 4 附加内容">
+      <span class="home-world__image" aria-hidden="true"></span>
+      <span class="home-world__texture" aria-hidden="true"></span>
+      <span class="home-world__top"><span class="home-world__sigil" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 3h24v14c0 6-4.3 10.4-12 13C8.3 27.4 4 23 4 17V3Z" fill="#8C2E35" stroke="#F8D8C5" stroke-width="1.6"/><path d="M7 6h18v5H7V6Z" fill="#E76A4A"/><path d="M16 10c.9 3.5-2.6 4.5-.7 7.5.3-2 2.7-3.6 2.9-5.6 3.5 3 4.4 6.5 2.6 9.3-1.1 1.8-2.8 3.1-4.8 4-3.3-1.4-5.5-3.9-5.5-6.7 0-2.7 1.7-5.3 5.5-8.5Z" fill="#FFD18A"/><path d="M16 18c.9 1.3 1.5 2.3 1.5 3.5 0 1.1-.6 2-1.5 2.7-.9-.7-1.5-1.6-1.5-2.7 0-1.2.6-2.2 1.5-3.5Z" fill="#FFF4DB"/></svg></span>Hearts of Iron IV / 附加内容</span>
+      <span class="home-world__body">
+        <strong class="home-world__name">The Fire Rises</strong>
+        <span class="home-world__description">重庆模式的债务国策与决议，正在制作中。</span>
+        <span class="home-world__action">查看开发进展 <span aria-hidden="true">↗</span></span>
+      </span>
+    </a>
+    <span class="home-worlds__seam" aria-hidden="true"></span>
+  </div>
+
+  <p class="home-portal__foot"><span>游戏服务器 · 模组开发 · 自研插件</span><span>NWN / 2026</span></p>
+</section>
+
+<script>
+  const worlds = document.querySelector<HTMLElement>('.home-worlds');
+  const canTrack = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (worlds && canTrack) {
+    let frame = 0;
+    let pointerY = 0;
+    worlds.addEventListener('pointermove', (event) => {
+      pointerY = event.clientY;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        const bounds = worlds.getBoundingClientRect();
+        const progress = Math.min(86, Math.max(14, ((pointerY - bounds.top) / bounds.height) * 100));
+        worlds.style.setProperty('--seam-y', `${progress}%`);
+        frame = 0;
+      });
+    });
+    worlds.addEventListener('pointerleave', () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      worlds.style.removeProperty('--seam-y');
+    });
+  }
+</script>

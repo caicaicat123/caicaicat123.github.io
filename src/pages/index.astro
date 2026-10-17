@@ -1,12 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import HeroCarousel from '../components/HeroCarousel.astro';
-import SectionHeading from '../components/SectionHeading.astro';
+import HomePortal from '../components/HomePortal.astro';
+import PluginGlyph from '../components/PluginGlyph.astro';
 import ServerStatus from '../components/ServerStatus.astro';
-import BlogCard from '../components/BlogCard.astro';
 import { site } from '../data/site';
+import { plugins } from '../data/plugins';
 import { formatDate } from '../utils/format';
+import '../styles/home.css';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
@@ -14,56 +15,78 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 ---
 
 <BaseLayout title={site.name}>
-  <!-- Hero：两个方向做成可横向滚动的页面 -->
-  <HeroCarousel />
+  <HomePortal />
 
-  <!-- 服务器状态 -->
-  <section id="server-status" class="mx-auto max-w-6xl px-4 py-20">
-    <div class="flex flex-wrap items-end justify-between gap-4">
-      <SectionHeading
-        eyebrow="服务器状态"
-        title="服务器状态"
-        desc="服务器长期开放，地址与版本等完整信息见服务器页速查表。"
-      />
-      <a href="/minecraft/" class="mb-14 text-sm text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80">
-        服务器详情
+  <section class="home-status" id="server-status" aria-labelledby="home-status-title">
+    <div class="home-status__inner">
+      <div>
+        <p class="home-section-kicker">实时运行</p>
+        <h2 id="home-status-title">此刻的服务器状态。</h2>
+        <p>查看当前服务器状态，详细连接信息在服务器页面。</p>
+      </div>
+      <a class="home-status__data" href="/minecraft/#server-status" aria-label="查看 Minecraft 服务器实时运行状态">
+        <ServerStatus mini />
+        <span class="home-status__data-hint">查看运行详情 <span aria-hidden="true">↗</span></span>
       </a>
+      <a href="/minecraft/#server-status" class="home-status__link">查看服务器详情 <span aria-hidden="true">↗</span></a>
     </div>
-    <!--
-      首页状态卡用 mini 档：只给「在线 / 人数」。
-      版本号、客户端范围、离线模式这些事实**不在这里复述** ——
-      它们的主场是服务器页速查表（2026-10-04 冗余清理，原先还写了「Java 版 26.1.2，全版本可进，离线模式」）。
-    -->
-    <ServerStatus mini />
   </section>
 
-  <!-- 最新文章 -->
-  <section class="band border-y border-line">
-    <div class="mx-auto max-w-6xl px-4 py-20">
-    <div class="flex flex-wrap items-end justify-between gap-4">
-      <SectionHeading eyebrow="博客" title="最新文章" />
-      <a href="/blog/" class="mb-8 text-sm text-primary underline decoration-1 underline-offset-4 transition-opacity hover:opacity-80">
-        全部文章
-      </a>
+  <section class="home-work" aria-labelledby="home-work-title">
+    <div class="home-work__intro">
+      <p class="home-section-kicker">创造工具</p>
+      <h2 id="home-work-title">让世界继续运转。</h2>
+      <p>我们也开发在服务器上使用的 Minecraft 插件。</p>
     </div>
-    <div class="grid gap-5 md:grid-cols-3">
-      {
-        posts.map((post) => (
-          <BlogCard
-            title={post.data.title}
-            description={post.data.description}
-            href={`/blog/${post.id}/`}
-            date={formatDate(post.data.pubDate)}
-            category={post.data.category}
-            tags={post.data.tags}
-          />
-        ))
-      }
+    <div class="home-work__list">
+      {plugins.map((plugin, index) => (
+        <a href={plugin.tag === 'NWNDungeon' ? '/plugins/dungeon/' : '/plugins/'} class="home-work__item">
+          <span class:list={['home-work__mark', plugin.tag === 'NWNDungeon' ? 'home-work__mark--dungeon' : plugin.tag === 'TheGhost' ? 'home-work__mark--ghost' : 'home-work__mark--other']} aria-hidden="true">
+            {plugin.tag === 'NWNDungeon' || plugin.tag === 'TheGhost' ? <PluginGlyph tag={plugin.tag} /> : <span>0{index + 1}</span>}
+          </span>
+          <span class="home-work__name">{plugin.name}<small>{plugin.tag}</small></span>
+          <span class="home-work__description">{plugin.desc}</span>
+          <span class="home-work__arrow" aria-hidden="true">↗</span>
+        </a>
+      ))}
     </div>
-    {
-      posts.length === 0 && <p class="card p-5 text-sm text-muted">还没有文章，第一篇正在写。</p>
-    }
+    <a class="home-work__more" href="/plugins/">查看全部插件与下载信息 <span aria-hidden="true">↗</span></a>
+  </section>
+
+  <section class="home-journal" aria-labelledby="home-journal-title">
+    <div class="home-journal__intro">
+      <div>
+        <p class="home-section-kicker">最新记录</p>
+        <h2 id="home-journal-title">正在发生。</h2>
+      </div>
+      <a href="/blog/">浏览全部文章 <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="home-journal__list">
+      {posts.map((post) => (
+        <article class="home-journal__item">
+          <div class="home-journal__meta"><time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time><span>{post.data.category}</span></div>
+          <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+          <span aria-hidden="true">↗</span>
+        </article>
+      ))}
     </div>
   </section>
 
 </BaseLayout>
+
+<script>
+  const lines = document.querySelectorAll('.home-work__list, .home-journal__list');
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    }, { threshold: 0.12 });
+    lines.forEach((line) => observer.observe(line));
+  } else {
+    lines.forEach((line) => line.classList.add('is-visible'));
+  }
+
+</script>

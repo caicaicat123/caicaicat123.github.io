@@ -3,6 +3,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
 import '../styles/global.css';
+import '../styles/site.css';
 
 interface Props {
   title: string;
@@ -80,7 +81,7 @@ const breadcrumb =
     <link rel="icon" type="image/png" href="/icon.png" />
     <link rel="apple-touch-icon" href="/icon.png" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#F7F4ED" />
+    <meta name="theme-color" content="#f8f6ee" />
 
     <script is:inline>
       // 在首屏渲染前定好主题，避免深浅色闪一下。
@@ -98,7 +99,7 @@ const breadcrumb =
         }
         document.documentElement.setAttribute('data-theme', theme);
         var meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', theme === 'light' ? '#f7f4ed' : '#14120f');
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#f8f6ee' : (location.pathname === '/' ? '#111d34' : '#0c1830'));
       })();
     </script>
 
@@ -152,7 +153,7 @@ const breadcrumb =
     <slot name="head" />
   </head>
 
-  <body class="flex min-h-screen flex-col">
+  <body class:list={['flex min-h-screen flex-col site-redesign', isHome && 'home-v2', !isHome && `page-${segments[0] ?? 'other'}`]}>
     <!-- 背景层：两层水墨晕染（首屏另有 56px 网格） -->
     <div class="bg" aria-hidden="true">
       {isHome && <div class="bg-grid"></div>}
