@@ -46,7 +46,7 @@ const toc = [
       </thead>
       <tbody>
         <tr>
-          <td>正式版 <code>{version}</code></td>
+          <td>正式版 <span class="font-mono">{version}</span></td>
           <td>内置三档副本 + 管理员自建副本 + 生成与稳定性修复</td>
           <td>沿用现有配置，不需要迁移到新格式</td>
         </tr>
@@ -62,7 +62,7 @@ const toc = [
     <ol>
       <li>备份旧 JAR 和 <code>plugins/NWNDungeon/</code> 数据目录。</li>
       <li>完整停止服务器，替换 JAR，并移走同插件的旧 JAR，避免重复加载。</li>
-      <li>启动服务器，确认插件版本为 <code>{version}</code>，核对「启动配置校验完成」及各难度首领血量。</li>
+      <li>启动服务器，确认插件版本为 <span class="font-mono">{version}</span>，核对「启动配置校验完成」及各难度首领血量。</li>
       <li>执行 <code>/nwd doctor</code>，再验证一局清波、首领血量与血条、奖励和退出。</li>
     </ol>
     <p class="callout">
