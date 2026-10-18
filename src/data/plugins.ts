@@ -96,12 +96,12 @@ export const plugins = [
     status: '长期维护' as PluginStatus,
     desc: '在世界上随机生成按难度缩放的遗迹入口，供玩家组队进入独立副本世界挑战多波关卡与首领。',
     download: {
-      label: '下载正式版',
+      label: '下载正式版 jar',
       href: 'https://github.com/caicaicat123/nwndungeon/releases/latest/download/nwndungeon-1.4.13.jar',
     } as PluginLink,
     beta: {
       version: '1.5.0-M6',
-      label: '下载测试版（1.5.0-M6）',
+      label: '下载测试版 jar（1.5.0-M6）',
       href: 'https://github.com/caicaicat123/nwndungeon/releases/download/v1.5.0-M6/nwndungeon-1.5.0-M6.jar',
       note: '新增「管理员自建副本」，功能已完整但仍在验证中，不建议直接用于生产服。使用说明见插件页的文档。',
     },
@@ -113,8 +113,9 @@ export const plugins = [
     platform: 'Paper / Purpur 1.21+',
     status: '长期维护' as PluginStatus,
     desc: '支持 15 家模型服务商的服务器 AI 插件：被点名时回应，保留短期对话记忆，心情会影响送礼与捉弄。',
+    releaseNote: '新增豆包、通义千问、Kimi、智谱等服务商预设，支持 15 家模型服务商及通用 OpenAI 兼容接口；可独立配置各服务商，并传入模型专用参数。',
     download: {
-      label: '下载 jar',
+      label: '下载正式版 jar',
       href: 'https://github.com/caicaicat123/theghost/releases/download/v1.8.0/theghost-1.8.0.jar',
     } as PluginLink,
   },

@@ -43,6 +43,7 @@ const description =
             platform={plugin.platform}
             status={plugin.status}
             desc={plugin.desc}
+            releaseNote={'releaseNote' in plugin ? plugin.releaseNote : undefined}
             download={plugin.download}
             beta={'beta' in plugin ? plugin.beta : undefined}
           />
