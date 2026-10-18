@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PluginCard from '../../components/PluginCard.astro';
 import SectionHeading from '../../components/SectionHeading.astro';
 import Faq from '../../components/Faq.astro';
-import { pluginFaqs, pluginRequirements, plugins, pluginsSummary, serverPluginCategories } from '../../data/plugins';
+import { dungeonRelease, pluginFaqs, pluginRequirements, plugins, pluginsSummary, serverPluginCategories } from '../../data/plugins';
 import { site } from '../../data/site';
 
 const description =
@@ -45,7 +45,6 @@ const description =
             desc={plugin.desc}
             releaseNote={'releaseNote' in plugin ? plugin.releaseNote : undefined}
             download={plugin.download}
-            beta={'beta' in plugin ? plugin.beta : undefined}
           />
         ))
       }
@@ -114,18 +113,17 @@ const description =
       <a href="/plugins/dungeon/" class="card card-interactive flex flex-col p-6">
         <div class="flex flex-wrap items-center gap-2">
           <span class="badge label-latin">NWNDungeon</span>
-          <span class="badge badge-primary">1.5.0 · 预览版</span>
+          <span class="badge badge-jade">{dungeonRelease.version} · 正式版</span>
         </div>
-        <h3 class="mt-3 text-base font-semibold text-strong">管理员自建副本文档</h3>
+        <h3 class="mt-3 text-base font-semibold text-strong">随机副本支持文档</h3>
         <p class="mt-2 flex-1 text-base leading-[1.85] text-muted">
-          由管理员在游戏内搭建副本模板：命令与权限、四个编辑面板、标记的语义与规则、
-          入口建筑的实测行为、数据文件位置与已知限制。
+          安装升级、首领血量与血条、生成恢复、准备速度配置，以及管理员自建副本的命令、面板与标记说明。
         </p>
         <span class="mt-4 text-sm text-primary underline decoration-1 underline-offset-4">阅读文档</span>
       </a>
     </div>
     <p class="mt-6 max-w-3xl text-sm leading-relaxed text-muted">
-      自建副本功能目前仅在 1.5.0 测试版提供，正式版暂不包含这部分功能。
+      1.5.0 正式版同时包含内置副本和管理员自建副本；已有配置继续使用原格式。
     </p>
   </section>
 

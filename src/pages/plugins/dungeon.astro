@@ -1,12 +1,16 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import DocsLayout from '../../layouts/DocsLayout.astro';
+import { dungeonRelease } from '../../data/plugins';
 
 /** 与插件 plugin.yml 的版本一致；改版本时同步这一处 */
-const version = '1.5.0-M6';
+const version = dungeonRelease.version;
 
 const toc = [
   { id: 'download', label: '下载与版本' },
+  { id: 'upgrade', label: '安装与升级' },
+  { id: 'runtime', label: '生成与首领血量' },
+  { id: 'performance', label: '准备速度配置' },
   { id: 'what', label: '这是什么' },
   { id: 'commands', label: '命令与权限' },
   { id: 'quickstart', label: '快速上手' },
@@ -20,41 +24,102 @@ const toc = [
 ---
 
 <BaseLayout
-  title="随机副本 - 自建副本文档"
-  description="NWNDungeon 管理员自建副本的使用文档：命令与权限、快速上手、四个编辑面板、标记语义与规则、入口建筑、数据文件位置与已知限制。1.5.0 预览版。"
+  title="随机副本 - 支持文档"
+  description="NWNDungeon 1.5.0 正式版支持文档：下载升级、怪物生成恢复、首领血量与BossBar、准备速度配置、自建副本编辑器、命令权限与已知限制。"
 >
   <DocsLayout
-    title="管理员自建副本"
-    intro="1.5.0 新增的能力：由管理员在游戏内搭建副本模板，玩家按入口进入，一局一个独立世界。本文说明怎么搭、命令怎么写、有哪些规则与已知限制。"
+    title="随机副本支持文档"
+    intro="1.5.0 正式版同时提供内置副本和管理员自建副本。这里说明安装升级、生成与血量规则、准备速度，以及如何搭建和维护自己的副本。"
     version={version}
-    status="prerelease"
+    status="stable"
     toc={toc}
   >
     <h2 id="download">下载与版本</h2>
     <p>
-      自建副本属于 <strong>1.5.0</strong>，目前以<strong>测试版</strong>形式发布在 GitHub 上，
-      尚未进入正式版，也尚未部署到本工作室的正式服务器。因此下载页有两个版本：
+      当前正式版为 <strong>{version}</strong>，发布于 <time datetime="2026-10-18">2026 年 10 月 18 日</time>。
+      包含内置副本、管理员自建副本，以及怪物生成、血量同步和准备期间重复入场的修复。
+      <a href="/plugins/">插件页</a>只保留一个最新版下载按钮。
     </p>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
-        <tr><th>版本</th><th>包含自建副本</th><th>说明</th></tr>
+        <tr><th>版本</th><th>包含内容</th><th>配置兼容</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td>正式版 <code>1.4.13</code></td>
-          <td>否</td>
-          <td>稳定版，用于生产服。只有内置副本（iron / gold / diamond）那一套</td>
-        </tr>
-        <tr>
-          <td>测试版 <code>1.5.0-M6</code></td>
-          <td>是</td>
-          <td>本文描述的全部功能都在这一版里；仍在验证中，不建议直接用于生产服</td>
+          <td>正式版 <code>{version}</code></td>
+          <td>内置三档副本 + 管理员自建副本 + 生成与稳定性修复</td>
+          <td>沿用现有配置，不需要迁移到新格式</td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
     <p>
-      下载入口见<a href="/plugins/">插件页</a>。测试版是 GitHub 上的 pre-release，
-      不会出现在 <code>releases/latest</code> 里，请在插件页选择对应按钮。
+      完整更新记录和校验文件见 <a href={dungeonRelease.releaseUrl}>GitHub 正式发布页</a>。
+      通过 83 项离线检查、视距与模拟距离均为 3 的隔离服 67 项自检，用户测试反馈良好；
+      不同服务端与插件组合仍应先在自己的测试环境验证。
+    </p>
+
+    <h2 id="upgrade">安装与升级</h2>
+    <ol>
+      <li>备份旧 JAR 和 <code>plugins/NWNDungeon/</code> 数据目录。</li>
+      <li>完整停止服务器，替换 JAR，并移走同插件的旧 JAR，避免重复加载。</li>
+      <li>启动服务器，确认插件版本为 <code>{version}</code>，核对「启动配置校验完成」及各难度首领血量。</li>
+      <li>执行 <code>/nwd doctor</code>，再验证一局清波、首领血量与血条、奖励和退出。</li>
+    </ol>
+    <p class="callout">
+      换 JAR 必须完整重启。<code>/nwd reload</code>只重载配置，不能把正在运行的旧插件代码换成新版。
+      每次启动都会从磁盘加载并校验配置；校验失败会停用副本功能并保留原文件，请先按日志修正再重新启动。
+    </p>
+    <p>
+      API 声明为 1.21，按 Java 21 目标编译；隔离服实测为 Purpur 26.1.2-2592 / Java 25。
+      具体 Java 要求以所用服务端为准，API 声明不等于所有小版本均已逐一测试。
+    </p>
+
+    <h2 id="runtime">怪物生成与首领血量</h2>
+    <ul>
+      <li>到达当前关卡才生成怪物，后面的关卡不会提前刷怪；按实体体型检查落脚点、危险方块和碰撞。</li>
+      <li>骷髅等怪物保留原版默认武器，自定义模板装备在原版初始化后覆盖。</li>
+      <li>怪物失踪时优先加载实际区块、找回原实体；确认缺失后至少等待 5 秒再有限补刷，每只怪整局最多 3 次。</li>
+      <li>普通怪恢复时保留装备和最近记录的剩余血量，每局每轮最多补刷 2 只；失踪不计击杀、不自动跳波。</li>
+      <li>首领必须确认由本局玩家击杀才算胜利；恢复预算耗尽或生成持续失败时结束本局，退还实际扣除的体力，不发通关奖励。</li>
+    </ul>
+    <h3>首领血量写在哪里？</h3>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
+      <thead><tr><th>对象</th><th>配置位置</th><th>示例</th></tr></thead>
+      <tbody>
+        <tr><td>内置铁级首领</td><td><code>config.yml</code></td><td><code>tiers.iron.boss.health: 160</code></td></tr>
+        <tr><td>自建副本首领</td><td><code>dungeons.yml</code>中对应副本的<code>boss</code>段</td><td><code>health: 160</code></td></tr>
+        <tr><td>普通怪物模板</td><td><code>mobs.yml</code>中对应模板</td><td><code>health: 40</code></td></tr>
+      </tbody>
+    </table></div>
+    <p>
+      血量单位是生命值点数，20 点 = 10 颗心，支持正数与小数。配置 160 时，真实最大血量应为 160，
+      BossBar 显示当前血量 / 160；受伤、治疗后同步更新。运行中上限被改写时会校正上限并保留剩余血量。
+      服务器硬属性上限确实不足时会明确报错，请按错误检查 <code>spigot.yml</code>中的 <code>settings.attribute.maxHealth.max</code>。
+    </p>
+    <p>
+      修改后执行 <code>/nwd reload</code>并重新开局，回显会列出实际配置目录和新首领血量；
+      已有及准备中的内置局保留开局难度配置。只有开发权限的账号不会重载全局 <code>config.yml</code>，请使用管理员权限。
+    </p>
+
+    <h2 id="performance">准备速度与进入倒计时</h2>
+    <p>编辑 <code>config.yml</code>，下面是低配服务器优先的默认值：</p>
+    <pre><code>{`trigger:
+  cast-seconds: 3                   # 进入前倒计时；0 只取消倒计时
+
+performance:
+  max-active-runs: 2                # 内置/自建共享，准备中也占名额
+  build-operations-per-tick: 2048   # 内置建造/清理操作数上限
+  build-budget-ms: 2                # 达到时间预算后下个 tick 继续`}</code></pre>
+    <p>
+      「正在准备副本」是实际建造或复制过程，不能直接指定完成秒数。提高操作数和时间预算通常能加快内置副本准备，
+      也会增加主线程负担；例如 4096 / 4 ms 比默认预算更高，但不保证耗时减半。准备始终串行，重复按按钮不会重新开局。
+      修改后执行 <code>/nwd reload</code>。自建副本的模板复制耗时还受存档大小和磁盘速度影响。
+    </p>
+    <h3>入口权重如何理解？</h3>
+    <p>
+      入口保持两次抽选：符合条件的新区块先按 <code>1 / generation.chance</code>决定是否生成入口，默认为 1/400；
+      抽中后再按各候选入口的 <code>weight / 总权重</code>选择副本。权重 10 在总权重 100 时占 10%，总权重 110 时占 10/110，
+      并非固定 10%。自建副本开启随机入口后也会参与权重池。
     </p>
 
     <h2 id="what">这是什么</h2>
@@ -62,7 +127,7 @@ const toc = [
       1.5.0 的定位是<strong>在原有内置副本之外，增加一套「管理员自建副本」体系</strong>，而不是替换内置副本。
       两套入口共用同一棵命令树，互不影响。
     </p>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>对比项</th><th>内置副本</th><th>自建副本（1.5.0 新增）</th></tr>
       </thead>
@@ -72,13 +137,13 @@ const toc = [
         <tr><td>入口</td><td>自然生成的遗迹</td><td>自建的门楼，或由命令贴出</td></tr>
         <tr><td>命令</td><td><code>/dungeon ...</code></td><td>同一棵命令树（见下）</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <h3>一局一个世界</h3>
     <p>
       开局时，插件把模板文件夹<strong>复制</strong>成 <code>nwndinst_&lt;slug&gt;_&lt;序号&gt;</code> 并加载，
-      结束时卸载并删除。因此同时开几局就会同时加载几个世界 —— 这也是并发上限
-      （<code>max-concurrent-runs</code>）存在的原因：限制的是内存与 tick 开销，而不是磁盘占用。
+      结束时卸载并删除。因此同时开几局就会同时加载几个世界。
+      <code>config.yml</code>中的<code>performance.max-active-runs</code>是内置与自建副本共享的全局并发上限，准备中的局也计入。
     </p>
 
     <h2 id="commands">命令与权限</h2>
@@ -92,7 +157,7 @@ const toc = [
     </p>
 
     <h3>权限节点</h3>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>节点</th><th>默认</th><th>可执行的命令</th></tr>
       </thead>
@@ -101,14 +166,14 @@ const toc = [
         <tr><td><code>nwd.admin</code></td><td>op</td><td><code>spawn &lt;难度&gt;</code>、<code>test &lt;难度&gt;</code>、<code>list</code>、<code>tp</code>、<code>release</code>、<code>reload</code></td></tr>
         <tr><td><code>nwd.dev</code></td><td>op</td><td>自建副本创作工具：<code>edit</code>、<code>new ...</code>、<code>test &lt;副本名&gt;</code>、<code>end</code>、<code>doctor</code> 等</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p>
       旧的 <code>nwndungeon.use</code> / <code>nwndungeon.admin</code> / <code>nwndungeon.dev</code>
       同样声明，代码里两套都认，已经发到玩家手上的权限组不需要改。
     </p>
 
     <h3>玩家命令</h3>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>命令</th><th>说明</th></tr>
       </thead>
@@ -117,10 +182,10 @@ const toc = [
         <tr><td><code>/dungeon stamina</code></td><td>查看自己的体力（即每日可进入的次数）</td></tr>
         <tr><td><code>/dungeon locate [难度|any]</code></td><td>查找离你最近的副本入口，给出方向与坐标；不写难度即不限</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <h3>管理员命令</h3>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>命令</th><th>说明</th></tr>
       </thead>
@@ -130,12 +195,12 @@ const toc = [
         <tr><td><code>/dungeon list</code></td><td>查看内置副本的槽位占用情况</td></tr>
         <tr><td><code>/dungeon tp &lt;槽位号&gt;</code></td><td>传送到指定槽位；槽位空着也能进，会送到它的原点</td></tr>
         <tr><td><code>/dungeon release &lt;槽位号|all&gt;</code></td><td>强制回收槽位，里面的人会被送回入口</td></tr>
-        <tr><td><code>/dungeon reload</code></td><td>重载 <code>config.yml</code> / <code>loot.yml</code> / <code>party.yml</code> / <code>mobs.yml</code></td></tr>
+        <tr><td><code>/dungeon reload</code></td><td>管理员重载全局配置和自建副本登记；先校验全部候选配置，成功后替换生效</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <h3>创作命令（<code>nwd.dev</code>）</h3>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>命令</th><th>说明</th></tr>
       </thead>
@@ -163,10 +228,10 @@ const toc = [
         <tr><td><code>/nwd end [名字]</code></td><td>结束正在跑的自建副本；不写名字即结束全部</td></tr>
         <tr><td><code>/nwd delete &lt;名字&gt;</code></td><td>删除一个自建副本；模板文件夹会挪进 <code>templates/_deleted/</code> 保留退路</td></tr>
         <tr><td><code>/nwd doctor</code></td><td>自检：建临时世界 → 放标记方块 → 保存 → 复制成新世界 → 检查方块是否还在 → 清理</td></tr>
-        <tr><td><code>/nwd reload</code></td><td>重载 <code>dungeons.yml</code> / <code>registry.yml</code></td></tr>
+        <tr><td><code>/nwd reload</code></td><td>三个命令名行为一致；仅有开发权限时只重载 <code>dungeons.yml</code> / <code>registry.yml</code>，不重载全局配置</td></tr>
         <tr><td><code>/nwd help [页码|子命令]</code></td><td>查看帮助；<code>/nwd help new world create</code> 可查单条</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p class="callout">
       <strong>以游戏内帮助为准。</strong>帮助文本由插件的命令登记表生成，不会与实现漂移；
       本文的表格是同一份内容的整理版。用 <code>/nwd help &lt;子命令&gt;</code> 可以查单条命令的参数、权限、示例与易错点。
@@ -201,7 +266,7 @@ const toc = [
 
     <h3>面板 B · 标记面板（编辑态下的 <code>/nwd edit</code>）</h3>
     <p>一行一个主题，其余格子用黑玻璃板填满：</p>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>行</th><th>图标（槽位号）</th></tr>
       </thead>
@@ -213,7 +278,7 @@ const toc = [
         <tr><td>状态与辅助</td><td>标记清单(37) 校验(39) 这个世界(41) 标记提示(43) 删除这个副本(44)</td></tr>
         <tr><td>操作</td><td>清空全部标记(45) 保存(46) 放弃(48) 返回列表(50) 说明(52) 关闭(53)</td></tr>
       </tbody>
-    </table>
+    </table></div>
     <ul>
       <li>标注「看着一扇门」的图标（关卡门、出口门、删除门），需要先用准星看着目标再点击</li>
       <li>关卡门：左键登记，<strong>右键删除</strong>你看着的那一道</li>
@@ -221,7 +286,7 @@ const toc = [
     </ul>
 
     <h3>面板 C · 入口搭建（<code>/nwd new entrance create</code>）</h3>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>槽位</th><th>图标</th></tr>
       </thead>
@@ -233,13 +298,13 @@ const toc = [
         <tr><td>22</td><td>提示</td></tr>
         <tr><td>24</td><td>删除这份入口结构（二次确认，删除对应的 <code>.nbt</code>）</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <h3>面板 D · 说明页（「这套怎么用」）</h3>
     <p>27 格界面：返回(19) · 关闭(23)。「返回」会按你从哪个面板进入而回到对应面板。</p>
 
     <h2 id="markers">标记的语义与规则</h2>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>标记</th><th>含义</th><th>规则</th></tr>
       </thead>
@@ -253,7 +318,7 @@ const toc = [
         <tr><td>补给箱</td><td>打怪途中的补给</td><td>看着箱子执行，在弹出的箱子界面中放置物品，关闭界面即写入 <code>loot.yml</code></td></tr>
         <tr><td>奖励箱</td><td>通关奖励</td><td>同上</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <h3>五条关键规则</h3>
     <ol>
@@ -274,7 +339,7 @@ const toc = [
 /nwd spawn &lt;名字&gt;                   → 在你面前贴出一座，门与触发点一并登记好</code></pre>
 
     <h3>实测行为</h3>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>行为</th><th>说明</th></tr>
       </thead>
@@ -284,10 +349,10 @@ const toc = [
         <tr><td>入口登记写在区块数据里</td><td>门是普通方块、无法存 NBT，因此记录挂在区块的持久化数据上</td></tr>
         <tr><td>打掉那扇门 = 该入口永久失效</td><td>登记项会被标记为失效，踩踏或按压都不再传送；记录仍保留在 <code>entrances.yml</code> 中</td></tr>
       </tbody>
-    </table>
+    </table></div>
 
     <h3>删除入口</h3>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>目标</th><th>做法</th></tr>
       </thead>
@@ -296,7 +361,7 @@ const toc = [
         <tr><td>删除已保存的入口结构（重建一份干净的）</td><td>入口面板 → 「删除这份入口结构」，或手动删除 <code>templates/entrances/&lt;slug&gt;.nbt</code> 与同名 <code>.yml</code></td></tr>
         <tr><td>删除入口登记记录</td><td>目前没有对应命令，需要手动编辑 <code>entrances.yml</code></td></tr>
       </tbody>
-    </table>
+    </table></div>
     <p class="callout">
       <strong>已知问题：重复搭建会让入口越存越多。</strong>
       重新进入入口搭建世界时，插件会把上次保存的入口贴回来供你修改。如果你在它旁边又搭了一座，
@@ -314,6 +379,10 @@ const toc = [
 ├── party.yml             组队相关
 ├── entrances.yml         世界入口登记（world / x / y / z / tier / alive / created）
 ├── pending-delete.txt    待删除清单（文件句柄释放后于下次启动删除）
+├── stamina-refunds.yml   离线体力退款记录
+├── diagnostics/
+│   ├── failures.log          异常与恢复记录（含原因/堆栈）
+│   └── failures.previous.log 上一份诊断日志（约1MB后轮转）
 └── templates/
     ├── worlds/&lt;slug&gt;/                    模板世界（平时不加载）
     ├── entrances/&lt;slug&gt;.nbt + .yml       入口结构
@@ -335,11 +404,18 @@ const toc = [
     </p>
 
     <h2 id="limits">已知限制与注意事项</h2>
-    <table>
+    <p>
+      本版沿用现有配置，一个副本一个 YAML、数字房间 ID / 进入 Title、新的首领属性装备分区尚未完整落地；
+      每人独立通关奖励的完整接入也留在后续版本。以下边界需要服主了解：
+    </p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>现象</th><th>原因与处理</th></tr>
       </thead>
       <tbody>
+        <tr><td>记录检查点后又破坏该位置</td><td>自建副本复活时尚未重新核验已记录检查点的签名与安全落脚点；运行中请保留检查点平台</td></tr>
+        <tr><td>玩家离线时副本结束或服务器重启</td><td>进本前位置、模式与飞行状态的跨重启恢复尚未完整持久化；自建副本离线结束场景仍需完善</td></tr>
+        <tr><td>不同插件组合或大量并发</td><td>长时间压力与全部第三方插件组合未完整验证；先在自己的测试环境验证，再按负载调整并发与预算</td></tr>
         <tr>
           <td>保存模板时报错，提示搬成模板失败</td>
           <td>卸载世界后文件句柄尚未释放，重命名会失败。插件已改为「重命名失败则递归复制，并把源目录记入待删清单，下次启动清理」</td>
@@ -369,14 +445,16 @@ const toc = [
           <td>自动框选把多余的东西也框了进去（例如两座入口建筑）。用「删除这份入口结构」重建后再保存</td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
 
     <h2 id="faq">常见问题</h2>
-    <table>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="可横向滚动的表格"><table>
       <thead>
         <tr><th>问题</th><th>回答</th></tr>
       </thead>
       <tbody>
+        <tr><td>仍出现副本异常退出，控制台却没找到原因？</td><td>查看 <code>plugins/NWNDungeon/diagnostics/failures.log</code>及上一份轮转日志。反馈时附版本、报错前后日志和配置片段，不要只贴“异常退出”的聊天提示</td></tr>
+        <tr><td>首领显示60，配置写了160？</td><td>先确认完整重启已加载1.5.0，再核对启动或重载回显的配置路径与血量，并重新开局。若仍不一致，附诊断日志检查服务器属性上限与其他插件影响</td></tr>
         <tr>
           <td><code>/dungeon edit</code> 提示已退役？</td>
           <td>正常。早期的半成品编辑器已被 <code>/nwd edit</code> 取代</td>
@@ -394,6 +472,6 @@ const toc = [
           <td>可以。玩家通过入口进入，与内置副本共用体力、结算等规则</td>
         </tr>
       </tbody>
-    </table>
+    </table></div>
   </DocsLayout>
 </BaseLayout>

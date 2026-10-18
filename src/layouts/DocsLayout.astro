@@ -239,10 +239,18 @@ const { title, intro, version, status = 'stable', notice, toc } = Astro.props;
   }
 
   /* 表格窄屏保底：文档里的表格最少需要约 480px，比这更窄就整体横滑 */
+  .doc-body :global(.table-scroll) {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 1.2rem 0 1.6rem;
+  }
+
+  .doc-body :global(.table-scroll table) {
+    margin: 0;
+  }
+
   @media (max-width: 560px) {
     .doc-body :global(table) {
-      display: block;
-      overflow-x: auto;
       table-layout: auto;
       min-width: 480px;
     }

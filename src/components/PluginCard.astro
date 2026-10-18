@@ -11,17 +11,11 @@ interface Props {
   releaseNote?: string;
   /** 正式版下载 */
   download: { label: string; href: string };
-  /**
-   * 可选的测试版（GitHub prerelease）。
-   * 两个版本并列时：正式版是实色主按钮，测试版是玻璃次按钮 + 「测试版」徽章 ——
-   * 按钮层级本身就是「我该点哪个」的答案，不需要额外文案解释。
-   */
-  beta?: { version: string; label: string; href: string; note?: string };
 }
 
 import PluginGlyph from './PluginGlyph.astro';
 
-const { name, tag, version, platform, status, desc, releaseNote, download, beta } = Astro.props;
+const { name, tag, version, platform, status, desc, releaseNote, download } = Astro.props;
 
 // 完成态用竹青，与全站的状态语义保持一致（见 global.css 的 .badge-jade）
 const statusClass = status === '长期维护' ? 'badge badge-jade' : 'badge badge-primary';
@@ -64,31 +58,11 @@ const barColor = status === '长期维护' ? 'var(--m-grass)' : 'var(--m-copper)
     )
   }
 
-  {
-    beta && (
-      <div class="mt-4 rounded-[4px] border border-line bg-soft px-3 py-2.5">
-        <p class="flex flex-wrap items-center gap-2 text-xs text-muted">
-          <span class="badge badge-primary">测试版</span>
-          <span class="font-mono text-ink">{beta.version}</span>
-        </p>
-        {beta.note && <p class="mt-1.5 text-xs leading-relaxed text-muted">{beta.note}</p>}
-      </div>
-    )
-  }
-
   <div class="mt-auto flex flex-col gap-2 pt-5">
     <a href={download.href} class="btn btn-accent w-full justify-center">
       {download.label}
       <span class="sr-only">（{name} 正式版 {version}，jar 文件）</span>
     </a>
-    {
-      beta && (
-        <a href={beta.href} class="btn btn-standard w-full justify-center">
-          {beta.label}
-          <span class="sr-only">（{name} 测试版 {beta.version}，jar 文件）</span>
-        </a>
-      )
-    }
   </div>
 </article>
 

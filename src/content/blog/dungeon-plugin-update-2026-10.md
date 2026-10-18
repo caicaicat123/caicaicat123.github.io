@@ -9,7 +9,7 @@ draft: false
 
 ## 本文范围
 
-本文记录随机副本（NWNDungeon）自 **1.4.9 至 1.4.13** 的变化，共五个版本。当前服务器上运行的版本为 **1.4.13**，从旧版本升级只需替换 jar 后重启。
+本文记录随机副本（NWNDungeon）自 **1.4.9 至 1.4.13** 的变化，共五个版本。本文发布时服务器上运行的版本为 **1.4.13**。最新正式版及下载见[插件页](/plugins/)，升级需替换 jar 后完整重启。
 
 先给出版本要览，随后按版本依次说明。玩家最该看的是 **1.4.13** 一节：首领消失、结算时有时无、怪物串门这三个现象是同一个原因，此前遇到过的都可以对照那一节。
 
@@ -107,9 +107,9 @@ draft: false
 
 ## 获取与更新
 
-随机副本按 MIT 许可开源，当前版本 **1.4.13**，可直接下载 jar 后部署到 Paper / Purpur 1.21 及以上的服务端：
+随机副本按 MIT 许可开源，下列链接保留本文所述 **1.4.13** 历史版本，最新版本请前往[插件页](/plugins/)：
 
-- 随机副本 1.4.13 —— [下载 jar](https://github.com/caicaicat123/nwndungeon/releases/latest/download/nwndungeon-1.4.13.jar)
+- 随机副本 1.4.13 —— [下载历史版本 jar](https://github.com/caicaicat123/nwndungeon/releases/download/v1.4.13/nwndungeon-1.4.13.jar)
 
 完整的指令表、权限节点与配置说明见仓库 README，更新记录见 CHANGELOG；下载入口同时列在[插件页面](/plugins)。安装方式为将 jar 放入服务端的 `plugins/` 目录后重启。
 
