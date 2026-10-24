@@ -16,14 +16,14 @@ export interface PluginLink {
 
 /** 随机副本卡片、支持文档共用的当前正式版。 */
 export const dungeonRelease = {
-  version: '1.5.0',
-  downloadUrl: 'https://github.com/caicaicat123/nwndungeon/releases/download/v1.5.0/nwndungeon-1.5.0.jar',
-  releaseUrl: 'https://github.com/caicaicat123/nwndungeon/releases/tag/v1.5.0',
+  version: '1.5.1',
+  downloadUrl: 'https://github.com/caicaicat123/nwndungeon/releases/download/v1.5.1/nwndungeon-1.5.1.jar',
+  releaseUrl: 'https://github.com/caicaicat123/nwndungeon/releases/tag/v1.5.1',
 } as const;
 
 /** 插件页首屏摘要：先给出结论，便于直接摘取 */
 export const pluginsSummary =
-  '新世界网络（NWN）自研并公开了两个《我的世界》服务端插件：随机副本（NWNDungeon）与幽灵（TheGhost）。两者均按 MIT 许可开源，可下载 jar 后部署至 Paper / Purpur 服务端。随机副本现已发布 1.5.0 正式版，每张卡片提供当前正式版的 jar 下载。';
+  '新世界网络（NWN）自研并公开了两个《我的世界》服务端插件：随机副本（NWNDungeon）与幽灵（TheGhost）。两者均按 MIT 许可开源，可下载 jar 后部署至 Paper / Purpur 服务端。随机副本现已发布 1.5.1 正式版，每张卡片提供当前正式版的 jar 下载。';
 
 /**
  * 两个自研插件共有的安装前提。
@@ -98,9 +98,9 @@ export const plugins = [
     platform: 'Paper / Purpur 1.21+',
     status: '长期维护' as PluginStatus,
     desc: '在世界上随机生成按难度缩放的遗迹入口，供玩家组队进入独立副本世界挑战多波关卡与首领。',
-    releaseNote: '1.5.0 正式版包含管理员自建副本，修复怪物失踪、首领血量与血条不同步、准备期间重复入场，并加入分批准备和异常诊断日志。',
+    releaseNote: '1.5.1 正式版加入一副本一文件的新版配置、备份转换与 MythicMobs 5.x 可选接入；保留原有生成保护与低配服务器预算。',
     download: {
-      label: '下载最新版 jar（1.5.0）',
+      label: '下载最新版 jar（1.5.1）',
       href: dungeonRelease.downloadUrl,
     } as PluginLink,
   },
