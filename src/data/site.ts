@@ -59,7 +59,7 @@ export const site = {
 } as const;
 
 /**
- * 顶栏导航：刻意控制在 6 项以内（Apple / Google 的共同做法是少而宽）。
+ * 顶栏导航：业务入口与内容入口共用一套导航，各页保持一致。
  * 注意：路径一律带尾斜杠 —— 产物是 about/index.html，canonical 也是带斜杠的，
  * 不带斜杠的链接会让 GitHub Pages 多返回一次 301。
  */
@@ -68,6 +68,7 @@ export const nav = [
   { href: '/minecraft/', label: 'Minecraft' },
   { href: '/mod/', label: '钢铁雄心4' },
   { href: '/plugins/', label: 'MC插件' },
+  { href: '/services/', label: '定制服务' },
   { href: '/blog/', label: '博客' },
   { href: '/about/', label: '关于' },
 ] as const;
@@ -83,6 +84,6 @@ export const extraNav = [
  * 顶栏一变动页脚就会静默错位，所以这里显式列出来。
  */
 export const footerNav = {
-  main: [nav[0], nav[1], nav[2], nav[3]],
-  related: [nav[4], nav[5], extraNav[0], extraNav[1]],
+  main: [nav[0], nav[1], nav[2], nav[3], nav[4]],
+  related: [nav[5], nav[6], extraNav[0], extraNav[1]],
 } as const;

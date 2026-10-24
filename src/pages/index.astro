@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import HomePortal from '../components/HomePortal.astro';
+import HomeServices from '../components/HomeServices.astro';
 import PluginGlyph from '../components/PluginGlyph.astro';
 import ServerStatus from '../components/ServerStatus.astro';
 import { plugins } from '../data/plugins';
@@ -51,6 +52,8 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     </div>
     <a class="home-work__more" href="/plugins/">查看全部插件与下载信息 <span aria-hidden="true">↗</span></a>
   </section>
+
+  <HomeServices />
 
   <section class="home-journal" aria-labelledby="home-journal-title">
     <div class="home-journal__intro">

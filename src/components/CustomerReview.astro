@@ -1,0 +1,21 @@
+---
+import { customerReview } from '../data/services';
+---
+
+<figure class="customer-review">
+  <figcaption class="customer-review__author">
+    <img src={customerReview.avatar} alt="慕闫的头像" width="80" height="80" loading="lazy" decoding="async" />
+    <div>
+      <strong>{customerReview.author}</strong>
+      <span>{customerReview.product}</span>
+      <span>用户使用反馈</span>
+    </div>
+  </figcaption>
+  <blockquote class="customer-review__quote">
+    <p>{customerReview.paragraphs[0]}</p>
+    <details class="customer-review__full">
+      <summary><span class="customer-review__expand">继续阅读完整评价</span><span class="customer-review__collapse">收起评价</span></summary>
+      {customerReview.paragraphs.slice(1).map((paragraph) => <p>{paragraph}</p>)}
+    </details>
+  </blockquote>
+</figure>

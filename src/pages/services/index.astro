@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import PluginGlyph from '../../components/PluginGlyph.astro';
+import CustomerReview from '../../components/CustomerReview.astro';
+import { serviceOffers } from '../../data/services';
+import { plugins } from '../../data/plugins';
+import { site } from '../../data/site';
+import '../../styles/services.css';
+
+const enquirySubject = 'Minecraft 插件定制 / 技术支持咨询';
+const enquiryBody = '你好，我想咨询：\n\n需求或遇到的问题：\n服务器类型与版本：\n希望实现的效果：\n期望时间与预算（选填）：\n';
+const enquiryHref = `mailto:${site.email}?subject=${encodeURIComponent(enquirySubject)}&body=${encodeURIComponent(enquiryBody)}`;
+const repositories: Record<string, string> = {
+  NWNDungeon: 'https://github.com/caicaicat123/nwndungeon',
+  TheGhost: 'https://github.com/caicaicat123/theghost',
+};
+---
+
+<BaseLayout title="定制服务" description="新世界网络提供 Minecraft 插件定制与技术支持，按需求沟通、价格面议。查看随机副本、幽灵等已有作品，以及用户使用评价。">
+  <section class="services-hero border-b border-line">
+    <div class="services-container services-hero__inner">
+      <div>
+        <p class="section-label">定制插件 · 技术支持</p>
+        <h1><span class="services-hero__line"><span>Minecraft 插件定制</span></span><span class="services-hero__line"><span>与技术支持。</span></span></h1>
+        <p class="services-hero__description">从一个玩法想法，到服务器里可以使用的功能。基于已有插件开发与服务器运营经验，我们承接插件定制与技术支持，服务内容按你的需求沟通。</p>
+        <div class="services-actions">
+          <a href="#service-contact" class="btn btn-accent">聊聊你的需求</a>
+          <a href="#work-showcase" class="btn btn-standard">查看已有作品</a>
+        </div>
+      </div>
+      <div class="services-hero__note">
+        <span>怎么合作</span>
+        <strong>按需求沟通，<br />价格面议。</strong>
+        <p>先把需求讲清楚，再确认可行性、工作范围、报价与交付安排。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="services-section services-container" aria-label="服务内容">
+    <div data-service-reveal><SectionHeading title="你需要什么样的帮助？" eyebrow="服务内容" desc="新功能、现有插件调整，或是一个需要排查的问题，都可以先和我们聊聊。" /></div>
+    <div class="services-offers">
+      {serviceOffers.map((offer, index) => (
+        <article class="services-offer" data-service-reveal data-service-delay={index * 100}>
+          <h3>{offer.title}</h3>
+          <p>{offer.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section id="work-showcase" class="services-work border-y border-line" aria-labelledby="services-work-title">
+    <div class="services-container services-section">
+      <div class="section-heading" data-service-reveal>
+        <p class="section-label">作品展示</p>
+        <h2 id="services-work-title">先看看我们做过什么。</h2>
+        <p class="mt-4 text-base leading-relaxed text-muted">以下是我们自主开发、公开发布的插件。你可以查看代码、下载使用，再聊聊自己的需求。</p>
+      </div>
+      <div class="services-projects">
+        {plugins.map((plugin, index) => (
+          <article class="services-project" data-service-reveal data-service-delay={index * 100}>
+            <div class="services-project__heading">
+              <span class:list={['services-project__glyph', plugin.tag === 'TheGhost' && 'services-project__glyph--ghost']} aria-hidden="true"><PluginGlyph tag={plugin.tag} /></span>
+              <div><span class="services-project__tag">{plugin.tag}</span><h3>{plugin.name}</h3></div>
+            </div>
+            <p>{plugin.desc}</p>
+            <div class="services-project__links">
+              <a href={repositories[plugin.tag]} target="_blank" rel="noopener noreferrer">查看 GitHub 项目 <span aria-hidden="true">↗</span></a>
+              {plugin.tag === 'NWNDungeon' && <a href="https://www.minebbs.com/resources/nwndungeon.18299/" target="_blank" rel="noopener noreferrer">MineBBS 发布页 <span aria-hidden="true">↗</span></a>}
+              <a href="/plugins/">功能与下载</a>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div class="services-feedback" id="customer-reviews" data-service-reveal>
+        <h3 class="services-feedback__title">来自使用者的评价</h3>
+        <CustomerReview />
+      </div>
+    </div>
+  </section>
+
+  <section id="service-contact" class="services-container services-section" aria-labelledby="service-contact-title">
+    <div class="services-contact" data-service-reveal>
+      <div>
+        <p class="section-label">开始沟通</p>
+        <h2 id="service-contact-title">把需求说给我们听。</h2>
+        <p>发来你的想法或遇到的问题，附上服务端类型、Minecraft 版本，以及希望实现的效果。也可以说明期望时间和预算，便于一起判断方案。</p>
+        <div class="services-actions"><a href={enquiryHref} class="btn btn-accent">发邮件咨询</a><a href="/contact/" class="btn btn-standard">查看联系方式</a></div>
+        <div class="services-contact__channels"><a href={`mailto:${site.email}`}>{site.email}</a><span>QQ 群：{site.community.qq}</span></div>
+      </div>
+      <ol class="services-process" aria-label="需求沟通流程">
+        <li><strong>描述需求</strong><p>说清想做的功能、使用环境和当前情况。</p></li>
+        <li><strong>评估与报价</strong><p>沟通可行性、服务内容与交付安排，价格面议。</p></li>
+        <li><strong>确认后开展</strong><p>根据双方确认的范围推进开发或技术支持。</p></li>
+      </ol>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const animateIn = (element: HTMLElement, delay = 0, distance = 24, duration = 650) => {
+    if (motionPreference.matches || typeof element.animate !== 'function') return;
+    element.animate([
+      { opacity: 0, transform: `translateY(${distance}px)` },
+      { opacity: 1, transform: 'translateY(0)' },
+    ], { duration, delay, easing: 'cubic-bezier(.23, 1, .32, 1)', fill: 'backwards' });
+  };
+
+  // 默认内容可见；只有进入视口时才播放一次，不依赖隐藏样式等待脚本。
+  if ('IntersectionObserver' in window && !motionPreference.matches) {
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const element = entry.target as HTMLElement;
+        animateIn(element, Number(element.dataset.serviceDelay) || 0);
+        observer.unobserve(element);
+      }
+    }, { threshold: .1, rootMargin: '0px 0px -24px 0px' });
+    document.querySelectorAll<HTMLElement>('[data-service-reveal]').forEach((element) => observer.observe(element));
+  }
+
+  const review = document.querySelector<HTMLDetailsElement>('.customer-review__full');
+  review?.addEventListener('toggle', () => {
+    if (review.open) review.querySelectorAll<HTMLElement>('p').forEach((paragraph, index) => animateIn(paragraph, index * 50, 8, 350));
+  });
+
+  motionPreference.addEventListener('change', () => {
+    if (motionPreference.matches) document.querySelector('main')?.getAnimations({ subtree: true }).forEach((animation) => animation.cancel());
+  });
+</script>
