@@ -31,7 +31,7 @@ export const site = {
   domain: 'nwbbs.cn',
   url: 'https://nwbbs.cn',
   github: 'https://github.com/caicaicat123',
-  email: 'caicaicat123@gmail.com',
+  email: 'support@nwbbs.cn',
   author: '断了一只爪子的招财猫',
   startedAt: '2023',
 
