@@ -13,7 +13,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 const categories = blogCategories.map((category) => ({
   ...category,
   count: posts.filter((post) => post.data.category === category.name).length,
-}));
+})).filter((category) => category.count > 0);
 ---
 
 <BaseLayout
