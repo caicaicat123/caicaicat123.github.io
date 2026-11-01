@@ -1,6 +1,7 @@
 ---
 import Brand from './Brand.astro';
 import { footerNav, site } from '../data/site';
+import { friends } from '../data/friends';
 
 const year = new Date().getFullYear();
 const yearRange = String(year) === site.startedAt ? site.startedAt : `${site.startedAt}–${year}`;
@@ -54,6 +55,25 @@ const yearRange = String(year) === site.startedAt ? site.startedAt : `${site.sta
               class="text-muted transition-colors hover:text-ink">GitHub</a
             >
           </li>
+          <!--
+            友链挂在「相关」这一列，不单独占版面：一条链接就是全部内容。
+            数据在 src/data/friends.ts，加友链只改那一处；外链统一新窗口打开。
+          -->
+          {
+            friends.map((friend) => (
+              <li>
+                <a
+                  href={friend.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={friend.desc}
+                  class="text-muted transition-colors hover:text-ink"
+                >
+                  {friend.name}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </div>
