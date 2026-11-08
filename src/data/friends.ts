@@ -17,7 +17,7 @@ export interface FriendLink {
 
 export const friends: readonly FriendLink[] = [
   {
-    name: 'JSSYXZX Forum',
+    name: 'yxzx.online',
     url: 'https://thisisaforum.dpdns.org',
     desc: '校园论坛：主吧讨论、自建吧、个人空间、经验成长与开发者后台。',
   },
