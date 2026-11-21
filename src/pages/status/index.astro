@@ -1,0 +1,200 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const endpoint = import.meta.env.PUBLIC_STATUS_API || 'https://nwbbs-status.nwbbs-cn-monitor.workers.dev/status';
+const services = [
+  { id: 'website', title: '新世界网络官网', detail: 'HTTPS 访问' },
+  { id: 'minecraft', title: 'Minecraft 生存服', detail: '游戏服务器列表响应' },
+];
+---
+
+<BaseLayout title="服务状态" description="查看新世界网络官网和 Minecraft 生存服的访问状态、近七天可用率及游戏服运行指标。">
+  <section class="status-shell">
+    <h1 class="text-4xl font-black tracking-[-0.75px] sm:text-6xl">服务状态</h1>
+    <p class="mt-4 text-muted">官网和 Minecraft 生存服的外部探测与运行数据。</p>
+    <div data-status-page data-endpoint={endpoint}>
+      <div class="status-banner" data-overview data-tone="unknown" role="status">
+        <span class="status-dot-mark" aria-hidden="true"></span>
+        <div>
+          <p class="status-overview-title" data-overview-title>等待状态数据</p>
+          <p class="text-sm text-muted" data-status-message>{endpoint ? '正在读取监控数据…' : '监控数据源待接入。'}</p>
+        </div>
+      </div>
+      <h2 class="status-section-title">系统状态</h2>
+      <div class="status-panel">
+        {services.map(({ id, title, detail }) => (
+          <article class="status-service" data-service={id}>
+            <div class="status-row">
+              <div><h3>{title}</h3><p class="text-sm text-muted">{detail}</p></div>
+              <span class="status-pill" data-value="state" data-tone="unknown">未知</span>
+            </div>
+            <div class="status-strip" aria-label={`${title}最近七个自然日探测记录`}>
+              {Array.from({ length: 7 }, () => <span data-day data-tone="unknown" title="暂无探测数据" />)}
+            </div>
+            <div class="status-row status-strip-caption">
+              <span data-value="dateRange">最近七个自然日</span>
+              <span><strong data-value="uptime">—</strong> · 近 7 天可用率</span>
+            </div>
+            <div class="status-row status-strip-caption">
+              <span>覆盖率 <span data-value="coverage">—</span></span>
+              <span>最后探测 <span data-value="checked">—</span></span>
+            </div>
+          </article>
+        ))}
+      </div>
+      <h2 class="status-section-title">Minecraft 运行指标</h2>
+      <article class="status-panel status-service" data-service="metrics">
+        <dl class="status-metrics">
+          <div><dt>在线人数 / 容量</dt><dd data-value="players">—</dd></div>
+          <div><dt>TPS（1 / 5 / 15 分钟）</dt><dd data-value="tps">—</dd></div>
+          <div><dt>平均每刻耗时（MSPT）</dt><dd data-value="mspt">—</dd></div>
+          <div><dt>最后上报</dt><dd data-value="reported">—</dd></div>
+        </dl>
+      </article>
+      <h2 class="status-section-title">近期探测异常</h2>
+      <div class="status-panel status-service">
+        <p class="text-sm text-muted" data-history-empty>暂无探测记录。</p>
+        <ul class="status-history" data-history></ul>
+      </div>
+      <p class="mt-5 text-sm text-muted">可用率按成功探测占有效探测的比例计算。灰色表示当天暂无记录，时间为北京时间。</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .status-shell { width: min(100% - 32px, 900px); margin-inline: auto; padding-block: clamp(36px, 7vw, 76px); }
+  .status-banner, .status-panel { border: 1px solid var(--color-line); border-radius: 12px; background: var(--color-surface); }
+  .status-banner { display: flex; align-items: center; gap: 14px; margin-top: 30px; padding: 20px; border-inline-start: 4px solid var(--signal); }
+  .status-overview-title { font-size: 1.15rem; font-weight: 750; margin-bottom: 4px; }
+  .status-dot-mark { flex: 0 0 12px; height: 12px; border-radius: 50%; background: var(--signal); }
+  [data-tone="unknown"] { --signal: #8390a5; }
+  [data-tone="up"] { --signal: #209264; }
+  [data-tone="down"] { --signal: #d34f4b; }
+  [data-tone="mixed"] { --signal: #bd7c19; }
+  .status-section-title { margin: 32px 0 12px; font-size: 1.35rem; font-weight: 750; letter-spacing: -.75px; }
+  .status-service { padding: clamp(14px, 3vw, 22px); }
+  .status-service + .status-service { border-top: 1px solid var(--color-line); }
+  .status-row { display: flex; justify-content: space-between; align-items: baseline; gap: 6px 16px; flex-wrap: wrap; }
+  .status-row h3 { font-size: 1rem; font-weight: 750; }
+  .status-pill { border: 1px solid var(--signal); border-radius: 100px; padding: 2px 9px; font-size: .8rem; font-weight: 700; }
+  .status-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; margin-top: 15px; }
+  .status-strip span { height: 12px; border-radius: 3px; background: var(--signal); }
+  .status-strip-caption { margin-top: 6px; color: var(--color-muted); font-size: .78rem; }
+  .status-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .status-metrics dt { color: var(--color-muted); font-size: .85rem; }
+  .status-metrics dd { margin-top: 6px; font-weight: 750; overflow-wrap: anywhere; }
+  .status-history li { display: flex; justify-content: space-between; gap: 8px; padding-block: 8px; font-size: .875rem; }
+  .status-history li + li { border-top: 1px solid var(--color-line); }
+  @media (max-width: 620px) { .status-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
+
+<script>
+  const page = document.querySelector<HTMLElement>('[data-status-page]');
+  const endpoint = page?.dataset.endpoint;
+  const message = page?.querySelector('[data-status-message]');
+  const date = new Intl.DateTimeFormat('zh-CN', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Shanghai' });
+  const dayFormat = new Intl.DateTimeFormat('zh-CN', { month: 'numeric', day: 'numeric', timeZone: 'UTC' });
+  const daySize = 86_400_000;
+  const serviceNames = { website: '官网', minecraft: 'Minecraft 生存服' };
+  type HistoryRow = { day: number; service: keyof typeof serviceNames; samples: number; successes: number };
+  const formatDate = (time: number) => time ? date.format(time) : '—';
+  const percent = (number: number) => (number * 100).toFixed(2) + '%';
+
+  function display(service: string, values: Record<string, string>) {
+    for (const [key, value] of Object.entries(values)) {
+      const node = page?.querySelector(`[data-service="${service}"] [data-value="${key}"]`);
+      if (node) node.textContent = value;
+    }
+  }
+
+  function renderHistory(history: HistoryRow[], now: number) {
+    const today = Math.floor((now + 28_800_000) / daySize);
+    for (const id of Object.keys(serviceNames)) {
+      const bars = page?.querySelectorAll<HTMLElement>(`[data-service="${id}"] [data-day]`);
+      bars?.forEach((bar, index) => {
+        const day = today - 6 + index;
+        const record = history.find((item) => item.day === day && item.service === id);
+        const label = dayFormat.format(day * daySize);
+        bar.dataset.tone = !record ? 'unknown' : !record.successes ? 'down' : record.successes === record.samples ? 'up' : 'mixed';
+        bar.title = record ? `${label} · ${record.successes}/${record.samples} 次探测成功` : `${label} · 暂无数据`;
+        bar.setAttribute('role', 'img');
+        bar.setAttribute('aria-label', bar.title);
+      });
+      display(id, { dateRange: `${dayFormat.format((today - 6) * daySize)} — ${dayFormat.format(today * daySize)}` });
+    }
+    const list = page?.querySelector('[data-history]');
+    const empty = page?.querySelector<HTMLElement>('[data-history-empty]');
+    if (!list || !empty) return;
+    const failures = history.filter((item) => item.successes < item.samples);
+    empty.hidden = failures.length > 0;
+    empty.textContent = history.length ? '有记录的日期内未发现探测异常。' : '暂无探测记录。';
+    list.replaceChildren(...failures.map((item) => {
+      const row = document.createElement('li');
+      const title = document.createElement('span');
+      const count = document.createElement('span');
+      title.textContent = `${dayFormat.format(item.day * daySize)} · ${serviceNames[item.service]}`;
+      count.textContent = `${item.samples - item.successes} 次探测失败`;
+      row.append(title, count);
+      return row;
+    }));
+  }
+
+  function overview(tone: string, label: string) {
+    const banner = page?.querySelector<HTMLElement>('[data-overview]');
+    const title = banner?.querySelector('[data-overview-title]');
+    if (banner) banner.dataset.tone = tone;
+    if (title) title.textContent = label;
+  }
+
+  async function refresh() {
+    if (!endpoint || !message) return;
+    try {
+      const response = await fetch(endpoint, { signal: AbortSignal.timeout(8000), cache: 'no-store' });
+      if (!response.ok) throw new Error('Status API unavailable');
+      const { services, metrics, startedAt, now, history = [] } = await response.json();
+      const states = [];
+      for (const id of Object.keys(serviceNames)) {
+        const service = services[id];
+        const tone = !service.checked || now - service.checked > 360_000 ? 'unknown' : service.ok ? 'up' : 'down';
+        const badge = page?.querySelector<HTMLElement>(`[data-service="${id}"] [data-value="state"]`);
+        if (badge) badge.dataset.tone = tone;
+        states.push(tone);
+        display(id, {
+          state: tone === 'unknown' ? '未知' : tone === 'up' ? '正常' : '异常',
+          uptime: service.samples ? percent(service.successes / service.samples) : '—',
+          coverage: percent(service.coverage),
+          checked: formatDate(service.checked),
+        });
+      }
+      if (states.includes('down')) overview('down', '检测到服务异常');
+      else if (states.every((tone) => tone === 'up')) overview('up', '所有服务运行正常');
+      else overview('unknown', '部分或全部服务状态待确认');
+      renderHistory(history, now);
+      const fresh = metrics && now - metrics.receivedAt <= 120_000;
+      display('metrics', {
+        players: fresh ? `${metrics.online} / ${metrics.capacity}` : '—',
+        tps: fresh ? metrics.tps.map((value: number) => value.toFixed(2)).join(' / ') : '—',
+        mspt: fresh ? `${metrics.mspt.toFixed(1)} ms` : '—',
+        reported: metrics ? formatDate(metrics.receivedAt) + (fresh ? '' : '（已过期）') : '等待上报',
+      });
+      const days = (now - startedAt) / 86_400_000;
+      message.textContent = !startedAt ? '等待首次探测。' : days < 7
+        ? (days < 1 ? '监测尚未满一天，显示已采集的数据。' : `已监测 ${Math.floor(days)} 天，显示已采集的数据。`)
+        : '时间均为北京时间。';
+    } catch {
+      message.textContent = '暂时无法读取监控数据。';
+      overview('unknown', '当前状态未知');
+      page?.querySelectorAll<HTMLElement>('[data-value="state"]').forEach((badge) => { badge.dataset.tone = 'unknown'; });
+      renderHistory([], Date.now());
+      for (const id of ['website', 'minecraft']) display(id, { state: '未知', uptime: '—', coverage: '—', checked: '—' });
+      display('metrics', { players: '—', tps: '—', mspt: '—', reported: '—' });
+    }
+  }
+
+  if (endpoint) {
+    void refresh();
+    const timer = window.setInterval(refresh, 30_000);
+    window.addEventListener('pagehide', () => clearInterval(timer), { once: true });
+    window.addEventListener('pageshow', (event) => { if (event.persisted) location.reload(); });
+  }
+</script>
