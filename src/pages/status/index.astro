@@ -149,13 +149,24 @@ const services = [
   async function refresh() {
     if (!endpoint || !message) return;
     try {
-      const response = await fetch(endpoint, { signal: AbortSignal.timeout(8000), cache: 'no-store' });
-      if (!response.ok) throw new Error('Status API unavailable');
-      const { services, metrics, startedAt, now, history = [] } = await response.json();
+      const readStatus = async (url: string) => {
+        const response = await fetch(url, { signal: AbortSignal.timeout(3000), cache: 'no-store' });
+        if (!response.ok) throw new Error('Status API unavailable');
+        const data = await response.json();
+        if (!data.services?.website || !data.services?.minecraft || !Number.isFinite(data.now)) throw new Error('Invalid status response');
+        return data;
+      };
+      let usingSnapshot = false;
+      const { services, metrics, startedAt, now, history = [] } = await readStatus(endpoint).catch(() => {
+        usingSnapshot = true;
+        return readStatus('/status-data.json');
+      });
+      const elapsed = usingSnapshot ? Math.max(0, Date.now() - now) : 0;
+      const snapshotExpired = elapsed > 30 * 60_000;
       const states = [];
       for (const id of Object.keys(serviceNames)) {
         const service = services[id];
-        const tone = !service.checked || now - service.checked > 360_000 ? 'unknown' : service.ok ? 'up' : 'down';
+        const tone = snapshotExpired || !service.checked || now - service.checked > 360_000 ? 'unknown' : service.ok ? 'up' : 'down';
         const badge = page?.querySelector<HTMLElement>(`[data-service="${id}"] [data-value="state"]`);
         if (badge) badge.dataset.tone = tone;
         states.push(tone);
@@ -170,15 +181,17 @@ const services = [
       else if (states.every((tone) => tone === 'up')) overview('up', '所有服务运行正常');
       else overview('unknown', '部分或全部服务状态待确认');
       renderHistory(history, now);
-      const fresh = metrics && now - metrics.receivedAt <= 120_000;
+      const fresh = metrics && !snapshotExpired && now - metrics.receivedAt <= 120_000;
       display('metrics', {
         players: fresh ? `${metrics.online} / ${metrics.capacity}` : '—',
         tps: fresh ? metrics.tps.map((value: number) => value.toFixed(2)).join(' / ') : '—',
         mspt: fresh ? `${metrics.mspt.toFixed(1)} ms` : '—',
-        reported: metrics ? formatDate(metrics.receivedAt) + (fresh ? '' : '（已过期）') : '等待上报',
+        reported: metrics ? formatDate(metrics.receivedAt) + (!fresh ? '（已过期）' : usingSnapshot ? '（快照）' : '') : '等待上报',
       });
       const days = (now - startedAt) / 86_400_000;
-      message.textContent = !startedAt ? '等待首次探测。' : days < 7
+      message.textContent = usingSnapshot
+        ? `正在显示 ${formatDate(now)} 的官网快照${snapshotExpired ? '，快照已过期。' : '，数据可能延迟。'}`
+        : !startedAt ? '等待首次探测。' : days < 7
         ? (days < 1 ? '监测尚未满一天，显示已采集的数据。' : `已监测 ${Math.floor(days)} 天，显示已采集的数据。`)
         : '时间均为北京时间。';
     } catch {

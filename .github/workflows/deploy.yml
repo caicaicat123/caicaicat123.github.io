@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '4,14,24,34,44,54 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -12,7 +14,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name != 'schedule' }}
 
 jobs:
   build:
@@ -20,6 +22,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Refresh public status snapshot
+        run: |
+          curl --fail --silent --show-error --retry 2 --max-time 10 \
+            https://nwbbs-status.nwbbs-cn-monitor.workers.dev/status \
+            -o "$RUNNER_TEMP/nwbbs-status.json"
+          jq -e '(.now | type == "number") and (.services.website | type == "object") and (.services.minecraft | type == "object") and (.history | type == "array")' \
+            "$RUNNER_TEMP/nwbbs-status.json" > /dev/null
+          cp "$RUNNER_TEMP/nwbbs-status.json" public/status-data.json
       - name: Build with Astro
         uses: withastro/action@v3
 
